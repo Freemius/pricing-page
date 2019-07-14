@@ -18,7 +18,8 @@ class PricingPage extends Component {
                 currencies             : [],
                 selectedCurrency       : 'usd',
                 selectedLicenseQuantity: 1,
-                hasFeaturedPlan        : false
+                hasFeaturedPlan        : false,
+                faq                    : []
             }
         };
 
@@ -151,6 +152,7 @@ class PricingPage extends Component {
                 newState.data.currencySymbols      = {usd: '$', eur: '€', gbp: '£'};
                 newState.data.licenseQuantities    = Object.keys(licenseQuantities);
                 newState.data.selectedBillingCycle = selectedBillingCycle;
+                newState.data.faq                  = pricingData.faq[0].questions;
 
                 this.setState(newState);
             });
@@ -438,10 +440,7 @@ class PricingPage extends Component {
                 <section className="fs-section fs-section-faq">
                     <h2>Frequently Asked Questions</h2>
                     <section className="fs-section-faq-items">
-                        <section className="fs-section-faq-item">
-                            <header></header>
-                            <section></section>
-                        </section>
+                        {pricingData.faq.map(faqItem => <section className="fs-section-faq-item"><header>{faqItem['q']}</header><section>{faqItem['a']}</section></section>)}
                     </section>
                 </section>
             </div>
