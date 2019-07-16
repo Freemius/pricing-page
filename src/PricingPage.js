@@ -3,6 +3,8 @@ import guaranteeStamp from './assets/img/guarantee-stamp.svg';
 import FSPricingContext from "./FSPricingContext";
 import jQuery from 'jquery';
 import './App.scss';
+import {PlanManager} from './services/PlanManager';
+import {BillingCycle, Pricing} from './entities/Pricing';
 
 class PricingPage extends Component {
     static contextType = FSPricingContext;
@@ -76,11 +78,13 @@ class PricingPage extends Component {
                     return;
                 }
 
-                let billingCycles        = {},
-                    currencies           = {},
-                    licenseQuantities    = {},
-                    selectedBillingCycle = null,
-                    hasFeaturedPlan      = false;
+                let billingCycles                   = {},
+                    currencies                      = {},
+                    licenseQuantities               = {},
+                    selectedBillingCycle            = null,
+                    hasFeaturedPlan                 = false,
+                    planSingleSitePricingCollection = [],
+                    planManager                     = PlanManager.getInstance(pricingData.plans);
 
                 for (let i in pricingData.plans) {
                     if ( ! pricingData.plans.hasOwnProperty(i)) {
@@ -144,15 +148,22 @@ class PricingPage extends Component {
 
                 let newState = this.state;
 
-                newState.data.plugin               = pricingData.plugin;
-                newState.data.plans                = pricingData.plans;
-                newState.data.hasFeaturedPlan      = hasFeaturedPlan;
-                newState.data.billingCycles        = Object.keys(billingCycles);
-                newState.data.currencies           = Object.keys(currencies);
-                newState.data.currencySymbols      = {usd: '$', eur: '€', gbp: '£'};
-                newState.data.licenseQuantities    = Object.keys(licenseQuantities);
-                newState.data.selectedBillingCycle = selectedBillingCycle;
-                newState.data.faq                  = pricingData.faq[0].questions;
+                newState.data.plugin                   = pricingData.plugin;
+                newState.data.plans                    = pricingData.plans;
+                newState.data.hasFeaturedPlan          = hasFeaturedPlan;
+                newState.data.billingCycles            = Object.keys(billingCycles);
+                newState.data.currencies               = Object.keys(currencies);
+                newState.data.currencySymbols          = {usd: '$', eur: '€', gbp: '£'};
+                newState.data.licenseQuantities        = Object.keys(licenseQuantities);
+                newState.data.selectedBillingCycle     = selectedBillingCycle;
+                newState.data.faq                      = pricingData.faq[0].questions;
+                newState.data.active_installs          = pricingData.active_installs;
+                newState.data.downloads                = pricingData.downloads;
+                newState.data.reviews                  = pricingData.reviews;
+                newState.data.allPlansSingleSitePrices = pricingData.all_plans_single_site_pricing;
+                newState.data.annualDiscount           = (billingCycles.annual && billingCycles.monthly) ?
+                    planManager.largestAnnualDiscount(planSingleSitePricingCollection) :
+                    0;
 
                 this.setState(newState);
             });
@@ -193,7 +204,11 @@ class PricingPage extends Component {
         if ('annual' !== billingCycle)
             return '';
 
-        return '(up to 19% off)';
+        if ( ! (this.state.data.annualDiscount > 0)) {
+            return '';
+        }
+
+        return `(up to ${this.state.data.annualDiscount}% off)`;
     }
 
     billingCycleLabel () {
@@ -268,7 +283,9 @@ class PricingPage extends Component {
                     <img src={pricingData.plugin.icon} className="fs-plugin-logo" alt="logo" width="48" height="48" />
                     <span>{pricingData.plugin.title}</span>
                 </header>
-                <div className="fs-annual-discount">Save up to 19% on Yearly Pricing!</div>
+                {pricingData.annualDiscount > 0 &&
+                    <div className="fs-annual-discount">Save up to {pricingData.annualDiscount}% on Yearly Pricing!</div>
+                }
                 <section className="fs-section fs-section-billing-cycles">
                     <ul className="fs-billing-cycles">
                         {
@@ -324,6 +341,8 @@ class PricingPage extends Component {
                                         plan.description :
                                         '';
 
+                                    let selectedPricingAmount = selectedPricing[`${pricingData.selectedBillingCycle}_price`].toString();
+
                                     return <li key={plan.id} className={'fs-package' + (plan.is_featured ? ' fs-featured-plan' : '')}>
                                         <div className="fs-most-popular"><strong>Most Popular</strong></div>
                                         <div className="fs-package-content">
@@ -337,13 +356,17 @@ class PricingPage extends Component {
                                                     }
                                                 </strong>
                                             </div>
-                                            <div className="fs-undiscounted-price">Normally $25 / mo</div>
+                                            {'annual' === pricingData.selectedBillingCycle && pricingData.annualDiscount > 0 &&
+                                                <div className="fs-undiscounted-price">Normally {selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY)} / mo</div>
+                                            }
                                             <div className="fs-selected-pricing-amount">
                                                 <strong className="fs-currency-symbol">{pricingData.currencySymbols[pricingData.selectedCurrency]}</strong>
-                                                <span className="fs-selected-pricing-amount-integer"><strong>3</strong></span>
+                                                <span className="fs-selected-pricing-amount-integer"><strong>{selectedPricingAmount.split('.')[0]}</strong></span>
                                                 <span className="fs-selected-pricing-amount-fraction-container">
-                                                            <strong className="fs-selected-pricing-amount-fraction">.99</strong>
-                                                            <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>
+                                                            <strong className="fs-selected-pricing-amount-fraction">.{selectedPricingAmount.split('.')[1]}</strong>
+                                                            {'lifetime' !== pricingData.selectedBillingCycle &&
+                                                                <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>
+                                                            }
                                                         </span>
                                             </div>
                                             <div className="fs-selected-pricing-cycle"><strong>{this.billingCycleLabel()}</strong></div>
@@ -361,6 +384,8 @@ class PricingPage extends Component {
 
                                                             let isPricingLicenseQuantitySelected = (pricingData.selectedLicenseQuantity == (null == pricing.licenses ? 0 : pricing.licenses));
 
+                                                            let multiSiteDiscount = PlanManager.getInstance().calculateMultiSiteDiscount(pricing, pricingData.selectedBillingCycle);
+
                                                             return (
                                                                 <tr key={pricing.id} className={"fs-license-quantity-container" + (isPricingLicenseQuantitySelected ? ' fs-license-quantity-selected' : '')}>
                                                                     <td className="fs-license-quantity">
@@ -374,7 +399,11 @@ class PricingPage extends Component {
                                                                         />
                                                                         {this.pricingSitesLabel(pricing)}
                                                                     </td>
-                                                                    <td className="fs-license-quantity-discount">Save 100%</td>
+                                                                    {
+                                                                        multiSiteDiscount > 0 ?
+                                                                            <td className="fs-license-quantity-discount">Save {multiSiteDiscount}%</td> :
+                                                                            <td></td>
+                                                                    }
                                                                     <td className="fs-license-quantity-price">{this.priceLabel(pricing)}</td>
                                                                 </tr>
                                                             )
