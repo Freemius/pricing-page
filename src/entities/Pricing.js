@@ -1,3 +1,5 @@
+import {Helper} from "../Helper";
+
 export const CurrencySymbol = Object.freeze({
     'USD': '$',
     'GBP': '£',
@@ -44,20 +46,20 @@ export class Pricing {
         }
     }
 
-    isFree() {
-        return (
-            ! this.hasMonthlyPrice() &&
-            ! this.hasAnnualPrice() &&
-            ! this.hasLifetimePrice()
-        );
-    }
+    static getBillingCyclePeriod(billingCycle) {
+        if ( ! Helper.isNumeric(billingCycle)) {
+            return billingCycle;
+        }
 
-    isSingleSite() {
-        return (1 == this.licenses);
-    }
-
-    isUnlimited() {
-        return (null == this.licenses);
+        switch (billingCycle) {
+            case BillingCycle.ANNUAL:
+                return 'annual';
+            case BillingCycle.LIFETIME:
+                return 'lifetime';
+            case BillingCycle.MONTHLY:
+            default:
+                return 'monthly';
+        }
     }
 
     getAmount(billingCycle, format) {
@@ -108,23 +110,44 @@ export class Pricing {
         return parseFloat(amount);
     }
 
-    isNumeric(n) {
-        return (
-            (null != n) &&
-            !isNaN(n) &&
-            ('' !== n)
-        );
-    };
-
     hasAnnualPrice() {
-        return (this.annual_price && this.isNumeric(this.annual_price) && this.annual_price > 0);
+        return (this.annual_price && Helper.isNumeric(this.annual_price) && this.annual_price > 0);
     }
 
     hasLifetimePrice() {
-        return (this.lifetime_price && this.isNumeric(this.lifetime_price) && this.lifetime_price > 0);
+        return (this.lifetime_price && Helper.isNumeric(this.lifetime_price) && this.lifetime_price > 0);
     }
 
     hasMonthlyPrice() {
-        return (this.monthly_price && this.isNumeric(this.monthly_price) && this.monthly_price > 0);
+        return (this.monthly_price && Helper.isNumeric(this.monthly_price) && this.monthly_price > 0);
+    }
+
+    isFree() {
+        return (
+            ! this.hasMonthlyPrice() &&
+            ! this.hasAnnualPrice() &&
+            ! this.hasLifetimePrice()
+        );
+    }
+
+    isSingleSite() {
+        return (1 == this.licenses);
+    }
+
+    isUnlimited() {
+        return (null == this.licenses);
+    }
+
+    sitesLabel() {
+        let sites = '';
+
+        if (this.isSingleSite())
+            sites = 'Single';
+        else if (this.isUnlimited())
+            sites = 'Unlimited';
+        else
+            sites = this.licenses;
+
+        return (sites + ' Site' + (this.isSingleSite() ? '' : 's'));
     }
 }

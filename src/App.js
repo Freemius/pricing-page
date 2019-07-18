@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PricingPage from './PricingPage';
+import FreemiusPricingMain from './components/FreemiusPricingMain';
 import { Route } from 'react-router-dom';
 
 class App extends Component {
@@ -9,7 +9,7 @@ class App extends Component {
 
     render() {
         return (
-            <Route path="/" component={PricingPage} />
+            <Route path="/" component={FreemiusPricingMain} />
         );
     }
 }
