@@ -13,13 +13,11 @@ class Faq extends Component {
     }
 
     render() {
-        console.log("faq", this.context);
-
         let context = this.context;
+
         if ( ! context || ! context.plugin || ! Helper.isNumeric(context.plugin.id)) {
             return null;
         }
-
 
         let faq                   = [],
             faqSupportAnswer      = '',
@@ -181,7 +179,7 @@ class Faq extends Component {
 
         return (
             <Fragment>
-                <h2>Frequently Asked Questions</h2>
+                <header className="fs-section-header"><h2>Frequently Asked Questions</h2></header>
                 <Section fs-section="faq-items">{faqElements}</Section>
             </Fragment>
         );
