@@ -2,6 +2,9 @@ import React, {Component, Fragment} from 'react';
 import FSPricingContext from "../../FSPricingContext";
 import {BillingCycle} from "../../entities/Pricing";
 import {PlanManager} from "../../services/PlanManager";
+import Tooltip from "../Tooltip";
+import Icon from "../Icon";
+import {Helper} from "../../Helper";
 
 class Packages extends Component {
     static contextType = FSPricingContext;
@@ -41,7 +44,7 @@ class Packages extends Component {
 
     render() {
         return (
-            <ul className={'fs-packages' + (this.context.hasFeaturedPlan ? ' fs-packages-has-featured-plan' : '')}>
+            <ul className="fs-packages">
                 {
                     this.context.plans.map(
                         ( plan ) => {
@@ -74,7 +77,7 @@ class Packages extends Component {
                             return <li key={plan.id} className={'fs-package' + (plan.is_featured ? ' fs-featured-plan' : '')}>
                                 <div className="fs-most-popular"><h4><strong>Most Popular</strong></h4></div>
                                 <div className="fs-package-content">
-                                    <h2 className="fs-plan-title">{plan.title}</h2>
+                                    <h2 className="fs-plan-title"><strong>{plan.title}</strong></h2>
                                     <h3 className="fs-plan-description">
                                         <strong>
                                             {
@@ -91,14 +94,12 @@ class Packages extends Component {
                                         <strong className="fs-currency-symbol">{this.context.currencySymbols[this.context.selectedCurrency]}</strong>
                                         <span className="fs-selected-pricing-amount-integer"><strong>{Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]))}</strong></span>
                                         <span className="fs-selected-pricing-amount-fraction-container">
-                                                                <strong className="fs-selected-pricing-amount-fraction">.{selectedPricingAmount.split('.')[1]}</strong>
-                                            {'lifetime' !== this.context.selectedBillingCycle &&
-                                            <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>
-                                            }
-                                                            </span>
+                                            <strong className="fs-selected-pricing-amount-fraction">.{selectedPricingAmount.split('.')[1]}</strong>
+                                            {'lifetime' !== this.context.selectedBillingCycle && <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>}
+                                        </span>
                                     </div>
                                     <div className="fs-selected-pricing-cycle"><strong>{this.billingCycleLabel()}</strong></div>
-                                    <div className="fs-selected-pricing-license-quantity">{selectedPricing.sitesLabel()} <span className="fs-tooltip">?</span></div>
+                                    <div className="fs-selected-pricing-license-quantity">{selectedPricing.sitesLabel()} <Tooltip/></div>
                                     <div className="fs-plan-support">{plan.support}</div>
                                     <table className="fs-license-quantities">
                                         <tbody>{
@@ -143,7 +144,7 @@ class Packages extends Component {
                                         <button className="fs-button fs-button--size-large fs-upgrade-button" onClick={() => {this.upgrade(plan.id)}}>Upgrade Now</button>
                                     </div>
                                     <ul className="fs-plan-features">
-                                        {plan.features.map(feature => <li key={feature.id}><span>&#10003;</span> {feature.title} <span className="fs-tooltip">?</span></li>)}
+                                        {plan.features.map(feature => <li key={feature.id}><Icon icon={['fas', 'check']} /> <span className="fs-feature-title">{feature.title}</span> <Tooltip/></li>)}
                                     </ul>
                                 </div>
                             </li>
