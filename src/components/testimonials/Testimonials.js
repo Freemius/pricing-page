@@ -2,7 +2,8 @@ import React, {Component, Fragment} from 'react';
 import FSPricingContext from "../../FSPricingContext";
 import jQuery from 'jquery';
 import md5 from 'md5';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import Icon from "../Icon";
+import CircleButton from "./CircleButton"
 
 class Testimonials extends Component {
     static contextType = FSPricingContext;
@@ -21,7 +22,7 @@ class Testimonials extends Component {
             stars = [];
 
         for (let j = 0; j < rate; j ++) {
-            stars.push(<FontAwesomeIcon key={j} icon={['fas', 'star']} />);
+            stars.push(<Icon key={j} icon={['fas', 'star']} />);
         }
 
         return stars;
@@ -216,7 +217,7 @@ class Testimonials extends Component {
                                 review.email ?
                                     '//gravatar.com/avatar/' + md5(review.email) + '?s=80&d=' . encodeURIComponent(defaultPicUrl) :
                                     defaultPicUrl
-                            } />'
+                            } />
                         </div>
                         <h4>{review.title}</h4>
                         <div className="fs-testimonial-rating">
@@ -224,6 +225,7 @@ class Testimonials extends Component {
                         </div>
                     </header>
                     <section>
+                        <Icon icon={['fas', 'quote-left']} className="fs-icon-quote" />
                         <blockquote className="fs-testimonial-message">{review.text}</blockquote>
                         <section className="fs-testimonial-author">
                             <div className="fs-testimonial-author-name">{review.name}</div>
@@ -240,7 +242,7 @@ class Testimonials extends Component {
                     aria-hidden="true" role="presentation"
                     aria-selected={(0 == i) ? 'true' : 'false'}
                     aria-controls={'navigation' + i}>
-                    <button type="button" role="button" tabIndex="0"><FontAwesomeIcon icon={['far', 'circle']}/></button>
+                    <CircleButton type="button" role="button" tabIndex="0" />
                 </li>
             );
         }
@@ -254,11 +256,11 @@ class Testimonials extends Component {
                     <header className="fs-section-header"><h2>Downloaded more than { Math.ceil(pricingData.downloads/1000) * 1000 } times!</h2></header>
                 }
                 <section className="fs-testimonials-nav">
-                    <nav className="fs-nav fs-nav-prev">&larr;</nav>
+                    <nav className="fs-nav fs-nav-prev"><Icon icon={['fas', 'arrow-left']}/></nav>
                     <div className="fs-testimonials-track">
                         <section className="fs-testimonials">{reviews}</section>
                     </div>
-                    <nav className="fs-nav fs-nav-next">&rarr;</nav>
+                    <nav className="fs-nav fs-nav-next"><Icon icon={['fas', 'arrow-right']}/></nav>
                 </section>
                 <ul className="fs-nav fs-nav-pagination slick-dots" role="tablist">{dots}</ul>
             </Fragment>
