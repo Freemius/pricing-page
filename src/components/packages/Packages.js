@@ -55,22 +55,29 @@ class Packages extends Component {
     }
 
     render() {
+        let
+            prevPlan                    = null,
+            prevPlanFeaturesWithNoValue = {};
+
         return (
             <ul className="fs-packages">
                 {
                     this.context.plans.map(
-                        ( plan ) => {
+                        (plan) => {
                             if (plan.is_hidden || ! plan.pricing) {
                                 return '';
                             }
 
-                            let pricingCollection = plan.pricing,
-                                selectedPricing   = null;
+                            let pricingCollection   = plan.pricing,
+                                selectedPricing     = null,
+                                visiblePricingCount = 0;
 
                             pricingCollection.map(pricing => {
                                 if (pricing.is_hidden) {
                                     return;
                                 }
+
+                                visiblePricingCount ++;
 
                                 if (
                                     this.context.selectedCurrency        == pricing.currency &&
@@ -85,6 +92,75 @@ class Packages extends Component {
                                 '';
 
                             let selectedPricingAmount = selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
+
+                            let
+                                planFeaturesWithValue    = [],
+                                planFeaturesWithoutValue = {},
+                                allPrevPlanFeaturesTitle = null;
+
+                            if (null !== prevPlan) {
+                                allPrevPlanFeaturesTitle = `All ${prevPlan.title} Features`;
+                            }
+
+                            if (plan.features) {
+                                for (let feature of plan.features) {
+                                    if ( ! feature.is_featured ) {
+                                        continue;
+                                    }
+
+                                    if (prevPlanFeaturesWithNoValue[`f_${feature.id}`]) {
+                                        continue;
+                                    }
+
+                                    let hasValue = (feature.value && feature.value.toString().length > 0);
+
+                                    if (hasValue) {
+                                        planFeaturesWithValue.push(feature);
+                                    } else {
+                                        planFeaturesWithoutValue[`f_${feature.id}`] = feature;
+                                    }
+                                }
+                            }
+
+                            prevPlan                    = plan;
+                            prevPlanFeaturesWithNoValue = planFeaturesWithoutValue;
+
+                            let supportLabel = null;
+
+                            if ( ! plan.hasAnySupport()) {
+                                supportLabel = 'No Support';
+                            } else if (plan.hasSuccessManagerSupport()) {
+                                supportLabel = 'Priority Phone, Email & Chat Support';
+                            } else {
+                                let supportedChannels = [];
+
+                                if (plan.hasPhoneSupport()) {
+                                    supportedChannels.push('Phone');
+                                }
+
+                                if (plan.hasSkypeSupport()) {
+                                    supportedChannels.push('Skype');
+                                }
+
+                                if (plan.hasEmailSupport()) {
+                                    supportedChannels.push((this.context.priorityEmailSupportPlanID == plan.id ? 'Priority ' : '') + 'Email');
+                                }
+
+                                if (plan.hasForumSupport()) {
+                                    supportedChannels.push('Forum');
+                                }
+
+                                if (plan.hasKnowledgeBaseSupport()) {
+                                    supportedChannels.push('Help Center');
+                                }
+
+                                if (1 === supportedChannels.length) {
+                                    supportLabel = `${supportedChannels[0]} Support`;
+                                } else {
+                                    supportLabel = supportedChannels.slice(0, supportedChannels.length - 1).join(', ') +
+                                        ' & ' + supportedChannels[supportedChannels.length-1] + ' Support';
+                                }
+                            }
 
                             return <li key={plan.id} className={'fs-package' + (plan.is_featured ? ' fs-featured-plan' : '')}>
                                 <div className="fs-most-popular"><h4><strong>Most Popular</strong></h4></div>
@@ -111,8 +187,19 @@ class Packages extends Component {
                                         </span>
                                     </div>
                                     <div className="fs-selected-pricing-cycle"><strong>{this.billingCycleLabel()}</strong></div>
-                                    <div className="fs-selected-pricing-license-quantity">{selectedPricing.sitesLabel()} <Tooltip/></div>
-                                    <div className="fs-plan-support">{plan.support}</div>
+                                    <div className="fs-selected-pricing-license-quantity">{selectedPricing.sitesLabel()}
+                                        <Tooltip>
+                                            <Fragment>
+                                                If you are running a multi-site network, each site in the network requires a license.{visiblePricingCount > 0 ? 'Therefore, if you need to use it on multiple sites, check out our multi-site prices.' : ''}
+                                            </Fragment>
+                                        </Tooltip>
+                                    </div>
+                                    <div className="fs-support-and-main-features">
+                                        {null !== supportLabel && <div className="fs-plan-support"><strong>{supportLabel}</strong></div>}
+                                        <ul className="fs-plan-features-with-value">
+                                            {planFeaturesWithValue.map(feature => <li key={feature.id}><span className="fs-feature-title"><span><strong>{feature.value}</strong></span> {feature.title}</span> {Helper.isNonEmptyString(feature.description) && <Tooltip><Fragment>{feature.description}</Fragment></Tooltip>}</li>)}
+                                        </ul>
+                                    </div>
                                     <table className="fs-license-quantities">
                                         <tbody>{
                                             Object.keys(pricingCollection).map(
@@ -161,7 +248,13 @@ class Packages extends Component {
                                         <button className="fs-button fs-button--size-large fs-upgrade-button" onClick={() => {this.upgrade(plan.id)}}>Upgrade Now</button>
                                     </div>
                                     <ul className="fs-plan-features">
-                                        {plan.features.map(feature => <li key={feature.id}><Icon icon={['fas', 'check']} /> <span className="fs-feature-title">{feature.title}</span> <Tooltip/></li>)}
+                                        {null !== allPrevPlanFeaturesTitle &&
+                                            <li><Icon icon={['fas', 'check']} /> <span className="fs-feature-title"><strong>{allPrevPlanFeaturesTitle}</strong></span></li>
+                                        }
+                                        {plan.hasSuccessManagerSupport() &&
+                                            <li><Icon icon={['fas', 'check']} /> <span className="fs-feature-title">Personal Success Manager</span></li>
+                                        }
+                                        {Object.keys(planFeaturesWithoutValue).map(featureKey => <li key={planFeaturesWithoutValue[featureKey].id}><Icon icon={['fas', 'check']} /> <span className="fs-feature-title">{planFeaturesWithoutValue[featureKey].title}</span> {Helper.isNonEmptyString(planFeaturesWithoutValue[featureKey].description) && <Tooltip><Fragment>{planFeaturesWithoutValue[featureKey].description}</Fragment></Tooltip>}</li>)}
                                     </ul>
                                 </div>
                             </li>

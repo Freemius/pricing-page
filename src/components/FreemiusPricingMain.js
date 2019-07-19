@@ -245,6 +245,7 @@ class FreemiusPricingMain extends Component {
                     plans                         : pricingData.plans,
                     plansCount                    : plansCount,
                     plugin                        : new Plugin(pricingData.plugin),
+                    priorityEmailSupportPlanID    : priorityEmailSupportPlanID,
                     reviews                       : pricingData.reviews,
                     selectedBillingCycle          : selectedBillingCycle,
                 });
@@ -319,7 +320,7 @@ class FreemiusPricingMain extends Component {
                             <Section fs-section="currencies">
                                 <CurrencySelector handler={this.changeCurrency}/>
                             </Section>
-                            <Section fs-section="packages" className={pricingData.hasFeaturedPlan ? 'fs-has-featured-plan' : ''}><Packages /></Section>
+                            <Section fs-section="packages" className={pricingData.hasFeaturedPlan ? 'fs-has-featured-plan' : ''}><Packages handler={this.changeLicenses}/></Section>
                             <Section fs-section="custom-implementation">
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>
                                 <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
