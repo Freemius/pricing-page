@@ -297,52 +297,56 @@ class FreemiusPricingMain extends Component {
 
         return (
             <FSPricingContext.Provider value={this.state}>
-                <header className="fs-app-header">
-                    <div className="fs-page-title">
-                        <h1>Plans and Pricing</h1>
-                        <h3>Choose your plan and upgrade in minutes!</h3>
-                    </div>
-                    <section>
-                        <img src={pricingData.plugin.icon} className="fs-plugin-logo" alt="logo" width="48" height="48" />
-                        <h2>{pricingData.plugin.title}</h2>
-                    </section>
-                </header>
-                <main className="fs-app-main">
-                    {pricingData.annualDiscount > 0 &&
-                        <div className="fs-annual-discount">Save up to {pricingData.annualDiscount}% on Yearly Pricing!</div>
-                    }
-                    <Section fs-section='billing-cycles'>
-                        <BillingCycleSelector handler={this.changeBillingCycle} billingCycleDescription={this.billingCycleDescription}/>
-                    </Section>
-                    <Section fs-section='currencies'>
-                        <CurrencySelector handler={this.changeCurrency}/>
-                    </Section>
-                    <Section fs-section="packages"><Packages /></Section>
-                    <Section fs-section="custom-implementation">
-                        <div>Need more sites, custom implementation and dedicated support?</div>
-                        <div>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</div>
-                    </Section>
-                    <Section fs-section="money-back-guarantee">
-                        <div className="fs-money-back-guarantee-title">7-day Money Back Guarantee</div>
-                        <div className="fs-money-back-guarantee-message">You are fully protected by our 100% Money Back Guarantee. If during the next 7 days you experience an issue that makes the plugin unusable and we are unable to resolve it, we'll happily consider offering a full refund of your money.</div>
-                        <button className="fs-button fs-button--size-small">Learn More</button>
-                        <img src={guaranteeStamp}/>
-                    </Section>
-                    <Section fs-section="badges">
-                        <Badges badges={[
-                            {key: "fs-badges", url: "//img.freemius.com/badges/freemius-badge-secure-payments-light.svg", alt: "Secure payments by Freemius - Sell and market freemium and premium WordPress plugins & themes"},
-                            {key: "mcafee", url: "//img.freemius.com/checkout/badges/mcafee.png", alt: "McAfee Badge"},
-                            {key: "paypal", url: "//img.freemius.com/checkout/badges/paypal.png", alt: "PayPal Verified Badge"},
-                            {key: "comodo", url: "//img.freemius.com/checkout/badges/comodo-short-green.png", alt: "Comodo Secure SSL Badge"}
-                        ]}/>
-                    </Section>
-                    <Section fs-section="testimonials">
-                        <Testimonials />
-                    </Section>
-                    <Section fs-section="faq">
-                        <Faq />
-                    </Section>
-                </main>
+                <div id="fs_pricing_wrapper">
+                    <header className="fs-app-header">
+                        <section className="fs-page-title">
+                            <h2>Plans and Pricing</h2>
+                            <h3>Choose your plan and upgrade in minutes!</h3>
+                        </section>
+                        <section className="fs-plugin-title-and-logo">
+                            <img src={pricingData.plugin.icon} className="fs-plugin-logo" alt="logo" width="48" height="48" />
+                            <h1><strong>{pricingData.plugin.title}</strong></h1>
+                        </section>
+                    </header>
+                    <main className="fs-app-main">
+                        <Section fs-section="plans-and-pricing">
+                            {pricingData.annualDiscount > 0 &&
+                                <Section fs-section="annual-discount"><div className="fs-annual-discount">Save up to {pricingData.annualDiscount}% on Yearly Pricing!</div></Section>
+                            }
+                            <Section fs-section="billing-cycles">
+                                <BillingCycleSelector handler={this.changeBillingCycle} billingCycleDescription={this.billingCycleDescription}/>
+                            </Section>
+                            <Section fs-section="currencies">
+                                <CurrencySelector handler={this.changeCurrency}/>
+                            </Section>
+                            <Section fs-section="packages" className={pricingData.hasFeaturedPlan ? 'fs-has-featured-plan' : ''}><Packages /></Section>
+                            <Section fs-section="custom-implementation">
+                                <h2>Need more sites, custom implementation and dedicated support?</h2>
+                                <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
+                            </Section>
+                            <Section fs-section="money-back-guarantee">
+                                <h2 className="fs-money-back-guarantee-title">7-day Money Back Guarantee</h2>
+                                <p className="fs-money-back-guarantee-message">You are fully protected by our 100% Money Back Guarantee. If during the next 7 days you experience an issue that makes the plugin unusable and we are unable to resolve it, we'll happily consider offering a full refund of your money.</p>
+                                <button className="fs-button fs-button--size-small">Learn More</button>
+                                <img src={guaranteeStamp}/>
+                            </Section>
+                            <Section fs-section="badges">
+                                <Badges badges={[
+                                    {key: "fs-badges", url: "//img.freemius.com/badges/freemius-badge-secure-payments-light.svg", alt: "Secure payments by Freemius - Sell and market freemium and premium WordPress plugins & themes"},
+                                    {key: "mcafee", url: "//img.freemius.com/checkout/badges/mcafee.png", alt: "McAfee Badge"},
+                                    {key: "paypal", url: "//img.freemius.com/checkout/badges/paypal.png", alt: "PayPal Verified Badge"},
+                                    {key: "comodo", url: "//img.freemius.com/checkout/badges/comodo-short-green.png", alt: "Comodo Secure SSL Badge"}
+                                ]}/>
+                            </Section>
+                        </Section>
+                        <Section fs-section="testimonials">
+                            <Testimonials />
+                        </Section>
+                        <Section fs-section="faq">
+                            <Faq />
+                        </Section>
+                    </main>
+                </div>
             </FSPricingContext.Provider>
         );
     }
