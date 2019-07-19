@@ -7,8 +7,10 @@ export const Helper = (function() {
                 ('' !== n)
             );
         },
-        isString: function (val) {
-            return (typeof val === 'string' || val instanceof String);
+        isNonEmptyString: function (val) {
+            return (
+                (typeof val === 'string' || val instanceof String) && val.trim().length > 0
+            );
         },
         formatNumber: function(num) {
             return num.toLocaleString(undefined, {maximumFractionDigits:2});

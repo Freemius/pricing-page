@@ -33,19 +33,23 @@ export class Plan {
     }
 
     hasEmailSupport() {
-        return (Helper.isString(this.support_email) && this.support_email.length > 0);
+        return (Helper.isNonEmptyString(this.support_email));
+    }
+
+    hasKnowledgeBaseSupport() {
+        return (Helper.isNonEmptyString(this.support_kb));
     }
 
     hasForumSupport() {
-        return (Helper.isString(this.support_forum) && this.support_forum.length > 0);
+        return (Helper.isNonEmptyString(this.support_forum));
     }
 
     hasPhoneSupport() {
-        return (Helper.isString(this.support_phone) && this.support_phone.length > 0);
+        return (Helper.isNonEmptyString(this.support_phone));
     }
 
     hasSkypeSupport() {
-        return (Helper.isString(this.support_skype) && this.support_skype.length > 0);
+        return (Helper.isNonEmptyString(this.support_skype));
     }
 
     hasSuccessManagerSupport() {
