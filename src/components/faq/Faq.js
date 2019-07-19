@@ -37,7 +37,7 @@ class Faq extends Component {
         } else if (context.hasAnyPlanWithSupport) {
             faqSupportAnswer = 'Yes! Top-notch customer support is key for a quality product, so we\'ll do our very best to resolve any issues you encounter. Note, each plan provides a different level of support.';
         } else if (context.plugin.hasWordPressOrgVersion()) {
-            faqSupportAnswer = 'You can post your questions in our <a href="https://wordpress.org/support/plugin/{context.plugin.slug}" target="_blank">WordPress Support Forum</a> to get help from the community. Unfortunately extra support is currently not provided.';
+            faqSupportAnswer = <Fragment>You can post your questions in our <a href={"https://wordpress.org/support/plugin/" + context.plugin.slug} target="_blank">WordPress Support Forum</a> to get help from the community. Unfortunately extra support is currently not provided.</Fragment>
         }
 
         if (context.hasPremiumVersion) {
@@ -115,17 +115,17 @@ class Faq extends Component {
         faq.push({
             'q': 'What payment methods are accepted?',
             'a': (context.isPaypalSupported ?
-                'We accept all major credit cards including Visa, Mastercard, American Express, as well as PayPal payments.' :
-                'We accept all major credit cards including Visa, Mastercard and American Express.<br>Unfortunately, due to regulations in your country related to PayPal’s subscriptions, we won’t be able to accept payments via PayPal.')
+                    'We accept all major credit cards including Visa, Mastercard, American Express, as well as PayPal payments.' :
+                    <Fragment>We accept all major credit cards including Visa, Mastercard and American Express.<br />Unfortunately, due to regulations in your country related to PayPal’s subscriptions, we won’t be able to accept payments via PayPal.</Fragment>)
         });
 
         let refundAnswer = `We don't offer refunds, but we do offer a free version of the ${moduleLabel} (the one you are using right now).`;
 
         if (context.plugin.hasRefundPolicy()) {
             if (RefundPolicy.STRICT !== context.plugin.refund_policy) {
-                refundAnswer = '<a class="message-trigger" data-for="#refund_policy" href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you are unhappy with the plugin.';
+                refundAnswer = <Fragment><a className="message-trigger" data-for="#refund_policy" href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you are unhappy with the plugin.</Fragment>
             } else {
-                refundAnswer = '<a class="message-trigger" data-for="#refund_policy" href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you experience an issue that makes the plugin unusable and we are unable to resolve it.';
+                refundAnswer = <Fragment><a className="message-trigger" data-for="#refund_policy" href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you experience an issue that makes the plugin unusable and we are unable to resolve it.</Fragment>
             }
         }
 
@@ -162,29 +162,27 @@ class Faq extends Component {
             });
         }
 
-        let faqItems = [];
+        faq.push({
+            'q': 'I have other pre-sale questions, can you help?',
+            'a':  <Fragment>Yes! You can ask us any question through our <a className="contact-link" data-subject="pre_sale_question" href="#">support page</a>.</Fragment>
+        });
+
+        let faqElements = [];
 
         for (let index in faq) {
             if ( ! faq.hasOwnProperty(index)) {
                 continue;
             }
 
-            faqItems.push(
+            faqElements.push(
                 <Section key={index} fs-section="faq-item"><h3>{faq[index]['q']}</h3><p>{faq[index]['a']}</p></Section>
             );
         }
 
-        faqItems.push(
-            <Section key={faqItems.length} fs-section="faq-item">
-                <h3>I have other pre-sale questions, can you help?</h3>
-                <p>Yes! You can ask us any question through our <a class="contact-link" data-subject="pre_sale_question" href="#">support page</a>.</p>
-            </Section>
-        );
-
         return (
             <Fragment>
                 <h2>Frequently Asked Questions</h2>
-                <Section fs-section="faq-items">{faqItems}</Section>
+                <Section fs-section="faq-items">{faqElements}</Section>
             </Fragment>
         );
     }
