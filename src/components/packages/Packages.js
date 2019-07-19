@@ -26,6 +26,18 @@ class Packages extends Component {
         return label;
     }
 
+    changeLicenses(e) {
+        let target = e.currentTarget;
+
+        if ('tr' !== target.tagName.toLowerCase()) {
+            target = target.closest('tr');
+        }
+
+        let pricingID = target.dataset['pricingId'];
+
+        document.getElementById(`pricing_${pricingID}`).click();
+    }
+
     priceLabel(pricing) {
         let pricingData = this.context,
             label       = '',
@@ -116,21 +128,26 @@ class Packages extends Component {
                                                     let multiSiteDiscount = PlanManager.getInstance().calculateMultiSiteDiscount(pricing, this.context.selectedBillingCycle);
 
                                                     return (
-                                                        <tr key={pricing.id} className={"fs-license-quantity-container" + (isPricingLicenseQuantitySelected ? ' fs-license-quantity-selected' : '')}>
+                                                        <tr
+                                                            key={pricing.id}
+                                                            data-pricing-id={pricing.id}
+                                                            className={"fs-license-quantity-container" + (isPricingLicenseQuantitySelected ? ' fs-license-quantity-selected' : '')}
+                                                            onClick={this.changeLicenses}
+                                                        >
                                                             <td className="fs-license-quantity">
                                                                 <input
                                                                     type="radio"
-                                                                    id={pricing.id}
+                                                                    id={`pricing_${pricing.id}`}
                                                                     name={'fs_plan_' + plan.id + '_licenses'}
                                                                     value={pricingKey}
                                                                     checked={isPricingLicenseQuantitySelected}
-                                                                    onChange={this.changeLicenses}
+                                                                    onChange={this.props.handler}
                                                                 />
                                                                 {pricing.sitesLabel()}
                                                             </td>
                                                             {
                                                                 multiSiteDiscount > 0 ?
-                                                                    <td className="fs-license-quantity-discount">Save {multiSiteDiscount}%</td> :
+                                                                    <td className="fs-license-quantity-discount"><span>Save {multiSiteDiscount}%</span></td> :
                                                                     <td></td>
                                                             }
                                                             <td className="fs-license-quantity-price">{this.priceLabel(pricing)}</td>
