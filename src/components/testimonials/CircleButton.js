@@ -7,7 +7,9 @@ class Section extends Component {
 
     render() {
         return (
-            <section className={`fs-section fs-section-${this.props['fs-section']}` + (this.props.className ? ' ' + this.props.className : '')}>{this.props.children}</section>
+            <button className="fs-circle-button" type="button" role="button" tabIndex="0">
+                <span></span>
+            </button>
         );
     }
 }
