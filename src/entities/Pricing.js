@@ -80,8 +80,9 @@ export class Pricing {
 
         amount = parseFloat(amount);
 
-        if (format)
-            amount = amount.toFixed(2);
+        if (format) {
+            amount = Helper.formatNumber(amount);
+        }
 
         return amount;
     }
@@ -90,8 +91,7 @@ export class Pricing {
     {
         let amount = .0;
 
-        switch (billingCycle)
-        {
+        switch (billingCycle) {
             case BillingCycle.MONTHLY:
                 amount = this.hasMonthlyPrice() ?
                     this.monthly_price :
@@ -104,8 +104,9 @@ export class Pricing {
                 break;
         }
 
-        if (format)
-            amount = amount.toFixed(2);
+        if (format) {
+            amount = Helper.formatNumber(amount);
+        }
 
         return parseFloat(amount);
     }

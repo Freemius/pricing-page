@@ -10,6 +10,9 @@ export const Helper = (function() {
         isString: function (val) {
             return (typeof val === 'string' || val instanceof String);
         },
+        formatNumber: function(num) {
+            return num.toLocaleString(undefined, {maximumFractionDigits:2});
+        },
         ucfirst: function(str) {
             return ('' != str) ?
                 str.charAt(0).toUpperCase() + str.slice(1) :

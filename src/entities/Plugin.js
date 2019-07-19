@@ -46,7 +46,7 @@ export class Plugin {
         let discount = this.getRenewalsDiscount(billingCycle);
 
         return (this.renewals_discount_type === DiscountType.DOLLAR) ?
-            currency + discount.toFixed(2):
+            currency + Helper.formatNumber(discount):
             `${discount}%`;
     }
 

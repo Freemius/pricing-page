@@ -25,10 +25,11 @@ class Packages extends Component {
 
     priceLabel(pricing) {
         let pricingData = this.context,
-            label       = '';
+            label       = '',
+            price       = pricing[pricingData.selectedBillingCycle + '_price'];
 
         label += pricingData.currencySymbols[pricingData.selectedCurrency];
-        label += pricing[pricingData.selectedBillingCycle + '_price'];
+        label += Helper.formatNumber(price);
 
         if ('monthly' === pricingData.selectedBillingCycle)
             label += ' / mo';
@@ -84,11 +85,11 @@ class Packages extends Component {
                                         </strong>
                                     </h3>
                                     {'annual' === this.context.selectedBillingCycle && this.context.annualDiscount > 0 &&
-                                    <div className="fs-undiscounted-price">Normally {selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY)} / mo</div>
+                                    <div className="fs-undiscounted-price">Normally {selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true)} / mo</div>
                                     }
                                     <div className="fs-selected-pricing-amount">
                                         <strong className="fs-currency-symbol">{this.context.currencySymbols[this.context.selectedCurrency]}</strong>
-                                        <span className="fs-selected-pricing-amount-integer"><strong>{selectedPricingAmount.split('.')[0]}</strong></span>
+                                        <span className="fs-selected-pricing-amount-integer"><strong>{Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]))}</strong></span>
                                         <span className="fs-selected-pricing-amount-fraction-container">
                                                                 <strong className="fs-selected-pricing-amount-fraction">.{selectedPricingAmount.split('.')[1]}</strong>
                                             {'lifetime' !== this.context.selectedBillingCycle &&

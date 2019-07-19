@@ -1,4 +1,5 @@
 import {BillingCycle, Pricing} from "../entities/Pricing";
+import {Helper} from "../Helper";
 
 let _instance                 = null,
     allPlansPricingCollection = [];
@@ -129,8 +130,9 @@ function getInstance(plans) {
                 if ( ! pricing.isUnlimited() && ! _pricing.isUnlimited() && _pricing.licenses > 1)
                     amount /= _pricing.licenses;
 
-                if (format)
-                    amount = amount.toFixed(2);
+                if (format) {
+                    amount = Helper.formatNumber(amount);
+                }
 
                 break;
             }
@@ -154,8 +156,9 @@ function getInstance(plans) {
                 if ( ! _pricing.isUnlimited() && _pricing.licenses > 1)
                     amount /= _pricing.licenses;
 
-                if (format)
-                    amount = amount.toFixed(2);
+                if (format) {
+                    amount = Helper.formatNumber(amount);
+                }
 
                 break;
             }
