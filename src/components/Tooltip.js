@@ -10,6 +10,7 @@ class Tooltip extends Component {
         return (
             <span className="fs-tooltip">
                 <Icon icon="question-circle"/>
+                <span className="fs-tooltip-message">{this.props.children}</span>
             </span>
         );
     }
