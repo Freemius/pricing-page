@@ -14,12 +14,8 @@ function getPricingSortedByLicensesAsc(plans) {
     }
 
     if (pricingCollection.length > 0) {
-        for (let key in pricingCollection) {
-            if ( ! pricingCollection.hasOwnProperty(key)) {
-                continue;
-            }
-
-            pricingCollection[key] = new Pricing(pricingCollection[key]);
+        for (let i = 0; i < pricingCollection.length; i ++) {
+            pricingCollection[i] = new Pricing(pricingCollection[i]);
         }
 
         sortPricingByLicensesAsc(pricingCollection);

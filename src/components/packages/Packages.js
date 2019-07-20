@@ -67,7 +67,7 @@ class Packages extends Component {
                     this.context.plans.map(
                         (plan) => {
                             if (plan.is_hidden || ! plan.pricing) {
-                                return '';
+                                return null;
                             }
 
                             let pricingCollection       = [],
@@ -96,9 +96,9 @@ class Packages extends Component {
                             });
 
                             if (0 === pricingCollection.length) {
-                                return;
+                                return null;
                             }
-                            
+
                             if ( ! selectedPricing) {
                                 if (
                                     ! this.previouslySelectedPricingByPlan[plan.id] ||

@@ -167,13 +167,9 @@ class Faq extends Component {
 
         let faqElements = [];
 
-        for (let index in faq) {
-            if ( ! faq.hasOwnProperty(index)) {
-                continue;
-            }
-
+        for (let i = 0; i < faq.length; i ++) {
             faqElements.push(
-                <Section key={index} fs-section="faq-item"><h3>{faq[index]['q']}</h3><p>{faq[index]['a']}</p></Section>
+                <Section key={i} fs-section="faq-item"><h3>{faq[i]['q']}</h3><p>{faq[i]['a']}</p></Section>
             );
         }
 

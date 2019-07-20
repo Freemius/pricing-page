@@ -32,7 +32,7 @@ class FreemiusPricingMain extends Component {
             downloads              : 0,
             faq                    : [],
             firstPaidPlan          : null,
-            hasFeaturedPlan        : false,
+            featuredPlan           : null,
             isPayPalSupported      : false,
             plugin                 : {},
             plans                  : [],
@@ -113,7 +113,7 @@ class FreemiusPricingMain extends Component {
                     hasAnyPlanWithSupport           = false,
                     hasEmailSupportForAllPaidPlans  = true,
                     hasEmailSupportForAllPlans      = true,
-                    hasFeaturedPlan                 = false,
+                    featuredPlan                    = null,
                     hasLifetimePricing              = false,
                     hasMonthlyCycle                 = false,
                     licenseQuantities               = {},
@@ -124,23 +124,23 @@ class FreemiusPricingMain extends Component {
                     priorityEmailSupportPlanID      = null,
                     selectedBillingCycle            = null;
 
-                for (let i in pricingData.plans) {
-                    if ( ! pricingData.plans.hasOwnProperty(i)) {
+                for (let planID in pricingData.plans) {
+                    if ( ! pricingData.plans.hasOwnProperty(planID)) {
                         continue;
                     }
 
                     plansCount ++;
 
-                    pricingData.plans[i] = new Plan(pricingData.plans[i]);
+                    pricingData.plans[planID] = new Plan(pricingData.plans[planID]);
 
-                    let plan = pricingData.plans[i];
+                    let plan = pricingData.plans[planID];
 
                     if (plan.is_hidden) {
                         continue;
                     }
 
-                    if ( ! hasFeaturedPlan) {
-                        hasFeaturedPlan = plan.is_featured;
+                    if (plan.is_featured) {
+                        featuredPlan = plan;
                     }
 
                     if ( ! plan.features) {
@@ -184,13 +184,7 @@ class FreemiusPricingMain extends Component {
                             planSingleSitePricingCollection.push(singleSitePricing);
                     }
 
-                    for (let j in pricingCollection) {
-                        if ( ! pricingCollection.hasOwnProperty(j)) {
-                            continue;
-                        }
-
-                        let pricing = pricingCollection[j];
-
+                    for (let pricing of pricingCollection) {
                         if (pricing.is_hidden) {
                             continue;
                         }
@@ -245,7 +239,7 @@ class FreemiusPricingMain extends Component {
                     hasAnnualCycle                : hasAnnualCycle,
                     hasEmailSupportForAllPaidPlans: hasEmailSupportForAllPaidPlans,
                     hasEmailSupportForAllPlans    : hasEmailSupportForAllPlans,
-                    hasFeaturedPlan               : hasFeaturedPlan,
+                    featuredPlan                  : featuredPlan,
                     hasLifetimePricing            : hasLifetimePricing,
                     hasMonthlyCycle               : hasMonthlyCycle,
                     hasPremiumVersion             : pricingData.hasPremiumVersion,
@@ -273,18 +267,18 @@ class FreemiusPricingMain extends Component {
             plans                   = this.state.plans,
             selectedLicenseQuantity = this.state.selectedLicenseQuantity;
 
-        for (let planKey in plans) {
-            if ( ! plans.hasOwnProperty(planKey)) {
+        for (let planID in plans) {
+            if ( ! plans.hasOwnProperty(planID)) {
                 continue;
             }
 
-            let plan = plans[planKey];
+            let plan = plans[planID];
 
             if (plan.is_hidden || ! plan.pricing) {
                 continue;
             }
 
-            let pricingCollection = plans[planKey].pricing;
+            let pricingCollection = plans[planID].pricing;
 
             for (let pricing of pricingCollection) {
                 if (pricingID != pricing.id) {
@@ -306,7 +300,39 @@ class FreemiusPricingMain extends Component {
     }
 
     render() {
-        let pricingData = this.state;
+        let
+            pricingData  = this.state,
+            featuredPlan = pricingData.featuredPlan;
+
+        if (null !== featuredPlan) {
+            console.log(featuredPlan);
+            let hasAnyVisiblePricing = false;
+
+            for (let pricing of featuredPlan.pricing) {
+                if (pricing.is_hidden) {
+                    continue;
+                }
+
+                if (pricing.licenses != pricingData.selectedLicenseQuantity) {
+                    continue;
+                }
+
+                if (pricing.currency != pricingData.selectedCurrency) {
+                    continue;
+                }
+
+                if ( ! pricing.supportsBillingCycle(pricingData.selectedBillingCycle)) {
+                    continue;
+                }
+
+                hasAnyVisiblePricing = true;
+                break;
+            }
+
+            if ( ! hasAnyVisiblePricing) {
+                featuredPlan = null;
+            }
+        }
 
         return (
             <FSPricingContext.Provider value={this.state}>
@@ -332,7 +358,7 @@ class FreemiusPricingMain extends Component {
                             <Section fs-section="currencies">
                                 <CurrencySelector handler={this.changeCurrency}/>
                             </Section>
-                            <Section fs-section="packages" className={pricingData.hasFeaturedPlan ? 'fs-has-featured-plan' : ''}><Packages handler={this.changeLicenses}/></Section>
+                            <Section fs-section="packages" className={null !== featuredPlan ? 'fs-has-featured-plan' : ''}><Packages handler={this.changeLicenses}/></Section>
                             <Section fs-section="custom-implementation">
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>
                                 <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
