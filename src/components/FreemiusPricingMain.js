@@ -261,7 +261,7 @@ class FreemiusPricingMain extends Component {
     }
 
     changeLicenses(e) {
-        let pricingKey              = e.currentTarget.value,
+        let pricingID               = e.currentTarget.value,
             plans                   = this.state.plans,
             selectedLicenseQuantity = this.state.selectedLicenseQuantity;
 
@@ -278,9 +278,13 @@ class FreemiusPricingMain extends Component {
 
             let pricingCollection = plans[planKey].pricing;
 
-            if (pricingCollection[pricingKey]) {
-                selectedLicenseQuantity = (null !== pricingCollection[pricingKey].licenses) ?
-                    pricingCollection[pricingKey].licenses :
+            for (let pricing of pricingCollection) {
+                if (pricingID != pricing.id) {
+                    continue;
+                }
+
+                selectedLicenseQuantity = (null !== pricing.licenses) ?
+                    pricing.licenses :
                     0;
 
                 break;

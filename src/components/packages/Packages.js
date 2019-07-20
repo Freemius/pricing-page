@@ -9,6 +9,8 @@ import {Helper} from "../../Helper";
 class Packages extends Component {
     static contextType = FSPricingContext;
 
+    previouslySelectedPricingByPlan = {};
+
     constructor(props) {
         super(props);
     }
@@ -68,24 +70,50 @@ class Packages extends Component {
                                 return '';
                             }
 
-                            let pricingCollection   = plan.pricing,
-                                selectedPricing     = null,
-                                visiblePricingCount = 0;
+                            let pricingCollection       = [],
+                                selectedPricing         = null,
+                                licenseQuantities       = this.context.licenseQuantities[this.context.selectedCurrency],
+                                licenseQuantitiesCount  = Object.keys(licenseQuantities).length,
+                                selectedLicenseQuantity = this.context.selectedLicenseQuantity;
 
-                            pricingCollection.map(pricing => {
-                                if (pricing.is_hidden) {
+                            plan.pricing.map(pricing => {
+                                if (pricing.is_hidden || this.context.selectedCurrency !== pricing.currency) {
                                     return;
                                 }
 
-                                visiblePricingCount ++;
+                                pricingCollection.push(pricing);
 
                                 if (
-                                    this.context.selectedCurrency        == pricing.currency &&
-                                    this.context.selectedLicenseQuantity == (null != pricing.licenses ? pricing.licenses : 0)
+                                    this.context.selectedCurrency == pricing.currency &&
+                                    selectedLicenseQuantity       == (null != pricing.licenses ? pricing.licenses : 0)
                                 ) {
                                     selectedPricing = pricing;
                                 }
                             });
+
+                            if ( ! selectedPricing) {
+                                if ( ! this.previouslySelectedPricingByPlan[plan.id]) {
+                                    this.previouslySelectedPricingByPlan[plan.id] = pricingCollection[1];
+                                }
+
+                                selectedPricing = this.previouslySelectedPricingByPlan[plan.id];
+
+                                selectedLicenseQuantity = (null != selectedPricing.licenses ? selectedPricing.licenses : 0);
+                            }
+
+                            this.previouslySelectedPricingByPlan[plan.id] = selectedPricing;
+
+                            let visiblePricingCount = pricingCollection.length;
+
+                            /**
+                             * Include filler rows to keep the alignment on the frontend when the number of license
+                             * quantities is not the same for all plans.
+                             */
+                            if (licenseQuantitiesCount > pricingCollection.length) {
+                                for (let i = 0; i < (licenseQuantitiesCount - pricingCollection.length); i ++) {
+                                    pricingCollection.push({id: `filler_${i}`});
+                                }
+                            }
 
                             let planDescription = plan.description ?
                                 plan.description :
@@ -202,46 +230,42 @@ class Packages extends Component {
                                     </div>
                                     <table className="fs-license-quantities">
                                         <tbody>{
-                                            Object.keys(pricingCollection).map(
-                                                ( pricingKey ) => {
-                                                    let pricing = pricingCollection[pricingKey];
-
-                                                    if (pricing.is_hidden || this.context.selectedCurrency !== pricing.currency) {
-                                                        return null;
-                                                    }
-
-                                                    let isPricingLicenseQuantitySelected = (this.context.selectedLicenseQuantity == (null == pricing.licenses ? 0 : pricing.licenses));
-
-                                                    let multiSiteDiscount = PlanManager.getInstance().calculateMultiSiteDiscount(pricing, this.context.selectedBillingCycle);
-
-                                                    return (
-                                                        <tr
-                                                            key={pricing.id}
-                                                            data-pricing-id={pricing.id}
-                                                            className={"fs-license-quantity-container" + (isPricingLicenseQuantitySelected ? ' fs-license-quantity-selected' : '')}
-                                                            onClick={this.changeLicenses}
-                                                        >
-                                                            <td className="fs-license-quantity">
-                                                                <input
-                                                                    type="radio"
-                                                                    id={`pricing_${pricing.id}`}
-                                                                    name={'fs_plan_' + plan.id + '_licenses'}
-                                                                    value={pricingKey}
-                                                                    checked={isPricingLicenseQuantitySelected}
-                                                                    onChange={this.props.handler}
-                                                                />
-                                                                {pricing.sitesLabel()}
-                                                            </td>
-                                                            {
-                                                                multiSiteDiscount > 0 ?
-                                                                    <td className="fs-license-quantity-discount"><span>Save {multiSiteDiscount}%</span></td> :
-                                                                    <td></td>
-                                                            }
-                                                            <td className="fs-license-quantity-price">{this.priceLabel(pricing)}</td>
-                                                        </tr>
-                                                    )
+                                            pricingCollection.map(pricing => {
+                                                if (0 === pricing.id.indexOf('filler_')) {
+                                                    return <tr className="fs-license-quantity-container" key={pricing.id}><td>&nbsp;</td><td></td><td></td></tr>;
                                                 }
-                                            )
+
+                                                let isPricingLicenseQuantitySelected = (selectedLicenseQuantity == (null == pricing.licenses ? 0 : pricing.licenses));
+
+                                                let multiSiteDiscount = PlanManager.getInstance().calculateMultiSiteDiscount(pricing, this.context.selectedBillingCycle);
+
+                                                return (
+                                                    <tr
+                                                        key={pricing.id}
+                                                        data-pricing-id={pricing.id}
+                                                        className={"fs-license-quantity-container" + (isPricingLicenseQuantitySelected ? ' fs-license-quantity-selected' : '')}
+                                                        onClick={this.changeLicenses}
+                                                    >
+                                                        <td className="fs-license-quantity">
+                                                            <input
+                                                                type="radio"
+                                                                id={`pricing_${pricing.id}`}
+                                                                name={'fs_plan_' + plan.id + '_licenses'}
+                                                                value={pricing.id}
+                                                                checked={isPricingLicenseQuantitySelected}
+                                                                onChange={this.props.handler}
+                                                            />
+                                                            {pricing.sitesLabel()}
+                                                        </td>
+                                                        {
+                                                            multiSiteDiscount > 0 ?
+                                                                <td className="fs-license-quantity-discount"><span>Save {multiSiteDiscount}%</span></td> :
+                                                                <td></td>
+                                                        }
+                                                        <td className="fs-license-quantity-price">{this.priceLabel(pricing)}</td>
+                                                    </tr>
+                                                );
+                                            })
                                         }</tbody>
                                     </table>
                                     <div className="fs-upgrade-button-container">
