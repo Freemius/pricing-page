@@ -1,6 +1,9 @@
 import {BillingCycle, Pricing} from "../entities/Pricing";
 import {Helper} from "../Helper";
 
+/**
+ * @author Leo Fajardo
+ */
 let _instance                 = null,
     allPlansPricingCollection = [];
 

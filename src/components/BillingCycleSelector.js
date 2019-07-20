@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import FSPricingContext from "../FSPricingContext";
 import {Helper} from "../Helper";
 
+/**
+ * @author Leo Fajardo
+ */
 class BillingCycleSelector extends Component {
     static contextType = FSPricingContext;
 

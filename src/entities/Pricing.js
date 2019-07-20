@@ -1,5 +1,8 @@
 import {Helper} from "../Helper";
 
+/**
+ * @author Leo Fajardo
+ */
 export const CurrencySymbol = Object.freeze({
     'USD': '$',
     'GBP': '£',
@@ -18,19 +21,37 @@ export class Pricing {
 
     //region Properties
 
+    /**
+     * @type number
+     */
     plan_id = null;
 
-    licenses = null;
+    /**
+     * @type int|null License activations limit. If null, unlimited license activations.
+     */
+    licenses = 1;
 
+    /**
+     * @type number
+     */
     monthly_price = null;
 
+    /**
+     * @type number
+     */
     annual_price = null;
 
+    /**
+     * @type number
+     */
     lifetime_price = null;
 
-    currency = null;
+    /**
+     * @type string One of the following: `usd`, `gbp`, `eur`.
+     */
+    currency = DefaultCurrency;
 
-    is_hidden = null;
+    is_hidden = false;
 
     //endregion Properties
 
@@ -46,6 +67,13 @@ export class Pricing {
         }
     }
 
+    /**
+     * Normalizes the given billing cycle.
+     *
+     * @param {string|int} billingCycle One of the following: `annual`, `lifetime`, `monthly`, 1, 12, 0 (for lifetime).
+     *
+     * @return {string} Returns one of the following: `annual`, `lifetime`, `monthly`.
+     */
     static getBillingCyclePeriod(billingCycle) {
         if ( ! Helper.isNumeric(billingCycle)) {
             return billingCycle;
@@ -62,6 +90,12 @@ export class Pricing {
         }
     }
 
+    /**
+     * @param {int}     billingCycle One of the following: 1, 12, 0 (for lifetime).
+     * @param {boolean} format       If true, the number 1299 for example will become 1,299.
+     *
+     * @return {string|number}
+     */
     getAmount(billingCycle, format) {
         let amount = .0;
 
@@ -87,8 +121,13 @@ export class Pricing {
         return amount;
     }
 
-    getMonthlyAmount(billingCycle, format = false)
-    {
+    /**
+     * @param {int}     billingCycle One of the following: 1, 12, 0 (for lifetime).
+     * @param {boolean} format       If true, the number 1299 for example will become 1,299.
+     *
+     * @return {string|number}
+     */
+    getMonthlyAmount(billingCycle, format) {
         let amount = .0;
 
         switch (billingCycle) {
@@ -112,15 +151,15 @@ export class Pricing {
     }
 
     hasAnnualPrice() {
-        return (this.annual_price && Helper.isNumeric(this.annual_price) && this.annual_price > 0);
+        return (Helper.isNumeric(this.annual_price) && this.annual_price > 0);
     }
 
     hasLifetimePrice() {
-        return (this.lifetime_price && Helper.isNumeric(this.lifetime_price) && this.lifetime_price > 0);
+        return (Helper.isNumeric(this.lifetime_price) && this.lifetime_price > 0);
     }
 
     hasMonthlyPrice() {
-        return (this.monthly_price && Helper.isNumeric(this.monthly_price) && this.monthly_price > 0);
+        return (Helper.isNumeric(this.monthly_price) && this.monthly_price > 0);
     }
 
     isFree() {
@@ -139,6 +178,9 @@ export class Pricing {
         return (null == this.licenses);
     }
 
+    /**
+     * @return {string} Returns `Single Site`, `Unlimited Sites`, or `n Sites` (where n > 1).
+     */
     sitesLabel() {
         let sites = '';
 

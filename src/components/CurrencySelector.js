@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import FSPricingContext from "../FSPricingContext";
 
+/**
+ * @author Leo Fajardo
+ */
 class CurrencySelector extends Component {
     static contextType = FSPricingContext;
 

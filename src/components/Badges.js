@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 
+/**
+ * @author Leo Fajardo
+ */
 class Badges extends Component {
     constructor (props) {
         super(props);

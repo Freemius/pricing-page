@@ -1,6 +1,9 @@
 import {Helper} from "../Helper";
 import {Pricing} from "./Pricing";
 
+/**
+ * @author Leo Fajardo
+ */
 export const DiscountType = Object.freeze({
     'DOLLAR'    : 'dollar',
     'PERCENTAGE': 'percentage'
@@ -16,17 +19,37 @@ export class Plugin {
 
     //region Properties
 
-    is_wp_org_compliant = null;
+    /**
+     * @type boolean True if the free version of the module is hosted on WordPress.org. Defaults to true.
+     */
+    is_wp_org_compliant = true;
 
-    money_back_period = null;
+    /**
+     * @type int Money-back guarantee in days.
+     */
+    moneyback_period = 0;
 
+    /**
+     * If add-on, the ID of the parent plugin.
+     *
+     * @type {number|null}
+     */
     parent_plugin_id = null;
 
+    /**
+     * @type RefundPolicy|null Refund policy enum: 'flexible', 'moderate', or 'strict'.
+     */
     refund_policy = null;
 
+    /**
+     * @type DiscountType|null Enum 'percentage' or 'dollar'.
+     */
     renewals_discount_type = null;
 
-    type = null;
+    /**
+     * @type string Product type: 'plugin', 'theme', or 'bundle'.
+     */
+    type = 'plugin';
 
     //endregion Properties
 
@@ -57,7 +80,7 @@ export class Plugin {
     }
 
     hasMoneyBackPeriod() {
-        return (Helper.isNumeric(this.money_back_period) && this.money_back_period > 0);
+        return (Helper.isNumeric(this.moneyback_period) && this.moneyback_period > 0);
     }
 
     hasRefundPolicy() {

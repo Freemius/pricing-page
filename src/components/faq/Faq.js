@@ -21,7 +21,7 @@ class Faq extends Component {
 
         let faq                   = [],
             faqSupportAnswer      = '',
-            isBlockingAnnual      = false,
+            isBlockingAnnually    = false,
             isBlockingMonthly     = false,
             hasAnnualCycle        = context.hasAnnualCycle,
             hasLifetimePricing    = context.hasLifetimePricing,
@@ -46,12 +46,12 @@ class Faq extends Component {
         }
 
         if (null !== context.firstPaidPlan) {
-            isBlockingMonthly = context.firstPaidPlan.isBlockingMonthly();
-            isBlockingAnnual  = context.firstPaidPlan.isBlockingAnnual();
+            isBlockingMonthly  = context.firstPaidPlan.isBlockingMonthly();
+            isBlockingAnnually = context.firstPaidPlan.isBlockingAnnually();
         }
 
-        let isBlocking    = (isBlockingMonthly && isBlockingAnnual),
-            isNonBlocking = ( ! isBlockingMonthly && ! isBlockingAnnual);
+        let isBlocking    = (isBlockingMonthly && isBlockingAnnually),
+            isNonBlocking = ( ! isBlockingMonthly && ! isBlockingAnnually);
 
         faq.push({
             'q': 'Can I cancel my account at any time?',
@@ -62,7 +62,7 @@ class Faq extends Component {
                         (
                             isNonBlocking ?
                                 " You'll" :
-                                ' If you cancel ' + ( ! isBlockingAnnual ? 'an annual' : 'a monthly') + " subscription, you'll"
+                                ' If you cancel ' + ( ! isBlockingAnnually ? 'an annual' : 'a monthly') + " subscription, you'll"
                         ) + `still be able to use the ${moduleLabel} without updates or support.`
                 )
         });
@@ -144,7 +144,7 @@ class Faq extends Component {
                                 isNonBlocking ?
                                     'subscription' :
                                     (
-                                        ! isBlockingAnnual ?
+                                        ! isBlockingAnnually ?
                                             'annual subscription' :
                                             'monthly subscription'
                                     )

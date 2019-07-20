@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import Icon from "./Icon";
 
+/**
+ * @author Leo Fajardo
+ */
 class Tooltip extends Component {
     constructor (props) {
         super(props);

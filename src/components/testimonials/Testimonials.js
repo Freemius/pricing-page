@@ -5,6 +5,9 @@ import md5 from 'md5';
 import Icon from "../Icon";
 import CircleButton from "./CircleButton"
 
+/**
+ * @author Leo Fajardo
+ */
 class Testimonials extends Component {
     static contextType = FSPricingContext;
 
@@ -14,9 +17,11 @@ class Testimonials extends Component {
         this.getReviewRating = this.getReviewRating.bind(this);
     }
 
-    componentDidMount() {
-    }
-
+    /**
+     * @param {object} review
+     *
+     * @return {Array} Returns an array of star icons which represent the review's rating (e.g.: 5 stars).
+     */
     getReviewRating(review) {
         let rate  = Math.ceil(5 * (review.rate / 100)),
             stars = [];

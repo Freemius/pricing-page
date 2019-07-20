@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 
+/**
+ * @author Leo Fajardo
+ */
 class Section extends Component {
     constructor (props) {
         super(props);
