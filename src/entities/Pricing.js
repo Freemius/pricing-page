@@ -151,4 +151,8 @@ export class Pricing {
 
         return (sites + ' Site' + (this.isSingleSite() ? '' : 's'));
     }
+
+    supportsBillingCycle(billingCycle) {
+        return (null !== this[`${billingCycle}_price`]);
+    }
 }

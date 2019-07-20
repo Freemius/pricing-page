@@ -77,7 +77,11 @@ class Packages extends Component {
                                 selectedLicenseQuantity = this.context.selectedLicenseQuantity;
 
                             plan.pricing.map(pricing => {
-                                if (pricing.is_hidden || this.context.selectedCurrency !== pricing.currency) {
+                                if (
+                                    pricing.is_hidden ||
+                                    this.context.selectedCurrency !== pricing.currency ||
+                                    ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)
+                                ) {
                                     return;
                                 }
 
@@ -91,10 +95,15 @@ class Packages extends Component {
                                 }
                             });
 
+                            if (0 === pricingCollection.length) {
+                                return;
+                            }
+                            
                             if ( ! selectedPricing) {
                                 if (
                                     ! this.previouslySelectedPricingByPlan[plan.id] ||
-                                    this.context.selectedCurrency !== this.previouslySelectedPricingByPlan[plan.id].currency
+                                    this.context.selectedCurrency !== this.previouslySelectedPricingByPlan[plan.id].currency ||
+                                    ! this.previouslySelectedPricingByPlan[plan.id].supportsBillingCycle(this.context.selectedBillingCycle)
                                 ) {
                                     /**
                                      * Select the first pricing if there's no previously selected pricing that matches the selected license quantity and currency.
@@ -116,7 +125,7 @@ class Packages extends Component {
                              * quantities is not the same for all plans.
                              */
                             if (licenseQuantitiesCount > pricingCollection.length) {
-                                for (let i = 0; i < (licenseQuantitiesCount - pricingCollection.length); i ++) {
+                                for (let i = 0; i <= (licenseQuantitiesCount - pricingCollection.length); i ++) {
                                     pricingCollection.push({id: `filler_${i}`});
                                 }
                             }
