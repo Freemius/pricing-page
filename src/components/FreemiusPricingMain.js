@@ -135,6 +135,10 @@ class FreemiusPricingMain extends Component {
 
                     let plan = pricingData.plans[i];
 
+                    if (plan.is_hidden) {
+                        continue;
+                    }
+
                     if ( ! hasFeaturedPlan) {
                         hasFeaturedPlan = plan.is_featured;
                     }
@@ -209,7 +213,11 @@ class FreemiusPricingMain extends Component {
                             pricing.licenses :
                             0;
 
-                        licenseQuantities[licenses] = true;
+                        if ( ! licenseQuantities[pricing.currency]) {
+                            licenseQuantities[pricing.currency] = {};
+                        }
+
+                        licenseQuantities[pricing.currency][licenses] = true;
                     }
                 }
 
@@ -241,7 +249,7 @@ class FreemiusPricingMain extends Component {
                     hasLifetimePricing            : hasLifetimePricing,
                     hasMonthlyCycle               : hasMonthlyCycle,
                     hasPremiumVersion             : pricingData.hasPremiumVersion,
-                    licenseQuantities             : Object.keys(licenseQuantities),
+                    licenseQuantities             : licenseQuantities,
                     plans                         : pricingData.plans,
                     plansCount                    : plansCount,
                     plugin                        : new Plugin(pricingData.plugin),
