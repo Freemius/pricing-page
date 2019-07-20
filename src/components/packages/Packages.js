@@ -92,8 +92,14 @@ class Packages extends Component {
                             });
 
                             if ( ! selectedPricing) {
-                                if ( ! this.previouslySelectedPricingByPlan[plan.id]) {
-                                    this.previouslySelectedPricingByPlan[plan.id] = pricingCollection[1];
+                                if (
+                                    ! this.previouslySelectedPricingByPlan[plan.id] ||
+                                    this.context.selectedCurrency !== this.previouslySelectedPricingByPlan[plan.id].currency
+                                ) {
+                                    /**
+                                     * Select the first pricing if there's no previously selected pricing that matches the selected license quantity and currency.
+                                     */
+                                    this.previouslySelectedPricingByPlan[plan.id] = pricingCollection[0];
                                 }
 
                                 selectedPricing = this.previouslySelectedPricingByPlan[plan.id];
