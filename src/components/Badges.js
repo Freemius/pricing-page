@@ -8,7 +8,7 @@ class Badges extends Component {
     render() {
         return (
             <ul>
-                {this.props.badges.map(badge => <li key={badge.key} className="fs-badge"><img src={badge.url} alt={badge.alt} /></li>)}
+                {this.props.badges.map(badge => <li key={badge.key} className="fs-badge"><img src={badge.src} alt={badge.alt} /></li>)}
             </ul>
         );
     }

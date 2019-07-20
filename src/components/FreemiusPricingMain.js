@@ -4,6 +4,11 @@ import '.././assets/scss/App.scss';
 
 import jQuery from 'jquery';
 import guaranteeStamp from '.././assets/img/guarantee-stamp.svg';
+import badgeFreemius from '.././assets/img/freemius-badge-secure-payments-light.svg';
+import badgeMcAfee from '.././assets/img/mcafee.png';
+import badgePayPal from '.././assets/img/paypal.png';
+import badgeComodo from '.././assets/img/comodo-short-green.png';
+
 import {Plan} from "../entities/Plan";
 import {Plugin} from "../entities/Plugin";
 import {Pricing} from '.././entities/Pricing';
@@ -371,10 +376,10 @@ class FreemiusPricingMain extends Component {
                             </Section>
                             <Section fs-section="badges">
                                 <Badges badges={[
-                                    {key: "fs-badges", url: "//img.freemius.com/badges/freemius-badge-secure-payments-light.svg", alt: "Secure payments by Freemius - Sell and market freemium and premium WordPress plugins & themes"},
-                                    {key: "mcafee", url: "//img.freemius.com/checkout/badges/mcafee.png", alt: "McAfee Badge"},
-                                    {key: "paypal", url: "//img.freemius.com/checkout/badges/paypal.png", alt: "PayPal Verified Badge"},
-                                    {key: "comodo", url: "//img.freemius.com/checkout/badges/comodo-short-green.png", alt: "Comodo Secure SSL Badge"}
+                                    {key: "fs-badges", src: badgeFreemius, alt: "Secure payments by Freemius - Sell and market freemium and premium WordPress plugins & themes"},
+                                    {key: "mcafee", src: badgeMcAfee, alt: "McAfee Badge"},
+                                    {key: "paypal", src: badgePayPal, alt: "PayPal Verified Badge"},
+                                    {key: "comodo", src: badgeComodo, alt: "Comodo Secure SSL Badge"}
                                 ]}/>
                             </Section>
                         </Section>
