@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import FSPricingContext from "../../FSPricingContext";
 import Section from "../Section";
 import {BillingCycle} from "../../entities/Pricing";
-import {RefundPolicy} from "../../entities/Plugin";
+import {RefundPolicyType} from "../../entities/Plugin";
 import {Helper} from "../../Helper";
 
 class Faq extends Component {
@@ -120,7 +120,7 @@ class Faq extends Component {
         let refundAnswer = `We don't offer refunds, but we do offer a free version of the ${moduleLabel} (the one you are using right now).`;
 
         if (context.plugin.hasRefundPolicy()) {
-            if (RefundPolicy.STRICT !== context.plugin.refund_policy) {
+            if (RefundPolicyType.STRICT !== context.plugin.refund_policy) {
                 refundAnswer = <Fragment><a className="message-trigger" data-for="#refund_policy" href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you are unhappy with the plugin.</Fragment>
             } else {
                 refundAnswer = <Fragment><a className="message-trigger" data-for="#refund_policy" href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you experience an issue that makes the plugin unusable and we are unable to resolve it.</Fragment>

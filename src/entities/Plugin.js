@@ -6,7 +6,7 @@ export const DiscountType = Object.freeze({
     'PERCENTAGE': 'percentage'
 });
 
-export const RefundPolicy = Object.freeze({
+export const RefundPolicyType = Object.freeze({
     'FLEXIBLE': 'flexible',
     'MODERATE': 'moderate',
     'STRICT'  : 'strict'

@@ -22,6 +22,7 @@ import Packages from './packages/Packages';
 import Badges from './Badges';
 import Testimonials from './testimonials/Testimonials';
 import Faq from './faq/Faq';
+import RefundPolicy from "./RefundPolicy";
 
 class FreemiusPricingMain extends Component {
     static contextType = FSPricingContext;
@@ -368,12 +369,11 @@ class FreemiusPricingMain extends Component {
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>
                                 <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
                             </Section>
-                            <Section fs-section="money-back-guarantee">
-                                <h2 className="fs-money-back-guarantee-title">7-day Money Back Guarantee</h2>
-                                <p className="fs-money-back-guarantee-message">You are fully protected by our 100% Money Back Guarantee. If during the next 7 days you experience an issue that makes the plugin unusable and we are unable to resolve it, we'll happily consider offering a full refund of your money.</p>
-                                <button className="fs-button fs-button--size-small">Learn More</button>
-                                <img src={guaranteeStamp}/>
-                            </Section>
+                            {pricingData.plugin.id && pricingData.plugin.hasRefundPolicy() && ( ! pricingData.is_trial || trialUtilized) &&
+                                <Section fs-section="money-back-guarantee">
+                                    <RefundPolicy/>
+                                </Section>
+                            }
                             <Section fs-section="badges">
                                 <Badges badges={[
                                     {key: "fs-badges", src: badgeFreemius, alt: "Secure payments by Freemius - Sell and market freemium and premium WordPress plugins & themes"},
