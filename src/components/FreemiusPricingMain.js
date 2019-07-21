@@ -24,6 +24,7 @@ import Testimonials from './testimonials/Testimonials';
 import Faq from './faq/Faq';
 import RefundPolicy from "./RefundPolicy";
 import {FSConfig} from "../index";
+import {Helper} from "../Helper";
 
 class FreemiusPricingMain extends Component {
     static contextType = FSPricingContext;
@@ -40,13 +41,16 @@ class FreemiusPricingMain extends Component {
             faq                    : [],
             firstPaidPlan          : null,
             featuredPlan           : null,
+            isActivatingTrial      : false,
             isPayPalSupported      : false,
+            isTrial                : ('true' === FSConfig.trial || true === FSConfig.trial),
             plugin                 : {},
             plans                  : [],
             reviews                : [],
             selectedBillingCycle   : Pricing.getBillingCyclePeriod(FSConfig.billing_cycle),
             selectedCurrency       : this.getDefaultCurrency(),
             selectedLicenseQuantity: this.getDefaultLicenseQuantity(),
+            upgradingToPlanID      : null
         };
 
         this.billingCycleDescription = this.billingCycleDescription.bind(this);
@@ -185,38 +189,89 @@ class FreemiusPricingMain extends Component {
     /**
      * @return {boolean}
      */
+    isDashboardMode() {
+        return ( ! Helper.isUndefinedOrNull(FSConfig.wp));
     }
 
+    startTrial(planID) {
+        this.setState({
+            'isActivatingTrial': true,
+            'upgradingToPlanID': planID
+        });
+
+        RequestManager.getInstance().request({
+            pricing_action: 'start_trial',
+            plan_id       : planID
+        }).then(result => {
+            if (result.data && result.data.next_page) {
+                PageManager.getInstance().redirect(result.data.next_page);
+            }
+
+            this.setState({
+                'isActivatingTrial': false,
+                'upgradingToPlanID': null
+            });
+        });
     }
 
-    fetchData() {
-        fetch(this.props.pricing_endpoint_url)
-            .then (response => response.json())
-            .then (pricingData => {
-                if (pricingData.data) {
-                    pricingData = pricingData.data;
+    upgrade(plan) {
+        if ( ! this.isDashboardMode()) {
+            let handler = FS.Checkout.configure({
+                plugin_id : this.state.plugin.id,
+                public_key: this.state.plugin.public_key,
+            });
+
+            handler.open({
+                name    : this.state.plugin.title,
+                plan_id : plan.id,
+                licenses: this.state.selectedLicenseQuantity,
+                success : function (response) {
+                    console.log(response);
+                    alert(response);
+                }
+            });
+
+            return;
+        }
+
+        if (this.state.isTrial) {
+            if (this.hasInstallContext()) {
+                this.startTrial(plan.id);
+            }
+        } else {
+            let pricing      = this.getSelectedPlanPricing(plan.id),
+                billingCycle = this.state.selectedBillingCycle;
+
+            if (this.state.skipDirectlyToPayPal) {
+                let data         = {},
+                    trial_period = plan.trial_period;
+
+                if (trial_period > 0) {
+                    data.trial_period = trial_period;
+
+                    if (this.hasInstallContext()) {
+                        data.user_id = this.state.install.user_id;
+                    }
                 }
 
-                if ( ! pricingData.plans) {
-                    return;
-                }
+                PageManager.getInstance().redirect(FSConfig.wp.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', {
+                    plan_id      : plan.id,
+                    pricing_id   : pricing.id,
+                    billing_cycle: billingCycle,
+                    http_referer: FSConfig.wp.checkout_url.split('?')[0]
+                });
+            } else {
+                PageManager.getInstance().redirect(FSConfig.wp.checkout_url, {
+                    billing_cycle: billingCycle,
+                    currency     : this.state.selectedCurrency,
+                    plan_id      : plan.id,
+                    plan_name    : plan.name,
+                    pricing_id   : pricing.id
+                });
+            }
+        }
+    }
 
-                let billingCycles                   = {},
-                    currencies                      = {},
-                    hasAnnualCycle                  = false,
-                    hasAnyPlanWithSupport           = false,
-                    hasEmailSupportForAllPaidPlans  = true,
-                    hasEmailSupportForAllPlans      = true,
-                    featuredPlan                    = null,
-                    hasLifetimePricing              = false,
-                    hasMonthlyCycle                 = false,
-                    licenseQuantities               = {},
-                    paidPlansCount                  = 0,
-                    planManager                     = PlanManager.getInstance(pricingData.plans),
-                    plansCount                      = 0,
-                    planSingleSitePricingCollection = [],
-                    priorityEmailSupportPlanID      = null,
-                    selectedBillingCycle            = null;
 
                 for (let planID in pricingData.plans) {
                     if ( ! pricingData.plans.hasOwnProperty(planID)) {
@@ -309,6 +364,42 @@ class FreemiusPricingMain extends Component {
                     }
                 }
 
+                if (
+                    isTrial &&
+                    (
+                        FSConfig.wp &&
+                        (
+                            'true' === FSConfig.wp.is_network_admin ||
+                            true === FSConfig.wp.is_network_admin
+                        )
+                    )
+                ) {
+                    /**
+                     * Trial mode in the network level is currently disabled since the trial logic allows only one trial per user per product.
+                     */
+                    isTrial = false;
+                }
+
+                if (isTrial) {
+                    for (let plan of pricingData.plans) {
+                        if (plan.is_hidden) {
+                            continue;
+                        }
+
+                        if (plan.pricing && ! planManager.isFreePlan(plan.pricing)) {
+                            if (plan.hasTrial()) {
+                                paidPlanWithTrial = plan;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (null === paidPlanWithTrial) {
+                        // Didn't find any paid plans with trial in it.
+                        isTrial = false;
+                    }
+                }
+
                 if (null != billingCycles.annual) {
                     hasAnnualCycle       = true;
                 } else if (null != billingCycles.monthly) {
@@ -335,12 +426,15 @@ class FreemiusPricingMain extends Component {
                     hasMonthlyCycle               : hasMonthlyCycle,
                     hasPremiumVersion             : pricingData.hasPremiumVersion,
                     licenseQuantities             : licenseQuantities,
+                    paidPlanWithTrial             : paidPlanWithTrial,
                     plans                         : pricingData.plans,
                     plansCount                    : plansCount,
                     plugin                        : new Plugin(pricingData.plugin),
                     priorityEmailSupportPlanID    : priorityEmailSupportPlanID,
                     reviews                       : pricingData.reviews,
                     selectedBillingCycle          : selectedBillingCycle,
+                    skipDirectlyToPayPal          : pricingData.skip_directly_to_paypal,
+                    isTrial                       : isTrial
                 });
             });
     }
@@ -352,11 +446,8 @@ class FreemiusPricingMain extends Component {
             return null;
         }
 
-
-    render() {
-        let
-            pricingData  = this.state,
-            featuredPlan = pricingData.featuredPlan;
+        let featuredPlan  = pricingData.featuredPlan,
+            trialUtilized = false;
 
         if (null !== featuredPlan) {
             console.log(featuredPlan);
@@ -406,9 +497,17 @@ class FreemiusPricingMain extends Component {
                             {pricingData.annualDiscount > 0 &&
                                 <Section fs-section="annual-discount"><div className="fs-annual-discount">Save up to {pricingData.annualDiscount}% on Yearly Pricing!</div></Section>
                             }
-                            <Section fs-section="billing-cycles">
-                                <BillingCycleSelector handler={this.changeBillingCycle} billingCycleDescription={this.billingCycleDescription}/>
-                            </Section>
+                            {this.state.isTrial &&
+                                <Section fs-section="trial-header">
+                                    <h2>Start your {pricingData.paidPlanWithTrial.trial_period}-day free trial</h2>
+                                    <h4>{( ! pricingData.paidPlanWithTrial.requiresSubscription()) ? 'No credit card required, includes all available features.' : `No commitment for ${pricingData.paidPlanWithTrial.trial_period} days - cancel anytime!`}</h4>
+                                </Section>
+                            }
+                            {pricingData.billingCycles.length > 1 && ( ! this.state.isTrial || pricingData.paidPlanWithTrial.requiresSubscription()) &&
+                                <Section fs-section="billing-cycles">
+                                    <BillingCycleSelector handler={this.changeBillingCycle} billingCycleDescription={this.billingCycleDescription}/>
+                                </Section>
+                            }
                             <Section fs-section="currencies">
                                 <CurrencySelector handler={this.changeCurrency}/>
                             </Section>
@@ -417,7 +516,7 @@ class FreemiusPricingMain extends Component {
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>
                                 <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
                             </Section>
-                            {pricingData.plugin.id && pricingData.plugin.hasRefundPolicy() && ( ! pricingData.is_trial || trialUtilized) &&
+                            {pricingData.plugin.hasRefundPolicy() && ( ! this.state.isTrial || trialUtilized) &&
                                 <Section fs-section="money-back-guarantee">
                                     <RefundPolicy/>
                                 </Section>
@@ -438,6 +537,14 @@ class FreemiusPricingMain extends Component {
                             <Faq />
                         </Section>
                     </main>
+                    {pricingData.isActivatingTrial &&
+                        <div className="fs-loading-modal">
+                            <div className="fs-loader">
+                                <span>Activating trial...</span>
+                                <i></i>
+                            </div>
+                        </div>
+                    }
                 </div>
             </FSPricingContext.Provider>
         );
