@@ -3,7 +3,6 @@ import React, { Component, Fragment } from 'react';
 import '.././assets/scss/App.scss';
 
 import jQuery from 'jquery';
-import guaranteeStamp from '.././assets/img/guarantee-stamp.svg';
 import badgeFreemius from '.././assets/img/freemius-badge-secure-payments-light.svg';
 import badgeMcAfee from '.././assets/img/mcafee.png';
 import badgePayPal from '.././assets/img/paypal.png';
@@ -11,7 +10,7 @@ import badgeComodo from '.././assets/img/comodo-short-green.png';
 
 import {Plan} from "../entities/Plan";
 import {Plugin} from "../entities/Plugin";
-import {Pricing} from '.././entities/Pricing';
+import {BillingCycleString, CurrencySymbol, DefaultCurrency, Pricing} from '.././entities/Pricing';
 import {PlanManager} from '.././services/PlanManager';
 import FSPricingContext from ".././FSPricingContext";
 
@@ -24,6 +23,8 @@ import Testimonials from './testimonials/Testimonials';
 import Faq from './faq/Faq';
 import RefundPolicy from "./RefundPolicy";
 import {FSConfig} from "../index";
+import {RequestManager} from "../services/RequestManager";
+import {PageManager} from "../services/PageManager";
 import {Helper} from "../Helper";
 
 class FreemiusPricingMain extends Component {
@@ -53,28 +54,26 @@ class FreemiusPricingMain extends Component {
             upgradingToPlanID      : null
         };
 
-        this.billingCycleDescription = this.billingCycleDescription.bind(this);
-        this.changeBillingCycle      = this.changeBillingCycle.bind(this);
-        this.changeCurrency          = this.changeCurrency.bind(this);
-        this.changeLicenses          = this.changeLicenses.bind(this);
-        this.upgrade                 = this.upgrade.bind(this);
-    }
-
-    componentDidMount() {
-        this.fetchData();
-        this.appendScripts();
+        this.changeBillingCycle = this.changeBillingCycle.bind(this);
+        this.changeCurrency     = this.changeCurrency.bind(this);
+        this.changeLicenses     = this.changeLicenses.bind(this);
+        this.upgrade            = this.upgrade.bind(this);
     }
 
     appendScripts() {
         window.jQuery = jQuery;
 
-        let script   = document.createElement("script");
-        script.src   = "http://checkout.freemius-local.com:8080/checkout.js";
-        script.async = true;
-        document.body.appendChild(script);
+        let script = null;
+
+        if ( ! this.hasInstallContext()) {
+            script       = document.createElement("script");
+            script.src   = "https://checkout.freemius.com/checkout.js";
+            script.async = true;
+            document.body.appendChild(script);
+        }
 
         script       = document.createElement("script");
-        script.src   = "http://js.freemius-local.com:8080/fs/postmessage.js";
+        script.src   = "https://js.freemius-local.com/fs/postmessage.js";
         script.async = true;
         document.body.appendChild(script);
     }
@@ -107,7 +106,7 @@ class FreemiusPricingMain extends Component {
             selectedLicenseQuantity = this.state.selectedLicenseQuantity;
 
         for (let plan of this.state.plans) {
-            if (plan.is_hidden || ! plan.pricing) {
+            if (plan.is_hidden || Helper.isUndefinedOrNull(plan.pricing)) {
                 continue;
             }
 
@@ -272,6 +271,34 @@ class FreemiusPricingMain extends Component {
         }
     }
 
+    fetchPricingData() {
+        RequestManager.getInstance().request({'pricing_action': 'fetch_pricing_data'}).then(pricingData => {
+            if (pricingData.data) {
+                pricingData = pricingData.data;
+            }
+
+            if ( ! pricingData.plans) {
+                return;
+            }
+
+            let billingCycles                   = {},
+                currencies                      = {},
+                hasAnnualCycle                  = false,
+                hasAnyPlanWithSupport           = false,
+                hasEmailSupportForAllPaidPlans  = true,
+                hasEmailSupportForAllPlans      = true,
+                featuredPlan                    = null,
+                hasLifetimePricing              = false,
+                hasMonthlyCycle                 = false,
+                licenseQuantities               = {},
+                paidPlansCount                  = 0,
+                planManager                     = PlanManager.getInstance(pricingData.plans),
+                plansCount                      = 0,
+                planSingleSitePricingCollection = [],
+                priorityEmailSupportPlanID      = null,
+                selectedBillingCycle            = this.state.selectedBillingCycle,
+                paidPlanWithTrial               = null,
+                isTrial                         = this.state.isTrial;
 
                 for (let planID in pricingData.plans) {
                     if ( ! pricingData.plans.hasOwnProperty(planID)) {
@@ -339,15 +366,15 @@ class FreemiusPricingMain extends Component {
                         }
 
                         if (null != pricing.monthly_price) {
-                            billingCycles.monthly = true;
+                            billingCycles[BillingCycleString.MONTHLY] = true;
                         }
 
                         if (null != pricing.annual_price) {
-                            billingCycles.annual = true;
+                            billingCycles[BillingCycleString.ANNUAL] = true;
                         }
 
                         if (null != pricing.lifetime_price) {
-                            billingCycles.lifetime = true;
+                            billingCycles[BillingCycleString.LIFETIME] = true;
                         }
 
                         currencies[pricing.currency] = true;
@@ -401,11 +428,11 @@ class FreemiusPricingMain extends Component {
                 }
 
                 if (null != billingCycles.annual) {
-                    hasAnnualCycle       = true;
+                    hasAnnualCycle = true;
                 } else if (null != billingCycles.monthly) {
-                    hasMonthlyCycle      = true;
+                    hasMonthlyCycle = true;
                 } else {
-                    hasLifetimePricing   = true;
+                    hasLifetimePricing = true;
                 }
 
                 this.setState({
@@ -425,6 +452,7 @@ class FreemiusPricingMain extends Component {
                     hasLifetimePricing            : hasLifetimePricing,
                     hasMonthlyCycle               : hasMonthlyCycle,
                     hasPremiumVersion             : pricingData.hasPremiumVersion,
+                    install                       : pricingData.install,
                     licenseQuantities             : licenseQuantities,
                     paidPlanWithTrial             : paidPlanWithTrial,
                     plans                         : pricingData.plans,
@@ -458,7 +486,11 @@ class FreemiusPricingMain extends Component {
                     continue;
                 }
 
-                if (pricing.licenses != pricingData.selectedLicenseQuantity) {
+                let pricingLicenses = (null !== pricing.licenses) ?
+                    pricing.licenses :
+                    0;
+
+                if (pricingLicenses != pricingData.selectedLicenseQuantity) {
                     continue;
                 }
 
@@ -511,7 +543,7 @@ class FreemiusPricingMain extends Component {
                             <Section fs-section="currencies">
                                 <CurrencySelector handler={this.changeCurrency}/>
                             </Section>
-                            <Section fs-section="packages" className={null !== featuredPlan ? 'fs-has-featured-plan' : ''}><Packages handler={this.changeLicenses}/></Section>
+                            <Section fs-section="packages" className={null !== featuredPlan ? 'fs-has-featured-plan' : ''}><Packages changeLicensesHandler={this.changeLicenses} upgradeHandler={this.upgrade}/></Section>
                             <Section fs-section="custom-implementation">
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>
                                 <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>

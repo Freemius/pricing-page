@@ -150,7 +150,7 @@ export class Pricing {
 
     /**
      * @param {int}     billingCycle One of the following: 1, 12, 0 (for lifetime).
-     * @param {boolean} format       If true, the number 1299 for example will become 1,299.
+     * @param {boolean} [format]     If true, the number 1299 for example will become 1,299.
      *
      * @return {string|number}
      */
@@ -181,7 +181,7 @@ export class Pricing {
 
     /**
      * @param {int}     billingCycle One of the following: 1, 12, 0 (for lifetime).
-     * @param {boolean} format       If true, the number 1299 for example will become 1,299.
+     * @param {boolean} [format]     If true, the number 1299 for example will become 1,299.
      *
      * @return {string|number}
      */

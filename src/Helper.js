@@ -15,6 +15,9 @@ export const Helper = (function() {
                 (typeof val === 'string' || val instanceof String) && val.trim().length > 0
             );
         },
+        isUndefinedOrNull: function(val) {
+            return (typeof val === 'undefined' || val === null);
+        },
         formatNumber: function(num) {
             return num.toLocaleString(undefined, {maximumFractionDigits:2});
         },
