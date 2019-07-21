@@ -1,9 +1,12 @@
 export const Helper = (function() {
     return {
+        inArray: function(val, arr) {
+            return (-1 !== arr.indexOf(val));
+        },
         isNumeric: function(n) {
             return (
                 (null != n) &&
-                ! isNaN(n) &&
+                ! isNaN(parseFloat(n)) &&
                 ('' !== n)
             );
         },
