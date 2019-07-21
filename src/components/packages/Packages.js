@@ -43,6 +43,41 @@ class Packages extends Component {
         document.getElementById(`pricing_${pricingID}`).click();
     }
 
+    /**
+     * @param {Plan} plan
+     * @param {int}  installPlanLicensesCount
+     *
+     * @return {string|Fragment}
+     */
+    getCtaButtonLabel(plan, installPlanLicensesCount) {
+        if (this.context.isActivatingTrial && this.context.upgradingToPlanID == plan.id) {
+            return 'Activating...';
+        }
+
+        let hasInstallContext        = ( ! Helper.isUndefinedOrNull(this.context.install)),
+            isContextInstallPlan     = (hasInstallContext && this.context.install.plan_id == plan.id),
+            currentPlanLicensesCount = installPlanLicensesCount,
+            isFreePlan               = PlanManager.getInstance().isFreePlan(plan.pricing);
+
+        let label = '';
+
+        if (isContextInstallPlan || ( ! hasInstallContext && isFreePlan)) {
+            label = (currentPlanLicensesCount > 1) ?
+                'Downgrade' :
+                ((1 == currentPlanLicensesCount ? 'Your Plan' : 'Upgrade'));
+        } else if (isFreePlan) {
+            label = 'Downgrade';
+        } else if (this.context.isTrial && plan.hasTrial()) {
+            label = <Fragment>Start my free <nobr>{plan.trial_period} days</nobr></Fragment>;
+        } else if ( ! isContextInstallPlan) {
+            label = 'Downgrade';
+        } else {
+            label = 'Upgrade Now';
+        }
+
+        return label;
+    }
+
     priceLabel(pricing) {
         let pricingData = this.context,
             label       = '',
@@ -287,7 +322,7 @@ class Packages extends Component {
                                         }</tbody>
                                     </table>
                                     <div className="fs-upgrade-button-container">
-                                        <button className="fs-button fs-button--size-large fs-upgrade-button" onClick={() => {this.upgrade(plan.id)}}>Upgrade Now</button>
+                                        <button className="fs-button fs-button--size-large fs-upgrade-button" onClick={() => {this.props.upgradeHandler(plan)}}>{this.getCtaButtonLabel(plan, installPlanLicensesCount)}</button>
                                     </div>
                                     <ul className="fs-plan-features">
                                         {null !== allPrevPlanFeaturesTitle &&
