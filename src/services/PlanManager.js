@@ -56,14 +56,9 @@ function getInstance(plans) {
                 return .0;
             }
 
-            let
-                billingCycleInMonths    = ('lifetime' === billingCycle ?
-                        BillingCycle.LIFETIME :
-                        ('annual' === billingCycle ?
-                            BillingCycle.ANNUAL :
-                            BillingCycle.MONTHLY)),
-                singleSitePrice         = 0,
+            let billingCycleInMonths    = Pricing.getBillingCycleInMonths(billingCycle),
                 pricingBillingFrequency = billingCycleInMonths,
+                singleSitePrice         = 0,
                 price                   = pricing[billingCycle + '_price'];
 
             if ( ! pricing.hasMonthlyPrice() || BillingCycle.ANNUAL !== billingCycleInMonths) {

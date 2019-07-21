@@ -15,6 +15,12 @@ export const BillingCycle = {
     'LIFETIME': 0
 };
 
+export const BillingCycleString = {
+    'MONTHLY' : 'monthly',
+    'ANNUAL'  : 'annual',
+    'LIFETIME': 'lifetime'
+};
+
 export const DefaultCurrency = 'usd';
 
 export class Pricing {
@@ -68,25 +74,77 @@ export class Pricing {
     }
 
     /**
-     * Normalizes the given billing cycle.
-     *
      * @param {string|int} billingCycle One of the following: `annual`, `lifetime`, `monthly`, 1, 12, 0 (for lifetime).
      *
      * @return {string} Returns one of the following: `annual`, `lifetime`, `monthly`.
      */
     static getBillingCyclePeriod(billingCycle) {
         if ( ! Helper.isNumeric(billingCycle)) {
+            if (
+                ! Helper.isNonEmptyString(billingCycle) ||
+                ! Helper.inArray(
+                    billingCycle, [
+                        BillingCycleString.MONTHLY,
+                        BillingCycleString.ANNUAL,
+                        BillingCycleString.LIFETIME
+                    ]
+                )
+            ) {
+                billingCycle = BillingCycleString.ANNUAL;
+            }
+
             return billingCycle;
         }
 
+        billingCycle = parseInt(billingCycle);
+
         switch (billingCycle) {
-            case BillingCycle.ANNUAL:
-                return 'annual';
-            case BillingCycle.LIFETIME:
-                return 'lifetime';
             case BillingCycle.MONTHLY:
+                return BillingCycleString.MONTHLY;
+            case BillingCycle.LIFETIME:
+                return BillingCycleString.LIFETIME;
+            case BillingCycle.ANNUAL:
             default:
-                return 'monthly';
+                return BillingCycleString.ANNUAL;
+        }
+    }
+
+    /**
+     * @param {string|int} billingCycle One of the following: `annual`, `lifetime`, `monthly`, 1, 12, 0 (for lifetime).
+     *
+     * @return int
+     */
+    static getBillingCycleInMonths(billingCycle)
+    {
+        if (Helper.isNumeric(billingCycle)) {
+            billingCycle = parseInt(billingCycle);
+
+            if ( ! Helper.inArray(
+                billingCycle, [
+                    BillingCycle.MONTHLY,
+                    BillingCycle.ANNUAL,
+                    BillingCycle.LIFETIME
+                ]
+            )) {
+                billingCycle = BillingCycle.ANNUAL;
+            }
+
+            return billingCycle;
+        }
+
+        if ( ! Helper.isNonEmptyString(billingCycle)) {
+            return BillingCycle.ANNUAL;
+        }
+
+        switch (billingCycle)
+        {
+            case BillingCycleString.MONTHLY:
+                return BillingCycle.MONTHLY;
+            case BillingCycleString.LIFETIME:
+                return BillingCycle.LIFETIME;
+            case BillingCycleString.ANNUAL:
+            default:
+                return BillingCycle.ANNUAL;
         }
     }
 

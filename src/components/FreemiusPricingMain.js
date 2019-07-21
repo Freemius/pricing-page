@@ -23,6 +23,7 @@ import Badges from './Badges';
 import Testimonials from './testimonials/Testimonials';
 import Faq from './faq/Faq';
 import RefundPolicy from "./RefundPolicy";
+import {FSConfig} from "../index";
 
 class FreemiusPricingMain extends Component {
     static contextType = FSPricingContext;
@@ -45,6 +46,7 @@ class FreemiusPricingMain extends Component {
             reviews                : [],
             selectedCurrency       : 'usd',
             selectedLicenseQuantity: 1,
+            selectedBillingCycle   : Pricing.getBillingCyclePeriod(FSConfig.billing_cycle),
         };
 
         this.billingCycleDescription = this.billingCycleDescription.bind(this);
@@ -222,13 +224,10 @@ class FreemiusPricingMain extends Component {
                 }
 
                 if (null != billingCycles.annual) {
-                    selectedBillingCycle = 'annual';
                     hasAnnualCycle       = true;
                 } else if (null != billingCycles.monthly) {
-                    selectedBillingCycle = 'monthly';
                     hasMonthlyCycle      = true;
                 } else {
-                    selectedBillingCycle = 'lifetime';
                     hasLifetimePricing   = true;
                 }
 

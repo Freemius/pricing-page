@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import FSPricingContext from "../../FSPricingContext";
-import {BillingCycle} from "../../entities/Pricing";
+import {BillingCycle, BillingCycleString} from "../../entities/Pricing";
 import {PlanManager} from "../../services/PlanManager";
 import Tooltip from "../Tooltip";
 import Icon from "../Icon";
@@ -15,12 +15,15 @@ class Packages extends Component {
         super(props);
     }
 
+    /**
+     * @return {string} Returns `Billed Annually`, `Billed Once`, or `Billed Monthly`.
+     */
     billingCycleLabel() {
         let label = 'Billed ';
 
-        if ('annual' === this.context.selectedBillingCycle)
+        if (BillingCycleString.ANNUAL === this.context.selectedBillingCycle)
             label += 'Annually';
-        else if ('lifetime' === this.context.selectedBillingCycle)
+        else if (BillingCycleString.LIFETIME === this.context.selectedBillingCycle)
             label += 'Once';
         else
             label += 'Monthly';
@@ -48,9 +51,9 @@ class Packages extends Component {
         label += pricingData.currencySymbols[pricingData.selectedCurrency];
         label += Helper.formatNumber(price);
 
-        if ('monthly' === pricingData.selectedBillingCycle)
+        if (BillingCycleString.MONTHLY === pricingData.selectedBillingCycle)
             label += ' / mo';
-        else if ('annual' === pricingData.selectedBillingCycle)
+        else if (BillingCycleString.ANNUAL === pricingData.selectedBillingCycle)
             label += ' / year';
 
         return label;
@@ -218,7 +221,7 @@ class Packages extends Component {
                                             }
                                         </strong>
                                     </h3>
-                                    {'annual' === this.context.selectedBillingCycle && this.context.annualDiscount > 0 &&
+                                    {BillingCycleString.ANNUAL === this.context.selectedBillingCycle && this.context.annualDiscount > 0 &&
                                     <div className="fs-undiscounted-price">Normally {selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true)} / mo</div>
                                     }
                                     <div className="fs-selected-pricing-amount">
@@ -226,7 +229,7 @@ class Packages extends Component {
                                         <span className="fs-selected-pricing-amount-integer"><strong>{Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]))}</strong></span>
                                         <span className="fs-selected-pricing-amount-fraction-container">
                                             <strong className="fs-selected-pricing-amount-fraction">.{selectedPricingAmount.split('.')[1]}</strong>
-                                            {'lifetime' !== this.context.selectedBillingCycle && <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>}
+                                            {BillingCycleString.LIFETIME !== this.context.selectedBillingCycle && <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>}
                                         </span>
                                     </div>
                                     <div className="fs-selected-pricing-cycle"><strong>{this.billingCycleLabel()}</strong></div>
