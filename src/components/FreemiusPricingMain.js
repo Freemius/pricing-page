@@ -44,9 +44,9 @@ class FreemiusPricingMain extends Component {
             plugin                 : {},
             plans                  : [],
             reviews                : [],
-            selectedCurrency       : 'usd',
-            selectedLicenseQuantity: 1,
             selectedBillingCycle   : Pricing.getBillingCyclePeriod(FSConfig.billing_cycle),
+            selectedCurrency       : this.getDefaultCurrency(),
+            selectedLicenseQuantity: this.getDefaultLicenseQuantity(),
         };
 
         this.billingCycleDescription = this.billingCycleDescription.bind(this);
