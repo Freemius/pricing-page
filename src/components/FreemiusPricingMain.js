@@ -75,32 +75,118 @@ class FreemiusPricingMain extends Component {
         document.body.appendChild(script);
     }
 
-    billingCycleDescription(billingCycle) {
-        if ('annual' !== billingCycle)
-            return '';
-
-        if ( ! (this.state.annualDiscount > 0)) {
-            return '';
-        }
-
-        return `(up to ${this.state.annualDiscount}% off)`;
+    /**
+     * Updates the state with the selected billing cycle.
+     *
+     * @param {object} e
+     */
+    changeBillingCycle (e) {
+        this.setState({selectedBillingCycle: e.currentTarget.dataset.billingCycle});
     }
 
-    upgrade(planID) {
-        // return;
-        // alert('upgrade');
-        // let handler = FS.Checkout.configure({
-        //     plugin_id : this.state.data.plugin.id,
-        //     public_key: this.state.data.plugin.public_key,
-        // });
-        //
-        // handler.open({
-        //     name    : this.state.data.plugin.title,
-        //     plan_id : planID,
-        //     licenses: this.state.data.selectedLicenseQuantity,
-        //     success : function (response) {
-        //     }
-        // });
+    /**
+     * Updates the state with the selected currency.
+     *
+     * @param {object} e
+     */
+    changeCurrency (e) {
+        this.setState({selectedCurrency: e.currentTarget.value});
+    }
+
+    /**
+     * Updates the state with the selected license quantity.
+     *
+     * @param {object} e
+     */
+    changeLicenses(e) {
+        let pricingID               = e.currentTarget.value,
+            selectedLicenseQuantity = this.state.selectedLicenseQuantity;
+
+        for (let plan of this.state.plans) {
+            if (plan.is_hidden || ! plan.pricing) {
+                continue;
+            }
+
+            for (let pricing of plan.pricing) {
+                if (pricingID != pricing.id) {
+                    continue;
+                }
+
+                selectedLicenseQuantity = pricing.isUnlimited() ?
+                    0 :
+                    pricing.licenses;
+
+                break;
+            }
+        }
+
+        this.setState({selectedLicenseQuantity: selectedLicenseQuantity});
+    }
+
+    componentDidMount() {
+        this.fetchPricingData();
+
+        this.appendScripts();
+    }
+
+    /**
+     * @return {string} Defaults to `usd` if the currency that was passed in the config is not valid.
+     */
+    getDefaultCurrency() {
+        if (
+            ! Helper.isNonEmptyString(FSConfig.currency) &&
+            ! CurrencySymbol[FSConfig.currency]
+        ) {
+            return DefaultCurrency;
+        }
+
+        return FSConfig.currency;
+    }
+
+    /**
+     * @return {string} Defaults to `1` if the license quantity that was passed in the config is not valid.
+     */
+    getDefaultLicenseQuantity() {
+        if ('unlimited' === FSConfig.licenses) {
+            return 0;
+        }
+
+        return Helper.isNumeric(FSConfig.licenses) ?
+            FSConfig.licenses :
+            1;
+    }
+
+    /**
+     * @param {number} planID
+     *
+     * @return {Pricing}
+     */
+    getSelectedPlanPricing(planID) {
+        for (let plan of this.state.plans) {
+            if (planID != plan.id) {
+                continue;
+            }
+
+            for (let pricing of plan.pricing) {
+                let selectedLicenseQuantity = (0 === this.state.selectedLicenseQuantity ? null : this.state.selectedLicenseQuantity);
+
+                if (
+                    pricing.licenses == selectedLicenseQuantity &&
+                    pricing.currency === this.state.selectedCurrency
+                ) {
+                    return pricing;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return {boolean}
+     */
+    }
+
     }
 
     fetchData() {
@@ -259,50 +345,13 @@ class FreemiusPricingMain extends Component {
             });
     }
 
-    changeBillingCycle (e) {
-        this.setState({selectedBillingCycle: e.currentTarget.dataset.billingCycle});
-    }
+    render() {
+        let pricingData = this.state;
 
-    changeCurrency (e) {
-        this.setState({selectedCurrency: e.currentTarget.value});
-    }
-
-    changeLicenses(e) {
-        let pricingID               = e.currentTarget.value,
-            plans                   = this.state.plans,
-            selectedLicenseQuantity = this.state.selectedLicenseQuantity;
-
-        for (let planID in plans) {
-            if ( ! plans.hasOwnProperty(planID)) {
-                continue;
-            }
-
-            let plan = plans[planID];
-
-            if (plan.is_hidden || ! plan.pricing) {
-                continue;
-            }
-
-            let pricingCollection = plans[planID].pricing;
-
-            for (let pricing of pricingCollection) {
-                if (pricingID != pricing.id) {
-                    continue;
-                }
-
-                selectedLicenseQuantity = (null !== pricing.licenses) ?
-                    pricing.licenses :
-                    0;
-
-                break;
-            }
+        if ( ! pricingData.plugin.id) {
+            return null;
         }
 
-        this.setState({
-            plans                  : plans,
-            selectedLicenseQuantity: selectedLicenseQuantity
-        });
-    }
 
     render() {
         let
