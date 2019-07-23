@@ -46,12 +46,12 @@ class Testimonials extends Component {
                 let carouselInterval    = null,
                     firstVisibleIndex   = 0,
                     maxVisibleReviews   = 3,
-                    $testimonialSection = $('.fs-section-testimonials'),
-                    $testimonials       = $testimonialSection.find('.fs-testimonial'),
-                    $clones             = $testimonialSection.find('.fs-testimonial.clone'),
+                    $testimonialsSection = $('.fs-section-testimonials'),
+                    $track = $('.fs-testimonials-track'),
+                    $testimonials       = $track.find('.fs-testimonial'),
+                    $clones             = $track.find('.fs-testimonial.clone'),
                     uniqueTestimonials  = ($testimonials.length - $clones.length),
-                    $quoteContainers    = $testimonialSection.find('.fs-testimonial-message'),
-                    $track              = $testimonialSection.find('.fs-testimonials'),
+                    $testimonialsContainer              = $track.find('.fs-testimonials'),
                     sectionWidth,
                     cardMinWidth        = 250,
                     visibleCards,
@@ -59,20 +59,19 @@ class Testimonials extends Component {
                     speed               = 10000,
                     isCarouselActive    = false;
 
-                let slide = function (selectedIndex, isInvisible)
-                {
+                let slide = function (selectedIndex, isInvisible) {
                     isInvisible = isInvisible || false;
 
                     if (isInvisible)
-                        $testimonialSection.removeClass('ready');
+                        $testimonialsSection.removeClass('ready');
 
                     let shiftedIndex   = maxVisibleReviews + selectedIndex,
                         selectedBullet = ((selectedIndex % uniqueTestimonials) + uniqueTestimonials) % uniqueTestimonials;
 
-                    $testimonialSection.find('.slick-dots li.selected').removeClass('selected');
-                    $testimonialSection.find('.slick-dots li[data-index=' + selectedBullet + ']').addClass('selected');
+                    $testimonialsSection.find('.slick-dots li.selected').removeClass('selected');
+                    $testimonialsSection.find('.slick-dots li[data-index=' + selectedBullet + ']').addClass('selected');
 
-                    $track.css('left',  (-1)*(shiftedIndex * cardWidth) + 'px');
+                    $testimonialsContainer.css('left',  (-1)*(shiftedIndex * cardWidth) + 'px');
                     $testimonials.attr('aria-hidden', 'true');
                     for (var i = 0; i < visibleCards; i++){
                         $($testimonials[i + shiftedIndex]).attr('aria-hidden', 'false');
@@ -80,7 +79,7 @@ class Testimonials extends Component {
 
                     if (isInvisible)
                         setTimeout(function(){
-                            $testimonialSection.addClass('ready');
+                            $testimonialsSection.addClass('ready');
                         }, 500);
 
                     if (selectedIndex == uniqueTestimonials){
@@ -110,80 +109,86 @@ class Testimonials extends Component {
                     }
                 };
 
-                let nextSlide = function ()
-                {
+                let nextSlide = function () {
                     firstVisibleIndex++;
                     slide(firstVisibleIndex);
                 };
 
-                let prevSlide = function ()
-                {
+                let prevSlide = function () {
                     firstVisibleIndex--;
                     slide(firstVisibleIndex);
                 };
 
                 let startSliderInterval = function ()
                 {
-                    if (!isCarouselActive)
+                    if ( ! isCarouselActive) {
                         return;
+                    }
 
-                    if (visibleCards < $testimonials.length)
-                        carouselInterval = setInterval(function(){
+                    if (visibleCards < $testimonials.length) {
+                        carouselInterval = setInterval(function() {
                             nextSlide();
                         }, speed);
+                    }
                 };
 
                 let adjustTestimonials = function ()
                 {
                     clearSliderInterval();
 
-                    $testimonialSection.removeClass('ready');
+                    $testimonialsSection.removeClass('ready');
 
-                    sectionWidth = $('.fs-testimonials-track').width();
+                    sectionWidth = $track.width();
                     visibleCards = Math.min(maxVisibleReviews, Math.floor(sectionWidth / cardMinWidth));
                     cardWidth = Math.floor(sectionWidth / visibleCards);
 
-                    $quoteContainers.height('auto');
-                    $track.width($testimonials.length * cardWidth);
+                    // $quoteContainers.height('auto');
+                    $testimonialsContainer.width($testimonials.length * cardWidth);
                     $testimonials.width(cardWidth);
 
-                    var maxHeight = 0;
-                    for (var i = 0; i < $quoteContainers.length; i++){
-                        maxHeight = Math.max(maxHeight, $($quoteContainers[i]).height());
+                    let maxHeaderHeight  = 0;
+                    let maxContentHeight = 0;
+
+                    for (let i = 0; i < $testimonials.length; i++) {
+                        let $testimonial = $($testimonials[i]);
+
+                        maxHeaderHeight  = Math.max(maxHeaderHeight, $testimonial.find('header').height());
+                        maxContentHeight = Math.max(maxContentHeight, $testimonial.find('> section').height());
                     }
 
                     // Add profile picture space.
-                    maxHeight = maxHeight + 40;
+                    // maxHeight = maxHeight + 40;
 
-                    $quoteContainers.height(maxHeight + 'px');
+                    $testimonials.find('header').height(maxHeaderHeight + 'px');
+                    $testimonials.find('> section').height(maxContentHeight + 'px');
 
-                    $track.css('left',  (-1)*((firstVisibleIndex + maxVisibleReviews) * cardWidth) + 'px');
+                    $testimonialsContainer.css('left',  (-1)*((firstVisibleIndex + maxVisibleReviews) * cardWidth) + 'px');
 
-                    $testimonialSection.addClass('ready');
+                    $testimonialsSection.addClass('ready');
 
                     isCarouselActive = (uniqueTestimonials > visibleCards);
 
                     // Show/hide carousel buttons.
-                    $testimonialSection.find('.slick-arrow, .slick-dots').toggle(isCarouselActive);
+                    $testimonialsSection.find('.slick-arrow, .slick-dots').toggle(isCarouselActive);
                 };
 
                 adjustTestimonials();
 
                 startSliderInterval();
 
-                $testimonialSection.find('.fs-nav-next').click(function(){
+                $testimonialsSection.find('.fs-nav-next').click(function(){
                     clearSliderInterval();
                     nextSlide();
                     startSliderInterval();
                 });
 
-                $testimonialSection.find('.fs-nav-prev').click(function(){
+                $testimonialsSection.find('.fs-nav-prev').click(function(){
                     clearSliderInterval();
                     prevSlide();
                     startSliderInterval();
                 });
 
-                $testimonialSection.find('.slick-dots li').click(function(){
+                $testimonialsSection.find('.slick-dots li').click(function(){
                     if ($(this).hasClass('selected'))
                         return;
 
@@ -193,7 +198,7 @@ class Testimonials extends Component {
                     startSliderInterval();
                 });
 
-                $(window).resize(function(){
+                $(window).resize(function() {
                     adjustTestimonials();
 
                     startSliderInterval();
