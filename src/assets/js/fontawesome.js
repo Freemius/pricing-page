@@ -1,21 +1,23 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
 import {
-    faCheck,
-    faQuestionCircle,
     faArrowLeft,
     faArrowRight,
-    faQuoteLeft
+    faCheck,
+    faQuestionCircle,
+    faQuoteLeft,
+    faStar,
+    faTimesCircle
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
-    faCheck,
-    faQuestionCircle,
-    faCircle,
-    faStar,
     faArrowLeft,
     faArrowRight,
-    faQuoteLeft
+    faCheck,
+    faCircle,
+    faQuestionCircle,
+    faQuoteLeft,
+    faStar,
+    faTimesCircle
 );
