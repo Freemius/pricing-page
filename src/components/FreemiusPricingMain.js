@@ -27,6 +27,7 @@ import {RequestManager} from "../services/RequestManager";
 import {PageManager} from "../services/PageManager";
 import {Helper} from "../Helper";
 import {TrackingManager} from "../services/TrackingManager";
+import {FS} from "../postmessage";
 
 class FreemiusPricingMain extends Component {
     static contextType = FSPricingContext;
@@ -55,10 +56,11 @@ class FreemiusPricingMain extends Component {
             upgradingToPlanID      : null
         };
 
-        this.changeBillingCycle = this.changeBillingCycle.bind(this);
-        this.changeCurrency     = this.changeCurrency.bind(this);
-        this.changeLicenses     = this.changeLicenses.bind(this);
-        this.upgrade            = this.upgrade.bind(this);
+        this.changeBillingCycle      = this.changeBillingCycle.bind(this);
+        this.changeCurrency          = this.changeCurrency.bind(this);
+        this.changeLicenses          = this.changeLicenses.bind(this);
+        this.toggleRefundPolicyModal = this.toggleRefundPolicyModal.bind(this);
+        this.upgrade                 = this.upgrade.bind(this);
     }
 
     appendScripts() {
@@ -68,15 +70,10 @@ class FreemiusPricingMain extends Component {
 
         if ( ! this.hasInstallContext()) {
             script       = document.createElement("script");
-            script.src   = "https://checkout.freemius.com/checkout.js";
+            script.src   = (this.isProduction() ? 'https://checkout.freemius.com' : 'http://checkout.freemius-local.com:8080') + '/checkout.js';
             script.async = true;
             document.body.appendChild(script);
         }
-
-        script       = document.createElement("script");
-        script.src   = "https://js.freemius-local.com/fs/postmessage.js";
-        script.async = true;
-        document.body.appendChild(script);
 
         if ( ! this.isSandboxPaymentsMode()) {
             // ga
@@ -226,7 +223,20 @@ class FreemiusPricingMain extends Component {
             plan_id       : planID
         }).then(result => {
             if (result.data && result.data.next_page) {
-                PageManager.getInstance().redirect(result.data.next_page);
+                // Track trial start.
+                this.trackingManager.track('started');
+
+                if (Helper.isNonEmptyString(result.data.next_page)) {
+                    PageManager.getInstance().redirect(result.data.next_page);
+                } else {
+                    FS.PostMessage.post('forward', {
+                        url: FS.Page.url(FS.PostMessage.parent_url(), {
+                            page     : this.state.plugin.menu_slug + '-account',
+                            fs_action: this.state.plugin.unique_affix + '_sync_license',
+                            plugin_id: this.state.plugin.id
+                        })
+                    });
+                }
             }
 
             this.setState({
@@ -236,22 +246,34 @@ class FreemiusPricingMain extends Component {
         });
     }
 
-    upgrade(plan) {
-        if ( ! this.isDashboardMode()) {
-            let handler = FS.Checkout.configure({
-                plugin_id : this.state.plugin.id,
-                public_key: this.state.plugin.public_key,
+    toggleRefundPolicyModal() {
+        this.setState({showRefundPolicyModal: ! this.state.showRefundPolicyModal});
+    }
+
+    upgrade(plan, pricing) {
+        if ( ! this.isDashboardMode() && ! Helper.isUndefinedOrNull(window.FS)) {
+            let handler = window.FS.Checkout.configure({
+                plugin_id    : this.state.plugin.id,
+                public_key   : this.state.plugin.public_key,
+                sandbox_token: Helper.isNonEmptyString(FSConfig.sandbox_token) ? FSConfig.sandbox_token : null,
+                timestamp    : Helper.isNonEmptyString(FSConfig.sandbox_token) ? FSConfig.timestamp: null
             });
 
-            handler.open({
-                name    : this.state.plugin.title,
-                plan_id : plan.id,
-                licenses: this.state.selectedLicenseQuantity,
-                success : function (response) {
+            let params = {
+                name   : this.state.plugin.title,
+                plan_id: plan.id,
+                success: function (response) {
                     console.log(response);
-                    alert(response);
                 }
-            });
+            };
+
+            if (null !== pricing) {
+                params.pricing_id = pricing.id;
+            } else {
+                params.licenses = this.state.selectedLicenseQuantity;
+            }
+
+            handler.open(params);
 
             return;
         }
@@ -259,10 +281,21 @@ class FreemiusPricingMain extends Component {
         if (this.state.isTrial) {
             if (this.hasInstallContext()) {
                 this.startTrial(plan.id);
+            } else {
+                FS.PostMessage.post('start_trial', {
+                    plugin_id   : this.state.plugin.id,
+                    plan_id     : plan.id,
+                    plan_name   : plan.name,
+                    plan_title  : plan.title,
+                    trial_period: plan.trial_period
+                });
             }
         } else {
-            let pricing      = this.getSelectedPlanPricing(plan.id),
-                billingCycle = this.state.selectedBillingCycle;
+            if (null === pricing) {
+                pricing = this.getSelectedPlanPricing(plan.id);
+            }
+
+            let billingCycle = this.state.selectedBillingCycle;
 
             if (this.state.skipDirectlyToPayPal) {
                 let data         = {},
@@ -276,20 +309,45 @@ class FreemiusPricingMain extends Component {
                     }
                 }
 
-                PageManager.getInstance().redirect(FSConfig.wp.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', {
-                    plan_id      : plan.id,
-                    pricing_id   : pricing.id,
-                    billing_cycle: billingCycle,
-                    http_referer: FSConfig.wp.checkout_url.split('?')[0]
-                });
+                let params = {
+                    plan_id       : plan.id,
+                    pricing_id    : pricing.id,
+                    billing_cycle : billingCycle
+                };
+
+                if ( ! this.isEmbeddedDashboardMode()) {
+                    FS.PostMessage.post('forward', {
+                        url: PageManager.getInstance().addQueryArgs(window.location.origin + '/action/service/paypal/express-checkout/', params)
+                    });
+                } else {
+                    params.http_referer = (-1 !== FSConfig.wp.checkout_url.indexOf('?')) ?
+                        FSConfig.wp.checkout_url.split('?')[0] :
+                        FSConfig.wp.checkout_url;
+
+                    PageManager.getInstance().redirect(FSConfig.wp.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', params);
+                }
             } else {
-                PageManager.getInstance().redirect(FSConfig.wp.checkout_url, {
-                    billing_cycle: billingCycle,
-                    currency     : this.state.selectedCurrency,
-                    plan_id      : plan.id,
-                    plan_name    : plan.name,
-                    pricing_id   : pricing.id
-                });
+                if (this.isEmbeddedDashboardMode()) {
+                    PageManager.getInstance().redirect(FSConfig.wp.checkout_url, {
+                        billing_cycle: billingCycle,
+                        currency     : this.state.selectedCurrency,
+                        plan_id      : plan.id,
+                        plan_name    : plan.name,
+                        pricing_id   : pricing.id
+                    });
+                } else {
+                    FS.PostMessage.post('forward', {
+                        url: PageManager.getInstance().addQueryArgs(FS.PostMessage.parent_url(), {
+                            page         : this.state.plugin.menu_slug + '-pricing',
+                            checkout     : 'true',
+                            plan_id      : plan.id,
+                            plan_name    : plan.name,
+                            billing_cycle: billingCycle,
+                            pricing_id   : pricing.id,
+                            currency     : this.state.selectedCurrency
+                        })
+                    });
+                }
             }
         }
     }
@@ -458,6 +516,18 @@ class FreemiusPricingMain extends Component {
                     hasLifetimePricing = true;
                 }
 
+                let plugin = new Plugin(pricingData.plugin);
+
+                let parentUrl = FS.PostMessage.parent_url();
+
+                if (Helper.isNonEmptyString(parentUrl)) {
+                    let page = PageManager.getInstance().getQuerystringParam(parentUrl, 'page');
+
+                    plugin.menu_slug = page.substring(0, page.length - ('-pricing').length);
+                }
+
+                plugin.unique_affix = FSConfig.unique_affix;
+
                 this.setState({
                     active_installs               : pricingData.active_installs,
                     allPlansSingleSitePrices      : pricingData.all_plans_single_site_pricing,
@@ -500,6 +570,9 @@ class FreemiusPricingMain extends Component {
                     uid         : this.hasInstallContext() ? this.state.install.id : null,
                     userID      : (this.hasInstallContext() ? pricingData.install.user_id : null)
                 });
+
+                FS.PostMessage.init_child();
+                FS.PostMessage.postHeight();
             });
     }
 
