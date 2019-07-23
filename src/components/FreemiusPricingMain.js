@@ -566,15 +566,16 @@ class FreemiusPricingMain extends Component {
                     hasPremiumVersion             : pricingData.hasPremiumVersion,
                     install                       : pricingData.install,
                     licenseQuantities             : licenseQuantities,
+                    paidPlansCount                : paidPlansCount,
                     paidPlanWithTrial             : paidPlanWithTrial,
                     plans                         : pricingData.plans,
                     plansCount                    : plansCount,
-                    plugin                        : new Plugin(pricingData.plugin),
+                    plugin                        : plugin,
                     priorityEmailSupportPlanID    : priorityEmailSupportPlanID,
                     reviews                       : pricingData.reviews,
                     selectedBillingCycle          : selectedBillingCycle,
                     skipDirectlyToPayPal          : pricingData.skip_directly_to_paypal,
-                    isTrial                       : isTrial
+                    isTrial                       : isTrial,
                     showRefundPolicyModal         : false
                 });
 
