@@ -575,6 +575,7 @@ class FreemiusPricingMain extends Component {
                     selectedBillingCycle          : selectedBillingCycle,
                     skipDirectlyToPayPal          : pricingData.skip_directly_to_paypal,
                     isTrial                       : isTrial
+                    showRefundPolicyModal         : false
                 });
 
                 this.trackingManager = TrackingManager.getInstance({
@@ -678,9 +679,9 @@ class FreemiusPricingMain extends Component {
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>
                                 <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
                             </Section>
-                            {pricingData.plugin.hasRefundPolicy() && ( ! this.state.isTrial || trialUtilized) &&
+                            {(pricingData.plugin.hasRefundPolicy() && ( ! this.state.isTrial || trialUtilized)) &&
                                 <Section fs-section="money-back-guarantee">
-                                    <RefundPolicy/>
+                                    <RefundPolicy toggleRefundPolicyModal={this.toggleRefundPolicyModal}/>
                                 </Section>
                             }
                             <Section fs-section="badges">
