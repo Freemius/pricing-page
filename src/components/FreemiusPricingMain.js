@@ -26,6 +26,7 @@ import {FSConfig} from "../index";
 import {RequestManager} from "../services/RequestManager";
 import {PageManager} from "../services/PageManager";
 import {Helper} from "../Helper";
+import {TrackingManager} from "../services/TrackingManager";
 
 class FreemiusPricingMain extends Component {
     static contextType = FSPricingContext;
@@ -76,12 +77,20 @@ class FreemiusPricingMain extends Component {
         script.src   = "https://js.freemius-local.com/fs/postmessage.js";
         script.async = true;
         document.body.appendChild(script);
+
+        if ( ! this.isSandboxPaymentsMode()) {
+            // ga
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+                (i[r].q=i[r].q||[]).push(arguments)};i[r].l=1*new Date();a=s.createElement(o);
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        }
     }
 
     /**
      * Updates the state with the selected billing cycle.
      *
-     * @param {object} e
+     * @param {Object} e
      */
     changeBillingCycle (e) {
         this.setState({selectedBillingCycle: e.currentTarget.dataset.billingCycle});
@@ -190,6 +199,20 @@ class FreemiusPricingMain extends Component {
      */
     isDashboardMode() {
         return ( ! Helper.isUndefinedOrNull(FSConfig.wp));
+    }
+
+    /**
+     * @return {boolean}
+     */
+    isProduction() {
+        return (-1 === ['3000', '8080'].indexOf(window.location.port));
+    }
+
+    /**
+     * @return {boolean}
+     */
+    isSandboxPaymentsMode() {
+        return (Helper.isNonEmptyString(FSConfig.sandbox_token) && Helper.isNumeric(FSConfig.timestamp));
     }
 
     startTrial(planID) {
@@ -463,6 +486,19 @@ class FreemiusPricingMain extends Component {
                     selectedBillingCycle          : selectedBillingCycle,
                     skipDirectlyToPayPal          : pricingData.skip_directly_to_paypal,
                     isTrial                       : isTrial
+                });
+
+                this.trackingManager = TrackingManager.getInstance({
+                    billingCycle: Pricing.getBillingCyclePeriod(this.state.selectedBillingCycle),
+                    isTrialMode : this.state.isTrial,
+                    isSandbox   : this.isSandboxPaymentsMode(),
+                    isPaidTrial : false,
+                    isProduction: this.isProduction(),
+                    pageMode    : this.isDashboardMode() ? 'dashboard' : 'page',
+                    pluginID    : this.state.plugin.id,
+                    type        : this.state.plugin.type,
+                    uid         : this.hasInstallContext() ? this.state.install.id : null,
+                    userID      : (this.hasInstallContext() ? pricingData.install.user_id : null)
                 });
             });
     }
