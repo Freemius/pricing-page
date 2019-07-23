@@ -112,7 +112,7 @@ class FreemiusPricingMain extends Component {
             selectedLicenseQuantity = this.state.selectedLicenseQuantity;
 
         for (let plan of this.state.plans) {
-            if (plan.is_hidden || Helper.isUndefinedOrNull(plan.pricing)) {
+            if (Helper.isUndefinedOrNull(plan.pricing)) {
                 continue;
             }
 
@@ -194,7 +194,21 @@ class FreemiusPricingMain extends Component {
     /**
      * @return {boolean}
      */
+    hasInstallContext() {
+        return ( ! Helper.isUndefinedOrNull(this.state.install));
+    }
+
+    /**
+     * @return {boolean}
+     */
     isDashboardMode() {
+        return ('dashboard' === FSConfig.mode);
+    }
+
+    /**
+     * @return {boolean}
+     */
+    isEmbeddedDashboardMode() {
         return ( ! Helper.isUndefinedOrNull(FSConfig.wp));
     }
 
@@ -381,70 +395,48 @@ class FreemiusPricingMain extends Component {
                 paidPlanWithTrial               = null,
                 isTrial                         = this.state.isTrial;
 
-                for (let planID in pricingData.plans) {
-                    if ( ! pricingData.plans.hasOwnProperty(planID)) {
+                for (let planIndex = 0; planIndex < pricingData.plans.length; planIndex ++) {
+                    if ( ! pricingData.plans.hasOwnProperty(planIndex)) {
+                        continue;
+                    }
+
+                    if (pricingData.plans[planIndex].is_hidden) {
+                        // Remove plan from the collection.
+                        pricingData.plans.splice(planIndex, 1);
+
+                        planIndex --;
+
                         continue;
                     }
 
                     plansCount ++;
 
-                    pricingData.plans[planID] = new Plan(pricingData.plans[planID]);
+                    pricingData.plans[planIndex] = new Plan(pricingData.plans[planIndex]);
 
-                    let plan = pricingData.plans[planID];
-
-                    if (plan.is_hidden) {
-                        continue;
-                    }
+                    let plan = pricingData.plans[planIndex];
 
                     if (plan.is_featured) {
                         featuredPlan = plan;
                     }
 
-                    if ( ! plan.features) {
+                    if (Helper.isUndefinedOrNull(plan.features)) {
                         plan.features = [];
                     }
 
                     let pricingCollection = plan.pricing;
 
-                    if ( ! pricingCollection) {
+                    if (Helper.isUndefinedOrNull(pricingCollection)) {
                         continue;
                     }
 
-                    let pricingCount = pricingCollection.length;
-
-                    for (let k = 0; k < pricingCount; k ++) {
-                        pricingCollection[k] = new Pricing(pricingCollection[k]);
-                    }
-
-                    let isPaidPlan = planManager.isPaidPlan(pricingCollection);
-
-                    if ( ! plan.hasEmailSupport()) {
-                        hasEmailSupportForAllPlans = false;
-
-                        if (isPaidPlan)
-                            hasEmailSupportForAllPaidPlans = false;
-                    } else {
-                        if ( ! plan.hasSuccessManagerSupport()) {
-                            priorityEmailSupportPlanID = plan.id;
-                        }
-                    }
-
-                    if ( ! hasAnyPlanWithSupport && plan.hasAnySupport()) {
-                        hasAnyPlanWithSupport = true;
-                    }
-
-                    if (isPaidPlan) {
-                        paidPlansCount ++;
-
-                        let singleSitePricing = planManager.getSingleSitePricing(pricingCollection, this.state.selectedCurrency);
-                        if (null !== singleSitePricing)
-                            planSingleSitePricingCollection.push(singleSitePricing);
-                    }
-
-                    for (let pricing of pricingCollection) {
-                        if (pricing.is_hidden) {
+                    for (let pricingIndex = 0; pricingIndex < pricingCollection.length; pricingIndex ++) {
+                        if ( ! pricingCollection.hasOwnProperty(pricingIndex)) {
                             continue;
                         }
+
+                        pricingCollection[pricingIndex] = new Pricing(pricingCollection[pricingIndex]);
+
+                        let pricing = pricingCollection[pricingIndex];
 
                         if (null != pricing.monthly_price) {
                             billingCycles[BillingCycleString.MONTHLY] = true;
@@ -469,6 +461,33 @@ class FreemiusPricingMain extends Component {
                         }
 
                         licenseQuantities[pricing.currency][licenses] = true;
+                    }
+
+                    let isPaidPlan = planManager.isPaidPlan(pricingCollection);
+
+                    if ( ! plan.hasEmailSupport()) {
+                        hasEmailSupportForAllPlans = false;
+
+                        if (isPaidPlan) {
+                            hasEmailSupportForAllPaidPlans = false;
+                        }
+                    } else {
+                        if ( ! plan.hasSuccessManagerSupport()) {
+                            priorityEmailSupportPlanID = plan.id;
+                        }
+                    }
+
+                    if ( ! hasAnyPlanWithSupport && plan.hasAnySupport()) {
+                        hasAnyPlanWithSupport = true;
+                    }
+
+                    if (isPaidPlan) {
+                        paidPlansCount ++;
+
+                        let singleSitePricing = planManager.getSingleSitePricing(pricingCollection, this.state.selectedCurrency);
+                        if (null !== singleSitePricing) {
+                            planSingleSitePricingCollection.push(singleSitePricing);
+                        }
                     }
                 }
 
@@ -652,7 +671,9 @@ class FreemiusPricingMain extends Component {
                             <Section fs-section="currencies">
                                 <CurrencySelector handler={this.changeCurrency}/>
                             </Section>
-                            <Section fs-section="packages" className={null !== featuredPlan ? 'fs-has-featured-plan' : ''}><Packages changeLicensesHandler={this.changeLicenses} upgradeHandler={this.upgrade}/></Section>
+                            <Section fs-section="packages" className={null !== featuredPlan && pricingData.paidPlansCount > 1 ? 'fs-has-featured-plan' : ''}>
+                                <Packages changeLicensesHandler={this.changeLicenses} upgradeHandler={this.upgrade}/>
+                            </Section>
                             <Section fs-section="custom-implementation">
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>
                                 <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
@@ -679,11 +700,13 @@ class FreemiusPricingMain extends Component {
                         </Section>
                     </main>
                     {pricingData.isActivatingTrial &&
-                        <div className="fs-loading-modal">
-                            <div className="fs-loader">
-                                <span>Activating trial...</span>
-                                <i></i>
-                            </div>
+                        <div className="fs-modal fs-modal--loading">
+                            <section className="fs-content-container">
+                                <div className="fs-content">
+                                    <span>Activating trial...</span>
+                                    <i></i>
+                                </div>
+                            </section>
                         </div>
                     }
                 </div>
