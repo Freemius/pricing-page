@@ -6,7 +6,7 @@ import {BillingCycleString} from "../entities/Pricing";
 /**
  * @author Leo Fajardo
  */
-class BillingCycleSelector extends Component {
+class PeriodSelector extends Component {
     static contextType = FSPricingContext;
 
     constructor (props) {
@@ -35,7 +35,7 @@ class BillingCycleSelector extends Component {
 
                         return (
                             <li
-                                className={this.context.selectedBillingCycle === billingCycle ? 'fs-selected-billing-cycle' : ''}
+                                className={`fs-period--${billingCycle}` + (this.context.selectedBillingCycle === billingCycle ? ' fs-selected-billing-cycle' : '')}
                                 key={billingCycle} data-billing-cycle={billingCycle}
                                 onClick={this.props.handler}>
                                 {label} {BillingCycleString.ANNUAL === billingCycle && <span>{this.annualDiscountLabel()}</span>}
@@ -48,4 +48,4 @@ class BillingCycleSelector extends Component {
     }
 }
 
-export default BillingCycleSelector;
+export default PeriodSelector;

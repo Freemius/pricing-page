@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import '.././assets/scss/App.scss';
 
@@ -15,9 +15,9 @@ import {PlanManager} from '.././services/PlanManager';
 import FSPricingContext from ".././FSPricingContext";
 
 import Section from './Section';
-import BillingCycleSelector from './BillingCycleSelector';
+import PeriodSelector from './PeriodSelector';
 import CurrencySelector from './CurrencySelector';
-import Packages from './packages/Packages';
+import PackagesContainer from './packages/PackagesContainer';
 import Badges from './Badges';
 import Testimonials from './testimonials/Testimonials';
 import Faq from './faq/Faq';
@@ -263,6 +263,10 @@ class FreemiusPricingMain extends Component {
     }
 
     upgrade(plan, pricing) {
+        if (PlanManager.getInstance().isFreePlan(plan.pricing)) {
+            return;
+        }
+
         if ( ! this.isDashboardMode() && ! Helper.isUndefinedOrNull(window.FS)) {
             let handler = window.FS.Checkout.configure({
                 plugin_id    : this.state.plugin.id,
@@ -525,9 +529,13 @@ class FreemiusPricingMain extends Component {
 
                 if (null != billingCycles.annual) {
                     hasAnnualCycle = true;
-                } else if (null != billingCycles.monthly) {
+                }
+
+                if (null != billingCycles.monthly) {
                     hasMonthlyCycle = true;
-                } else {
+                }
+
+                if (null != billingCycles.lifetime) {
                     hasLifetimePricing = true;
                 }
 
@@ -612,9 +620,7 @@ class FreemiusPricingMain extends Component {
                     continue;
                 }
 
-                let pricingLicenses = (null !== pricing.licenses) ?
-                    pricing.licenses :
-                    0;
+                let pricingLicenses = pricing.getLicenses();
 
                 if (pricingLicenses != pricingData.selectedLicenseQuantity) {
                     continue;
@@ -663,14 +669,14 @@ class FreemiusPricingMain extends Component {
                             }
                             {pricingData.billingCycles.length > 1 && ( ! this.state.isTrial || pricingData.paidPlanWithTrial.requiresSubscription()) &&
                                 <Section fs-section="billing-cycles">
-                                    <BillingCycleSelector handler={this.changeBillingCycle} billingCycleDescription={this.billingCycleDescription}/>
+                                    <PeriodSelector handler={this.changeBillingCycle} billingCycleDescription={this.billingCycleDescription}/>
                                 </Section>
                             }
                             <Section fs-section="currencies">
                                 <CurrencySelector handler={this.changeCurrency}/>
                             </Section>
-                            <Section fs-section="packages" className={null !== featuredPlan && pricingData.paidPlansCount > 1 ? 'fs-has-featured-plan' : ''}>
-                                <Packages changeLicensesHandler={this.changeLicenses} upgradeHandler={this.upgrade}/>
+                            <Section fs-section="packages">
+                                <PackagesContainer changeLicensesHandler={this.changeLicenses} upgradeHandler={this.upgrade}/>
                             </Section>
                             <Section fs-section="custom-implementation">
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>

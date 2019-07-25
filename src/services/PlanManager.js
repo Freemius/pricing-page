@@ -5,6 +5,7 @@ import {Helper} from "../Helper";
  * @author Leo Fajardo
  */
 let _instance                 = null,
+    _plans                    = [],
     allPlansPricingCollection = [];
 
 function getPricingSortedByLicensesAsc(plans) {
@@ -48,6 +49,7 @@ function getInstance(plans) {
         return _instance;
     }
 
+    _plans                    = plans;
     allPlansPricingCollection = getPricingSortedByLicensesAsc(plans);
 
     _instance = {
@@ -79,6 +81,15 @@ function getInstance(plans) {
                     ) * pricing.licenses
                 )
             ));
+        },
+        getPlanByID: function(planID) {
+            for (let plan of _plans) {
+                if (plan.id == planID) {
+                    return plan;
+                }
+            }
+
+            return null;
         },
         tryCalcSingleSitePrice: function (
             pricing,
@@ -217,23 +228,28 @@ function getInstance(plans) {
             return null;
         },
         isFreePlan(pricingCollection) {
-            let total = pricingCollection.length;
-
-            if (!pricingCollection || 0 === total) {
+            if (Helper.isUndefinedOrNull(pricingCollection)) {
                 return true;
             }
 
-            for (let i = 0; i < total; i++) {
+            if (0 === pricingCollection.length) {
+                return true;
+            }
+
+            for (let i = 0; i < pricingCollection.length; i++) {
                 let pricing = pricingCollection[i];
-                if (!pricing.isFree()) {
+                if ( ! pricing.isFree()) {
                     return false;
                 }
             }
 
             return true;
         },
+        isHiddenOrFreePlan(plan) {
+            return (plan.is_hidden || this.isFreePlan(plan.pricing));
+        },
         isPaidPlan(pricingCollection) {
-            return (!this.isFreePlan(pricingCollection));
+            return ( ! this.isFreePlan(pricingCollection));
         }
     };
 
