@@ -163,7 +163,7 @@ class Faq extends Component {
 
         faq.push({
             'q': 'I have other pre-sale questions, can you help?',
-            'a':  <Fragment>Yes! You can ask us any question through our <a className="contact-link" href={PageManager.getInstance().getContactUrl('pre_sale_question')}>support page</a>.</Fragment>
+            'a':  <Fragment>Yes! You can ask us any question through our <a className="contact-link" href={PageManager.getInstance().getContactUrl(this.context.plugin, 'pre_sale_question')}>support page</a>.</Fragment>
         });
 
         let faqElements = [];

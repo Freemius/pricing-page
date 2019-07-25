@@ -1,5 +1,7 @@
 import {RequestManager} from "./RequestManager";
 import {Helper} from "../Helper";
+import {FSConfig} from "../index";
+import {FS} from "../postmessage";
 
 /**
  * @author Leo Fajardo
@@ -28,6 +30,21 @@ function getInstance() {
             }
 
             return baseUrl;
+        },
+        getContactUrl(plugin, topic) {
+            let contactUrl = ( ! Helper.isUndefinedOrNull(FSConfig.wp)) ?
+                FSConfig.wp.contact_url :
+                FS.PostMessage.parent_url();
+
+            if ( ! Helper.isNonEmptyString(contactUrl)) {
+                let isProduction = (-1 === ['3000', '8080'].indexOf(window.location.port));
+
+                contactUrl = (isProduction ?
+                    'https://wp.freemius.com' :
+                    'http://wp.freemius:8080') + `/contact/?page=${plugin.slug}-contact&plugin_id=${plugin.id}&plugin_public_key=${plugin.public_key}`;
+            }
+
+            return this.addQueryArgs(contactUrl, {topic: topic});
         },
         getQuerystringParam: function (url, key) {
             // Parse anchor.

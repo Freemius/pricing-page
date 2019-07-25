@@ -56,7 +56,7 @@ class RefundPolicy extends Component {
                             <div className="fs-content">
                                 <p>{refundPolicy}</p>
                                 <p>Just start a refund ticket through the "Contact Us" in the plugin's admin settings and we'll process a refund.</p>
-                                <p>To submit a refund request, please open a <a className="fs-contact-link" href={PageManager.getInstance().getContactUrl('refund')}>refund support ticket</a>.</p>
+                                <p>To submit a refund request, please open a <a className="fs-contact-link" href={PageManager.getInstance().getContactUrl(this.context.plugin, 'refund')}>refund support ticket</a>.</p>
                             </div>
                         </section>
                     </div>
