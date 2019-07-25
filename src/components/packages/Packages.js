@@ -102,14 +102,13 @@ class Packages extends Component {
 
     render() {
         let
-            prevPlan                    = null,
-            prevPlanFeaturesWithNoValue = {},
-            packages                    = null,
-            selectedPricing             = null,
-            licenseQuantities           = this.context.licenseQuantities[this.context.selectedCurrency],
-            licenseQuantitiesCount      = Object.keys(licenseQuantities).length,
-            selectedLicenseQuantity     = this.context.selectedLicenseQuantity,
-            isSinglePlan                = false;
+            prevPlan                      = null,
+            prevPlanFeaturesWithNoValue   = {},
+            packages                      = null,
+            licenseQuantities             = this.context.licenseQuantities[this.context.selectedCurrency],
+            licenseQuantitiesCount        = Object.keys(licenseQuantities).length,
+            noBillingCycleSupportLicenses = {},
+            isSinglePlan                  = false;
 
         if (this.context.paidPlansCount > 1 || 1 === licenseQuantitiesCount) {
             packages = this.context.plans;
@@ -153,42 +152,42 @@ class Packages extends Component {
                             return null;
                         }
 
-                        let pricingCollection        = [],
-                            installPlanLicensesCount = 1;
+                        let pricingCollection        = {},
+                            selectedPricing          = null,
+                            installPlanLicensesCount = 1,
+                            selectedLicenseQuantity  = this.context.selectedLicenseQuantity;
 
-                        if (isSinglePlan) {
-                            selectedPricing = plan.pricing[0];
-                            if (this.context.license && this.context.license.pricing_id == selectedPricing.id) {
-                                installPlanLicensesCount = selectedPricing.licenses;
+                        plan.pricing.map(pricing => {
+                            let licenses = pricing.getLicenses();
+
+                            if (
+                                pricing.is_hidden ||
+                                this.context.selectedCurrency !== pricing.currency ||
+                                ! Helper.isUndefinedOrNull(noBillingCycleSupportLicenses[licenses])
+                            ) {
+                                return;
                             }
 
-                            pricingCollection = [selectedPricing];
-                        } else {
-                            plan.pricing.map(pricing => {
-                                if (
-                                    pricing.is_hidden ||
-                                    this.context.selectedCurrency !== pricing.currency ||
-                                    ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)
-                                ) {
-                                    return;
-                                }
+                            if ( ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)) {
+                                noBillingCycleSupportLicenses[licenses] = true;
 
-                                pricingCollection.push(pricing);
+                                return;
+                            }
 
-                                if (
-                                    this.context.selectedCurrency == pricing.currency &&
-                                    selectedLicenseQuantity       == (null != pricing.licenses ? pricing.licenses : 0)
-                                ) {
-                                    selectedPricing = pricing;
-                                }
+                            pricingCollection[licenses] = pricing;
 
-                                if (this.context.license && this.context.license.pricing_id == pricing.id) {
-                                    installPlanLicensesCount = pricing.licenses;
-                                }
-                            });
-                        }
+                            if (isSinglePlan || selectedLicenseQuantity == licenses) {
+                                selectedPricing = pricing;
+                            }
 
-                        if (0 === pricingCollection.length) {
+                            if (this.context.license && this.context.license.pricing_id == pricing.id) {
+                                installPlanLicensesCount = pricing.licenses;
+                            }
+                        });
+
+                        let pricingLicenses = Object.keys(pricingCollection);
+
+                        if (0 === pricingLicenses.length) {
                             return null;
                         }
 
@@ -201,27 +200,15 @@ class Packages extends Component {
                                 /**
                                  * Select the first pricing if there's no previously selected pricing that matches the selected license quantity and currency.
                                  */
-                                this.previouslySelectedPricingByPlan[plan.id] = pricingCollection[0];
+                                this.previouslySelectedPricingByPlan[plan.id] = pricingCollection[pricingLicenses[0]];
                             }
 
                             selectedPricing = this.previouslySelectedPricingByPlan[plan.id];
 
-                            selectedLicenseQuantity = (null != selectedPricing.licenses ? selectedPricing.licenses : 0);
+                            selectedLicenseQuantity = selectedPricing.getLicenses();
                         }
 
                         this.previouslySelectedPricingByPlan[plan.id] = selectedPricing;
-
-                        let visiblePricingCount = pricingCollection.length;
-
-                        /**
-                         * Include filler rows to keep the alignment on the frontend when the number of license
-                         * quantities is not the same for all plans.
-                         */
-                        if ( ! isSinglePlan && licenseQuantitiesCount > pricingCollection.length) {
-                            for (let i = 0; i <= (licenseQuantitiesCount - pricingCollection.length); i ++) {
-                                pricingCollection.push({id: `filler_${i}`});
-                            }
-                        }
 
                         let planDescription = plan.description ?
                             plan.description :
@@ -328,7 +315,7 @@ class Packages extends Component {
                                 <div className="fs-selected-pricing-license-quantity">{selectedPricing.sitesLabel()}
                                     <Tooltip>
                                         <Fragment>
-                                            If you are running a multi-site network, each site in the network requires a license.{visiblePricingCount > 0 ? 'Therefore, if you need to use it on multiple sites, check out our multi-site prices.' : ''}
+                                            If you are running a multi-site network, each site in the network requires a license.{pricingLicenses.length > 0 ? 'Therefore, if you need to use it on multiple sites, check out our multi-site prices.' : ''}
                                         </Fragment>
                                     </Tooltip>
                                 </div>
@@ -341,12 +328,18 @@ class Packages extends Component {
                                 { ! isSinglePlan &&
                                 <table className="fs-license-quantities">
                                     <tbody>{
-                                        pricingCollection.map(pricing => {
-                                            if (0 === pricing.id.indexOf('filler_')) {
-                                                return <tr className="fs-license-quantity-container" key={pricing.id}><td>&nbsp;</td><td></td><td></td></tr>;
+                                        Object.keys(licenseQuantities).map(licenseQuantity => {
+                                            let pricing = pricingCollection[licenseQuantity];
+
+                                            if (Helper.isUndefinedOrNull(pricing)) {
+                                                if ( ! Helper.isUndefinedOrNull(noBillingCycleSupportLicenses[licenseQuantity])) {
+                                                    return null;
+                                                }
+
+                                                return <tr className="fs-license-quantity-container" key={licenseQuantity}><td>&nbsp;</td><td></td><td></td></tr>;
                                             }
 
-                                            let isPricingLicenseQuantitySelected = (selectedLicenseQuantity == (null == pricing.licenses ? 0 : pricing.licenses));
+                                            let isPricingLicenseQuantitySelected = (selectedLicenseQuantity == licenseQuantity);
 
                                             let multiSiteDiscount = PlanManager.getInstance().calculateMultiSiteDiscount(pricing, this.context.selectedBillingCycle);
 

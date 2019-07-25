@@ -208,6 +208,12 @@ export class Pricing {
         return parseFloat(amount);
     }
 
+    getLicenses() {
+        return this.isUnlimited() ?
+            99999 :
+            this.licenses;
+    }
+
     hasAnnualPrice() {
         return (Helper.isNumeric(this.annual_price) && this.annual_price > 0);
     }

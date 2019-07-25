@@ -121,9 +121,7 @@ class FreemiusPricingMain extends Component {
                     continue;
                 }
 
-                selectedLicenseQuantity = pricing.isUnlimited() ?
-                    0 :
-                    pricing.licenses;
+                selectedLicenseQuantity = pricing.getLicenses();
 
                 break;
             }
@@ -452,9 +450,7 @@ class FreemiusPricingMain extends Component {
 
                         currencies[pricing.currency] = true;
 
-                        let licenses = (null != pricing.licenses) ?
-                            pricing.licenses :
-                            0;
+                        let licenses = pricing.getLicenses();
 
                         if ( ! licenseQuantities[pricing.currency]) {
                             licenseQuantities[pricing.currency] = {};
