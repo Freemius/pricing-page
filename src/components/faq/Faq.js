@@ -4,6 +4,7 @@ import Section from "../Section";
 import {BillingCycle} from "../../entities/Pricing";
 import {RefundPolicyType} from "../../entities/Plugin";
 import {Helper} from "../../Helper";
+import {PageManager} from "../../services/PageManager";
 
 class Faq extends Component {
     static contextType = FSPricingContext;
@@ -121,9 +122,9 @@ class Faq extends Component {
 
         if (context.plugin.hasRefundPolicy()) {
             if (RefundPolicyType.STRICT !== context.plugin.refund_policy) {
-                refundAnswer = <Fragment><a className="message-trigger" data-for="#refund_policy" href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you are unhappy with the plugin.</Fragment>
+                refundAnswer = <Fragment><a className="message-trigger" onClick={evt => this.props.toggleRefundPolicyModal(evt)} href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you are unhappy with the plugin.</Fragment>
             } else {
-                refundAnswer = <Fragment><a className="message-trigger" data-for="#refund_policy" href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you experience an issue that makes the plugin unusable and we are unable to resolve it.</Fragment>
+                refundAnswer = <Fragment><a className="message-trigger" onClick={evt => this.props.toggleRefundPolicyModal(evt)} href="#">Yes we do!</a> We stand behind the quality of our product and will refund 100% of your money if you experience an issue that makes the plugin unusable and we are unable to resolve it.</Fragment>
             }
         }
 
@@ -162,7 +163,7 @@ class Faq extends Component {
 
         faq.push({
             'q': 'I have other pre-sale questions, can you help?',
-            'a':  <Fragment>Yes! You can ask us any question through our <a className="contact-link" data-subject="pre_sale_question" href="#">support page</a>.</Fragment>
+            'a':  <Fragment>Yes! You can ask us any question through our <a className="contact-link" href={PageManager.getInstance().getContactUrl('pre_sale_question')}>support page</a>.</Fragment>
         });
 
         let faqElements = [];

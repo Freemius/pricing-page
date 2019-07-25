@@ -4,6 +4,7 @@ import {RefundPolicyType} from "../entities/Plugin";
 import {Helper} from "../Helper";
 import guaranteeStamp from "../assets/img/guarantee-stamp.svg";
 import Icon from "./Icon";
+import {PageManager} from "../services/PageManager";
 
 class RefundPolicy extends Component {
     static contextType = FSPricingContext;
@@ -43,19 +44,19 @@ class RefundPolicy extends Component {
             <Fragment>
                 <h2 className="fs-money-back-guarantee-title">{plugin.money_back_period}-day {refundType}</h2>
                 <p className="fs-money-back-guarantee-message">{refundPolicy}</p>
-                <button className="fs-button fs-button--size-small" onClick={this.props.toggleRefundPolicyModal}>Learn More</button>
+                <button className="fs-button fs-button--size-small" onClick={evt => this.props.toggleRefundPolicyModal(evt)}>Learn More</button>
                 <img src={guaranteeStamp}/>
                 {this.context.showRefundPolicyModal &&
                     <div className="fs-modal fs-modal--refund-policy">
                         <section className="fs-content-container">
                             <header className="fs-header fs-dark">
                                 <h3>Refund Policy</h3>
-                                <i className="fs-close"><Icon icon={['fas', 'times-circle']} onClick={this.props.toggleRefundPolicyModal}/></i>
+                                <i className="fs-close"><Icon icon={['fas', 'times-circle']} onClick={evt => this.props.toggleRefundPolicyModal(evt)}/></i>
                             </header>
                             <div className="fs-content">
                                 <p>{refundPolicy}</p>
                                 <p>Just start a refund ticket through the "Contact Us" in the plugin's admin settings and we'll process a refund.</p>
-                                <p>To submit a refund request, please open a <a className="fs-contact-link" href="#" data-topic="fs-refund">refund support ticket</a>.</p>
+                                <p>To submit a refund request, please open a <a className="fs-contact-link" href={PageManager.getInstance().getContactUrl('refund')}>refund support ticket</a>.</p>
                             </div>
                         </section>
                     </div>

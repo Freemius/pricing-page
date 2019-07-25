@@ -28,6 +28,7 @@ import {PageManager} from "../services/PageManager";
 import {Helper} from "../Helper";
 import {TrackingManager} from "../services/TrackingManager";
 import {FS} from "../postmessage";
+import Loader from "./Loader";
 
 class FreemiusPricingMain extends Component {
     static contextType = FSPricingContext;
@@ -258,7 +259,9 @@ class FreemiusPricingMain extends Component {
         });
     }
 
-    toggleRefundPolicyModal() {
+    toggleRefundPolicyModal(evt) {
+        evt.preventDefault();
+
         this.setState({showRefundPolicyModal: ! this.state.showRefundPolicyModal});
     }
 
@@ -680,7 +683,7 @@ class FreemiusPricingMain extends Component {
                             </Section>
                             <Section fs-section="custom-implementation">
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>
-                                <p>We got you covered! <a href="#">Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
+                                <p>We got you covered! <a href={PageManager.getInstance().getContactUrl('pre_sale_question')}>Click here to contact us</a> and we'll scope a plan that's tailored to your needs.</p>
                             </Section>
                             {(pricingData.plugin.hasRefundPolicy() && ( ! this.state.isTrial || trialUtilized)) &&
                                 <Section fs-section="money-back-guarantee">
@@ -700,7 +703,7 @@ class FreemiusPricingMain extends Component {
                             <Testimonials />
                         </Section>
                         <Section fs-section="faq">
-                            <Faq />
+                            <Faq toggleRefundPolicyModal={this.toggleRefundPolicyModal}/>
                         </Section>
                     </main>
                     {pricingData.isActivatingTrial &&
