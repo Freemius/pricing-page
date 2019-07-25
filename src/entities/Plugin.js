@@ -27,7 +27,7 @@ export class Plugin {
     /**
      * @type int Money-back guarantee in days.
      */
-    moneyback_period = 0;
+    money_back_period = 0;
 
     /**
      * If add-on, the ID of the parent plugin.
@@ -80,13 +80,13 @@ export class Plugin {
     }
 
     hasMoneyBackPeriod() {
-        return (Helper.isNumeric(this.moneyback_period) && this.moneyback_period > 0);
+        return (Helper.isNumeric(this.money_back_period) && this.money_back_period > 0);
     }
 
     hasRefundPolicy() {
         return (
-           this.hasMoneyBackPeriod() &&
-                null !== (this.refund_policy)
+            this.hasMoneyBackPeriod() &&
+            (null !== this.refund_policy)
         );
     }
 
