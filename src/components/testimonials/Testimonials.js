@@ -237,7 +237,7 @@ class Testimonials extends Component {
                     </header>
                     <section>
                         <Icon icon={['fas', 'quote-left']} className="fs-icon-quote" />
-                        <blockquote className="fs-testimonial-message">{review.text}</blockquote>
+                        <blockquote className="fs-testimonial-message" dangerouslySetInnerHTML={{__html: review.text}}></blockquote>
                         <section className="fs-testimonial-author">
                             <div className="fs-testimonial-author-name">{review.name}</div>
                             <div>{review.job_title ? review.job_title + ', ' : ''}{review.company}</div>
