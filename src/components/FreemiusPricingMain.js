@@ -683,8 +683,8 @@ class FreemiusPricingMain extends Component {
                             }
                             <Section fs-section="badges">
                                 <Badges badges={[
-                                    {key: "fs-badges", src: badgeFreemius, alt: "Secure payments by Freemius - Sell and market freemium and premium WordPress plugins & themes"},
-                                    {key: "mcafee", src: badgeMcAfee, alt: "McAfee Badge"},
+                                    {key: "fs-badges", src: badgeFreemius, alt: "Secure payments by Freemius - Sell and market freemium and premium WordPress plugins & themes", link: "https://freemius.com/?badge=secure_payments&version=light#utm_source=wpadmin&utm_medium=payments_badge&utm_campaign=pricing_page"},
+                                    {key: "mcafee", src: badgeMcAfee, alt: "McAfee Badge", link: "https://www.mcafeesecure.com/verify?host=freemius.com"},
                                     {key: "paypal", src: badgePayPal, alt: "PayPal Verified Badge"},
                                     {key: "comodo", src: badgeComodo, alt: "Comodo Secure SSL Badge"}
                                 ]}/>

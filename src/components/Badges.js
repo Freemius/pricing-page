@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Helper} from "../Helper";
 
 /**
  * @author Leo Fajardo
@@ -11,7 +12,17 @@ class Badges extends Component {
     render() {
         return (
             <ul>
-                {this.props.badges.map(badge => <li key={badge.key} className="fs-badge"><img src={badge.src} alt={badge.alt} /></li>)}
+                {this.props.badges.map(
+                    badge => {
+                        let img = <img src={badge.src} alt={badge.alt} />;
+
+                        if (Helper.isNonEmptyString(badge.link)) {
+                            img = <a href={badge.link} target="_blank">{img}</a>;
+                        }
+
+                        return <li key={badge.key} className="fs-badge">{img}</li>;
+                    }
+                )}
             </ul>
         );
     }
