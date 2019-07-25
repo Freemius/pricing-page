@@ -597,7 +597,7 @@ class FreemiusPricingMain extends Component {
         let pricingData = this.state;
 
         if ( ! pricingData.plugin.id) {
-            return null;
+            return <Loader />;
         }
 
         let featuredPlan  = pricingData.featuredPlan,
@@ -698,14 +698,7 @@ class FreemiusPricingMain extends Component {
                         </Section>
                     </main>
                     {pricingData.isActivatingTrial &&
-                        <div className="fs-modal fs-modal--loading">
-                            <section className="fs-content-container">
-                                <div className="fs-content">
-                                    <span>Activating trial...</span>
-                                    <i></i>
-                                </div>
-                            </section>
-                        </div>
+                        <Loader title='Activating trial...' />
                     }
                 </div>
             </FSPricingContext.Provider>
