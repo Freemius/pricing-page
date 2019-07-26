@@ -224,7 +224,9 @@ class Package extends Component {
 
             this.previouslySelectedPricingByPlan[planPackage.id] = selectedPricing;
 
-            selectedPricingAmount = selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
+            selectedPricingAmount = (BillingCycleString.ANNUAL === this.context.selectedBillingCycle) ?
+                selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL).toString() :
+                selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
         }
 
         if ( ! planPackage.hasAnySupport()) {
@@ -286,7 +288,7 @@ class Package extends Component {
                         {
                             ! planPackage.is_free_plan &&
                             BillingCycleString.LIFETIME !== this.context.selectedBillingCycle &&
-                            <sub className="fs-selected-pricing-amount-cycle">/ {BillingCycleString.MONTHLY === this.context.selectedBillingCycle ? 'mo' : 'year'}</sub>
+                            <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>
                         }
                     </span>
                 </div>
