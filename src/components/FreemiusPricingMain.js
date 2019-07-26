@@ -29,6 +29,7 @@ import {Helper} from "../Helper";
 import {TrackingManager} from "../services/TrackingManager";
 import {FS} from "../postmessage";
 import Loader from "./Loader";
+import TrialConfirmationModal from "./TrialConfirmationModal";
 
 class FreemiusPricingMain extends Component {
     static contextType = FSPricingContext;
@@ -37,29 +38,31 @@ class FreemiusPricingMain extends Component {
         super(props);
 
         this.state = {
-            active_installs        : 0,
-            annualDiscount         : 0,
-            billingCycles          : [],
-            currencies             : [],
-            downloads              : 0,
-            faq                    : [],
-            firstPaidPlan          : null,
-            featuredPlan           : null,
-            isActivatingTrial      : false,
-            isPayPalSupported      : false,
-            isTrial                : ('true' === FSConfig.trial || true === FSConfig.trial),
-            plugin                 : {},
-            plans                  : [],
-            reviews                : [],
-            selectedBillingCycle   : Pricing.getBillingCyclePeriod(FSConfig.billing_cycle),
-            selectedCurrency       : this.getDefaultCurrency(),
-            selectedLicenseQuantity: this.getDefaultLicenseQuantity(),
-            upgradingToPlanID      : null
+            active_installs             : 0,
+            annualDiscount              : 0,
+            billingCycles               : [],
+            currencies                  : [],
+            downloads                   : 0,
+            faq                         : [],
+            firstPaidPlan               : null,
+            featuredPlan                : null,
+            isActivatingTrial           : false,
+            isPayPalSupported           : false,
+            isTrial                     : ('true' === FSConfig.trial || true === FSConfig.trial),
+            pendingConfirmationTrialPlan: null,
+            plugin                      : {},
+            plans                       : [],
+            reviews                     : [],
+            selectedBillingCycle        : Pricing.getBillingCyclePeriod(FSConfig.billing_cycle),
+            selectedCurrency            : this.getDefaultCurrency(),
+            selectedLicenseQuantity     : this.getDefaultLicenseQuantity(),
+            upgradingToPlanID           : null
         };
 
         this.changeBillingCycle      = this.changeBillingCycle.bind(this);
         this.changeCurrency          = this.changeCurrency.bind(this);
         this.changeLicenses          = this.changeLicenses.bind(this);
+        this.startTrial              = this.startTrial.bind(this);
         this.toggleRefundPolicyModal = this.toggleRefundPolicyModal.bind(this);
         this.upgrade                 = this.upgrade.bind(this);
     }
@@ -253,8 +256,9 @@ class FreemiusPricingMain extends Component {
             }
 
             this.setState({
-                'isActivatingTrial': false,
-                'upgradingToPlanID': null
+                isActivatingTrial           : false,
+                pendingConfirmationTrialPlan: null,
+                upgradingToPlanID           : null
             });
         });
     }
@@ -301,13 +305,17 @@ class FreemiusPricingMain extends Component {
             if (this.hasInstallContext()) {
                 this.startTrial(plan.id);
             } else {
-                FS.PostMessage.post('start_trial', {
-                    plugin_id   : this.state.plugin.id,
-                    plan_id     : plan.id,
-                    plan_name   : plan.name,
-                    plan_title  : plan.title,
-                    trial_period: plan.trial_period
-                });
+                if (this.isEmbeddedDashboardMode()) {
+                    this.setState({pendingConfirmationTrialPlan: plan});
+                } else {
+                    FS.PostMessage.post('start_trial', {
+                        plugin_id   : this.state.plugin.id,
+                        plan_id     : plan.id,
+                        plan_name   : plan.name,
+                        plan_title  : plan.title,
+                        trial_period: plan.trial_period
+                    });
+                }
             }
         } else {
             if (null === pricing) {
@@ -708,6 +716,9 @@ class FreemiusPricingMain extends Component {
                     </main>
                     {pricingData.isActivatingTrial &&
                         <Loader title='Activating trial...' />
+                    }
+                    { ! pricingData.isActivatingTrial && null !== pricingData.pendingConfirmationTrialPlan &&
+                        <TrialConfirmationModal cancelTrialHandler={() => this.setState({pendingConfirmationTrialPlan: null})} startTrialHandler={this.startTrial}/>
                     }
                 </div>
             </FSPricingContext.Provider>
