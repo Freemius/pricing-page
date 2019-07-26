@@ -12,8 +12,8 @@ class Loader extends Component {
     render() {
         return (
             <div className="fs-modal fs-modal--loading">
-                <section className="fs-content-container">
-                    <div className="fs-content">
+                <section className="fs-modal-content-container">
+                    <div className="fs-modal-content">
                         {Helper.isNonEmptyString(this.props.title) && <span>{this.props.title}</span>}
                         <i></i>
                     </div>

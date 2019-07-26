@@ -48,12 +48,12 @@ class RefundPolicy extends Component {
                 <img src={guaranteeStamp}/>
                 {this.context.showRefundPolicyModal &&
                     <div className="fs-modal fs-modal--refund-policy">
-                        <section className="fs-content-container">
-                            <header className="fs-header fs-dark">
+                        <section className="fs-modal-content-container">
+                            <header className="fs-modal-header">
                                 <h3>Refund Policy</h3>
-                                <i className="fs-close"><Icon icon={['fas', 'times-circle']} onClick={evt => this.props.toggleRefundPolicyModal(evt)}/></i>
+                                <i className="fs-modal-close"><Icon icon={['fas', 'times-circle']} onClick={evt => this.props.toggleRefundPolicyModal(evt)}/></i>
                             </header>
-                            <div className="fs-content">
+                            <div className="fs-modal-content">
                                 <p>{refundPolicy}</p>
                                 <p>Just start a refund ticket through the "Contact Us" in the plugin's admin settings and we'll process a refund.</p>
                                 <p>To submit a refund request, please open a <a className="fs-contact-link" href={PageManager.getInstance().getContactUrl(this.context.plugin, 'refund')}>refund support ticket</a>.</p>
