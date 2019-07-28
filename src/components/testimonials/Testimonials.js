@@ -1,6 +1,5 @@
 import React, {Component, Fragment} from 'react';
 import FSPricingContext from "../../FSPricingContext";
-import jQuery from 'jquery';
 import md5 from 'md5';
 import Icon from "../Icon";
 import CircleButton from "./CircleButton"
@@ -41,52 +40,61 @@ class Testimonials extends Component {
 
         let pricingData = this.context;
 
-        (function($) {
+        (function() {
             setTimeout(function() {
-                let carouselInterval    = null,
-                    firstVisibleIndex   = 0,
-                    maxVisibleReviews   = 3,
-                    $testimonialsSection = $('.fs-section-testimonials'),
-                    $track = $('.fs-testimonials-track'),
-                    $testimonials       = $track.find('.fs-testimonial'),
-                    $clones             = $track.find('.fs-testimonial.clone'),
-                    uniqueTestimonials  = ($testimonials.length - $clones.length),
-                    $testimonialsContainer              = $track.find('.fs-testimonials'),
+                let carouselInterval       = null,
+                    firstVisibleIndex      = 0,
+                    maxVisibleReviews      = 3,
+                    $testimonialsSection   = document.querySelector('.fs-section--testimonials'),
+                    $track                 = $testimonialsSection.querySelector('.fs-testimonials-track'),
+                    $testimonials          = $track.querySelectorAll('.fs-testimonial'),
+                    $clones                = $track.querySelectorAll('.fs-testimonial.clone'),
+                    uniqueTestimonials     = ($testimonials.length - $clones.length),
+                    $testimonialsContainer = $track.querySelector('.fs-testimonials'),
                     sectionWidth,
-                    cardMinWidth        = 250,
+                    cardMinWidth           = 250,
                     visibleCards,
                     cardWidth,
-                    speed               = 10000,
-                    isCarouselActive    = false;
+                    speed                  = 10000,
+                    isCarouselActive       = false;
 
                 let slide = function (selectedIndex, isInvisible) {
                     isInvisible = isInvisible || false;
 
                     if (isInvisible)
-                        $testimonialsSection.removeClass('ready');
+                        $testimonialsSection.classList.remove('ready');
 
                     let shiftedIndex   = maxVisibleReviews + selectedIndex,
                         selectedBullet = ((selectedIndex % uniqueTestimonials) + uniqueTestimonials) % uniqueTestimonials;
 
-                    $testimonialsSection.find('.slick-dots li.selected').removeClass('selected');
-                    $testimonialsSection.find('.slick-dots li[data-index=' + selectedBullet + ']').addClass('selected');
+                    $testimonialsSection.querySelector('.slick-dots li.selected').classList.remove('selected');
 
-                    $testimonialsContainer.css('left',  (-1)*(shiftedIndex * cardWidth) + 'px');
-                    $testimonials.attr('aria-hidden', 'true');
-                    for (var i = 0; i < visibleCards; i++){
-                        $($testimonials[i + shiftedIndex]).attr('aria-hidden', 'false');
+                    Array.from($testimonialsSection.querySelectorAll('.slick-dots li')).forEach(button => {
+                        if (selectedBullet == button.getAttribute('data-index')) {
+                            button.classList.add('selected');
+                        }
+                    });
+
+                    $testimonialsContainer.style.left = ((-1)*(shiftedIndex * cardWidth) + 'px');
+
+                    for (let $testimonial of $testimonials) {
+                        $testimonial.setAttribute('aria-hidden', 'true');
+                    }
+
+                    for (let i = 0; i < visibleCards; i++) {
+                        $testimonials[i + shiftedIndex].setAttribute('aria-hidden', 'false');
                     }
 
                     if (isInvisible)
-                        setTimeout(function(){
-                            $testimonialsSection.addClass('ready');
+                        setTimeout(function() {
+                            $testimonialsSection.classList.add('ready');
                         }, 500);
 
-                    if (selectedIndex == uniqueTestimonials){
+                    if (selectedIndex == uniqueTestimonials) {
                         // Jump back to first testimonial without a transition.
                         firstVisibleIndex = 0;
 
-                        setTimeout(function(){
+                        setTimeout(function() {
                             slide(firstVisibleIndex, true);
                         }, 1000);
                     }
@@ -95,7 +103,7 @@ class Testimonials extends Component {
                         // Jump forward to relevant testimonial.
                         firstVisibleIndex = selectedIndex + uniqueTestimonials;
 
-                        setTimeout(function(){
+                        setTimeout(function() {
                             slide(firstVisibleIndex, true);
                         }, 1000);
                     }
@@ -136,75 +144,97 @@ class Testimonials extends Component {
                 {
                     clearSliderInterval();
 
-                    $testimonialsSection.removeClass('ready');
+                    $testimonialsSection.classList.remove('ready');
 
-                    sectionWidth = $track.width();
+                    sectionWidth = parseFloat(window.getComputedStyle($track).width);
                     visibleCards = Math.min(maxVisibleReviews, Math.floor(sectionWidth / cardMinWidth));
-                    cardWidth = Math.floor(sectionWidth / visibleCards);
+                    cardWidth    = Math.floor(sectionWidth / visibleCards);
 
-                    // $quoteContainers.height('auto');
-                    $testimonialsContainer.width($testimonials.length * cardWidth);
-                    $testimonials.width(cardWidth);
+                    $testimonialsContainer.style.width = (($testimonials.length * cardWidth) + 'px');
+
+                    for (let $testimonial of $testimonials) {
+                        $testimonial.style.width = (cardWidth + 'px');
+                    }
 
                     let maxHeaderHeight  = 0;
                     let maxContentHeight = 0;
 
                     for (let i = 0; i < $testimonials.length; i++) {
-                        let $testimonial = $($testimonials[i]);
+                        let $testimonial        = $testimonials[i],
+                            $testimonialHeader  = $testimonial.querySelector('header'),
+                            $testimonialSection = $testimonial.querySelector('section');
 
-                        maxHeaderHeight  = Math.max(maxHeaderHeight, $testimonial.find('header').height());
-                        maxContentHeight = Math.max(maxContentHeight, $testimonial.find('> section').height());
+                        maxHeaderHeight  = Math.max(maxHeaderHeight, parseFloat(window.getComputedStyle($testimonialHeader).height));
+                        maxContentHeight = Math.max(maxContentHeight, parseFloat(window.getComputedStyle($testimonialSection).height));
                     }
 
-                    // Add profile picture space.
-                    // maxHeight = maxHeight + 40;
+                    for (let i = 0; i < $testimonials.length; i++) {
+                        let $testimonial        = $testimonials[i],
+                            $testimonialHeader  = $testimonial.querySelector('header'),
+                            $testimonialSection = $testimonial.querySelector('section');
 
-                    $testimonials.find('header').height(maxHeaderHeight + 'px');
-                    $testimonials.find('> section').height(maxContentHeight + 'px');
+                        $testimonialHeader.style.height = (maxHeaderHeight + 'px');
+                        $testimonialSection.style.height = (maxContentHeight + 'px');
+                    }
 
-                    $testimonialsContainer.css('left',  (-1)*((firstVisibleIndex + maxVisibleReviews) * cardWidth) + 'px');
+                    $testimonialsContainer.style.left = ('left',  (-1)*((firstVisibleIndex + maxVisibleReviews) * cardWidth) + 'px');
 
-                    $testimonialsSection.addClass('ready');
+                    $testimonialsSection.classList.add('ready');
 
                     isCarouselActive = (uniqueTestimonials > visibleCards);
 
                     // Show/hide carousel buttons.
-                    $testimonialsSection.find('.slick-arrow, .slick-dots').toggle(isCarouselActive);
+                    Array.from($testimonialsSection.querySelectorAll('.slick-arrow, .slick-dots')).forEach(button => {
+                        button.style.display = isCarouselActive ? 'block' : 'none';
+                    });
                 };
 
                 adjustTestimonials();
 
                 startSliderInterval();
 
-                $testimonialsSection.find('.fs-nav-next').click(function(){
+                $testimonialsSection.querySelector('.fs-nav-next').addEventListener('click', function() {
                     clearSliderInterval();
                     nextSlide();
                     startSliderInterval();
                 });
 
-                $testimonialsSection.find('.fs-nav-prev').click(function(){
+                $testimonialsSection.querySelector('.fs-nav-prev').addEventListener('click', function() {
                     clearSliderInterval();
                     prevSlide();
                     startSliderInterval();
                 });
 
-                $testimonialsSection.find('.slick-dots li').click(function(){
-                    if ($(this).hasClass('selected'))
-                        return;
+                Array.from($testimonialsSection.querySelectorAll('.slick-dots li')).forEach(button => {
+                    button.addEventListener('click', function(evt) {
+                        let parent = null;
 
-                    clearSliderInterval();
-                    firstVisibleIndex = parseInt($(this).attr('data-index'));
-                    slide(firstVisibleIndex);
-                    startSliderInterval();
+                        if ('span' === evt.target.tagName.toLowerCase()) {
+                            parent = evt.target.parentNode.parentNode;
+                        } else if ('button' === evt.target.tagName.toLowerCase()) {
+                            parent = evt.target.parentNode;
+                        } else {
+                            parent = evt.target;
+                        }
+
+                        if (parent.classList.contains('selected')) {
+                            return;
+                        }
+
+                        clearSliderInterval();
+                        firstVisibleIndex = parseInt(parent.getAttribute('data-index'));
+                        slide(firstVisibleIndex);
+                        startSliderInterval();
+                    });
                 });
 
-                $(window).resize(function() {
+                window.addEventListener('resize', function() {
                     adjustTestimonials();
 
                     startSliderInterval();
                 });
-            }, 3000);
-        })(jQuery);
+            }, 10);
+        })();
 
         let reviews           = [];
         let maxVisibleReviews = 3;
