@@ -2,7 +2,6 @@ import React, {Component, Fragment} from 'react';
 
 import '.././assets/scss/App.scss';
 
-import jQuery from 'jquery';
 import badgeFreemius from '.././assets/img/freemius-badge-secure-payments-light.svg';
 import badgeMcAfee from '.././assets/img/mcafee.png';
 import badgePayPal from '.././assets/img/paypal.png';
@@ -74,8 +73,6 @@ class FreemiusPricingMain extends Component {
     }
 
     appendScripts() {
-        window.jQuery = jQuery;
-
         let script = null;
 
         if ( ! this.hasInstallContext()) {
