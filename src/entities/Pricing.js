@@ -21,7 +21,8 @@ export const BillingCycleString = {
     'LIFETIME': 'lifetime'
 };
 
-export const DefaultCurrency = 'usd';
+export const DefaultCurrency   = 'usd';
+export const UnlimitedLicenses = 99999;
 
 export class Pricing {
 
@@ -212,7 +213,7 @@ export class Pricing {
 
     getLicenses() {
         return this.isUnlimited() ?
-            99999 :
+            UnlimitedLicenses :
             this.licenses;
     }
 

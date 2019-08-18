@@ -12,7 +12,7 @@ import defaultThemeIcon from '.././assets/img/theme-icon.png';
 
 import {Plan} from "../entities/Plan";
 import {Plugin} from "../entities/Plugin";
-import {BillingCycleString, CurrencySymbol, DefaultCurrency, Pricing} from '.././entities/Pricing';
+import {BillingCycleString, CurrencySymbol, DefaultCurrency, Pricing, UnlimitedLicenses} from '.././entities/Pricing';
 import {PlanManager} from '.././services/PlanManager';
 import FSPricingContext from ".././FSPricingContext";
 
@@ -207,10 +207,8 @@ class FreemiusPricingMain extends Component {
             }
 
             for (let pricing of plan.pricing) {
-                let selectedLicenseQuantity = (0 === this.state.selectedLicenseQuantity ? null : this.state.selectedLicenseQuantity);
-
                 if (
-                    pricing.licenses == selectedLicenseQuantity &&
+                    pricing.getLicenses() == this.state.selectedLicenseQuantity &&
                     pricing.currency === this.state.selectedCurrency
                 ) {
                     return pricing;
@@ -338,7 +336,9 @@ class FreemiusPricingMain extends Component {
             if (null !== pricing) {
                 params.pricing_id = pricing.id;
             } else {
-                params.licenses = this.state.selectedLicenseQuantity;
+                params.licenses = (UnlimitedLicenses == this.state.selectedLicenseQuantity) ?
+                    null :
+                    this.state.selectedLicenseQuantity;
             }
 
             handler.open(params);
