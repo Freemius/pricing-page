@@ -7,6 +7,8 @@ import badgeFreemius from '.././assets/img/freemius-badge-secure-payments-light.
 import badgeMcAfee from '.././assets/img/mcafee.png';
 import badgePayPal from '.././assets/img/paypal.png';
 import badgeComodo from '.././assets/img/comodo-short-green.png';
+import defaultPluginIcon from '.././assets/img/plugin-icon.png';
+import defaultThemeIcon from '.././assets/img/theme-icon.png';
 
 import {Plan} from "../entities/Plan";
 import {Plugin} from "../entities/Plugin";
@@ -62,6 +64,7 @@ class FreemiusPricingMain extends Component {
         this.changeBillingCycle      = this.changeBillingCycle.bind(this);
         this.changeCurrency          = this.changeCurrency.bind(this);
         this.changeLicenses          = this.changeLicenses.bind(this);
+        this.getModuleIcon           = this.getModuleIcon.bind(this);
         this.startTrial              = this.startTrial.bind(this);
         this.toggleRefundPolicyModal = this.toggleRefundPolicyModal.bind(this);
         this.upgrade                 = this.upgrade.bind(this);
@@ -132,6 +135,18 @@ class FreemiusPricingMain extends Component {
         }
 
         this.setState({selectedLicenseQuantity: selectedLicenseQuantity});
+    }
+
+    getModuleIcon() {
+        let defaultIconUrl = ('theme' === this.state.plugin.type) ?
+            defaultThemeIcon :
+            defaultPluginIcon;
+
+        return (
+            <object data={this.state.plugin.icon} className="fs-plugin-logo" type="image/png">
+                <img src={defaultIconUrl} className="fs-plugin-logo" alt={`${this.state.plugin.type}-logo`}/>
+            </object>
+        );
     }
 
     componentDidMount() {
@@ -663,7 +678,7 @@ class FreemiusPricingMain extends Component {
                             <h3>Choose your plan and upgrade in minutes!</h3>
                         </section>
                         <section className="fs-plugin-title-and-logo">
-                            <img src={pricingData.plugin.icon} className="fs-plugin-logo" alt="logo" width="48" height="48" />
+                            {this.getModuleIcon()}
                             <h1><strong>{pricingData.plugin.title}</strong></h1>
                         </section>
                     </header>
