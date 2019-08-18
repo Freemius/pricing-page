@@ -1,4 +1,4 @@
-import {NoJQueryPostMessageMixin} from "./nojquery.ba-postmessage";
+import "./nojquery.ba-postmessage";
 import {Helper} from "./Helper";
 
 let _FS = null;
