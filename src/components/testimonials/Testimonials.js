@@ -4,6 +4,11 @@ import md5 from 'md5';
 import Icon from "../Icon";
 import CircleButton from "./CircleButton"
 import {Helper} from "../../Helper";
+import defaultProfilePic0 from '../.././assets/img/fs/profile-pic-0.png';
+import defaultProfilePic1 from '../.././assets/img/fs/profile-pic-1.png';
+import defaultProfilePic2 from '../.././assets/img/fs/profile-pic-2.png';
+import defaultProfilePic3 from '../.././assets/img/fs/profile-pic-3.png';
+import defaultProfilePic4 from '../.././assets/img/fs/profile-pic-4.png';
 
 /**
  * @author Leo Fajardo
@@ -15,6 +20,14 @@ class Testimonials extends Component {
         super(props);
 
         this.getReviewRating = this.getReviewRating.bind(this);
+
+        this.defaultProfilePics = [
+            defaultProfilePic0,
+            defaultProfilePic1,
+            defaultProfilePic2,
+            defaultProfilePic3,
+            defaultProfilePic4
+        ];
     }
 
     /**
@@ -248,7 +261,7 @@ class Testimonials extends Component {
                 ((review.email.charAt(0).toLowerCase()).charCodeAt(0) - ('a').charCodeAt(0)) % 5 :
                 Math.floor(Math.random() * 4);
 
-            let defaultPicUrl = 'https://dashboard.freemius.com/assets/img/fs/profile-pics/profile-pic-' + defaultPicIndex + '.png';
+            let defaultPicUrl = this.defaultProfilePics[defaultPicIndex];
 
             reviews.push(
                 <section className={'fs-testimonial' + ((i < 0 || i >= reviewsCount) ? ' clone' : '')} data-index={i} data-id={review.id} key={i}>
