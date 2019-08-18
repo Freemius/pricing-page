@@ -11,6 +11,7 @@ import Placeholder from "./Placeholder";
 class Package extends Component {
     static contextType                   = FSPricingContext;
     static noBillingCycleSupportLicenses = {};
+    static contextInstallPlanFound       = false;
 
     previouslySelectedPricingByPlan = {};
 
@@ -62,6 +63,10 @@ class Package extends Component {
             currentPlanLicensesCount = installPlanLicensesCount,
             isFreePlan               = PlanManager.getInstance().isFreePlan(plan.pricing);
 
+        if (isContextInstallPlan) {
+            Package.contextInstallPlanFound = true;
+        }
+
         let label       = '',
             installPlan = isContextInstallPlan ?
                 plan :
@@ -75,7 +80,7 @@ class Package extends Component {
             ! this.context.isTrial &&
             (null !== installPlan) &&
             ! this.isInstallInTrial(this.context.install) &&
-            ! PlanManager.getInstance().isPaidPlan(installPlan.pricing)
+            PlanManager.getInstance().isPaidPlan(installPlan.pricing)
         );
 
         if (isContextInstallPlan || ( ! hasInstallContext && isFreePlan)) {
@@ -86,7 +91,7 @@ class Package extends Component {
             label = 'Downgrade';
         } else if (this.context.isTrial && plan.hasTrial()) {
             label = <Fragment>Start my free <nobr>{plan.trial_period} days</nobr></Fragment>;
-        } else if (isPayingUser && ! isContextInstallPlan) {
+        } else if (isPayingUser && ! Package.contextInstallPlanFound) {
             label = 'Downgrade';
         } else {
             label = 'Upgrade Now';
@@ -167,6 +172,7 @@ class Package extends Component {
             supportLabel                  = null;
 
         if (this.props.isFirstPlanPackage) {
+            Package.contextInstallPlanFound       = false;
             Package.noBillingCycleSupportLicenses = {};
         }
 
