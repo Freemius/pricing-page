@@ -201,7 +201,7 @@ class Package extends Component {
             this.previouslySelectedPricingByPlan[planPackage.id] = selectedPricing;
 
             selectedPricingAmount = (BillingCycleString.ANNUAL === this.context.selectedBillingCycle) ?
-                selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL).toString() :
+                selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL, true) :
                 selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
         }
 

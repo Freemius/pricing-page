@@ -201,11 +201,13 @@ export class Pricing {
                 break;
         }
 
+        amount = parseFloat(amount);
+
         if (format) {
             amount = Helper.formatNumber(amount);
         }
 
-        return parseFloat(amount);
+        return amount;
     }
 
     getLicenses() {
