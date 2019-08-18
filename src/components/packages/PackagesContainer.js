@@ -5,6 +5,8 @@ import { PlanManager } from "../../services/PlanManager";
 import { Helper } from "../../Helper";
 import { Plan } from "../../entities/Plan";
 import Package from "./Package";
+import Icon from "../Icon";
+import Placeholder from "./Placeholder";
 
 class PackagesContainer extends Component {
     static contextType = FSPricingContext;
@@ -260,10 +262,11 @@ class PackagesContainer extends Component {
     }
 
     render() {
-        let packages               = null,
-            licenseQuantities      = this.context.licenseQuantities[this.context.selectedCurrency],
-            licenseQuantitiesCount = Object.keys(licenseQuantities).length,
-            isSinglePlan           = false;
+        let packages                 = null,
+            licenseQuantities        = this.context.licenseQuantities[this.context.selectedCurrency],
+            licenseQuantitiesCount   = Object.keys(licenseQuantities).length,
+            currentLicenseQuantities = {},
+            isSinglePlan             = false;
 
         if (this.context.paidPlansCount > 1 || 1 === licenseQuantitiesCount) {
             // If there are more than one paid plans, create a package component for each plan.
@@ -307,7 +310,8 @@ class PackagesContainer extends Component {
             maxNonHighlightedFeaturesCount = 0,
             prevNonHighlightedFeatures     = {},
             maxPlanDescriptionLinesCount   = 0,
-            prevPlanPackage                = null;
+            prevPlanPackage                = null,
+            installPlanLicensesCount       = 0;
 
         for (let planPackage of packages) {
             if (planPackage.is_hidden) {
@@ -322,6 +326,44 @@ class PackagesContainer extends Component {
                 }
 
                 planPackage.is_free_plan = isFreePlan;
+            } else {
+                planPackage.pricingCollection = {};
+
+                planPackage.pricing.map(pricing => {
+                    let licenses = pricing.getLicenses();
+
+                    if (
+                        pricing.is_hidden ||
+                        this.context.selectedCurrency !== pricing.currency ||
+                        ! Helper.isUndefinedOrNull(Package.noBillingCycleSupportLicenses[licenses])
+                    ) {
+                        return;
+                    }
+
+                    if ( ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)) {
+                        Package.noBillingCycleSupportLicenses[licenses] = true;
+
+                        return;
+                    }
+
+                    planPackage.pricingCollection[licenses] = pricing;
+
+                    if (isSinglePlan || this.context.selectedLicenseQuantity == licenses) {
+                        planPackage.selectedPricing = pricing;
+                    }
+
+                    if (this.context.license && this.context.license.pricing_id == pricing.id) {
+                        installPlanLicensesCount = pricing.licenses;
+                    }
+                });
+
+                let pricingLicenses = Object.keys(planPackage.pricingCollection);
+
+                if (0 === pricingLicenses.length) {
+                    continue;
+                }
+
+                planPackage.pricingLicenses = pricingLicenses;
             }
 
             planPackage.highlighted_features    = [];
@@ -374,6 +416,18 @@ class PackagesContainer extends Component {
             maxHighlightedFeaturesCount    = Math.max(maxHighlightedFeaturesCount, planPackage.highlighted_features.length);
             maxNonHighlightedFeaturesCount = Math.max(maxNonHighlightedFeaturesCount, planPackage.nonhighlighted_features.length);
 
+            for (let pricing of planPackage.pricing) {
+                if (
+                    pricing.is_hidden ||
+                    this.context.selectedCurrency !== pricing.currency ||
+                    ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)
+                ) {
+                    continue;
+                }
+
+                currentLicenseQuantities[pricing.getLicenses()] = true;
+            }
+
             if ( ! isSinglePlan) {
                 prevPlanPackage = planPackage;
             }
@@ -407,7 +461,7 @@ class PackagesContainer extends Component {
                 const total = (maxPlanDescriptionLinesCount - visiblePlanPackage.description_lines.length);
 
                 for (let i = 0; i < total; i ++) {
-                    visiblePlanPackage.description_lines.push(<Fragment key={`filler_${i}`}>&nbsp;</Fragment>);
+                    visiblePlanPackage.description_lines.push(<Placeholder key={`filler_${i}`}></Placeholder>);
                 }
             }
 
@@ -436,10 +490,12 @@ class PackagesContainer extends Component {
                 <Package
                     key={isSinglePlan ? visiblePlanPackage.pricing[0].id : visiblePlanPackage.id}
                     isFirstPlanPackage={isFirstPlanPackage}
+                    installPlanLicensesCount={installPlanLicensesCount}
                     isSinglePlan={isSinglePlan}
                     maxHighlightedFeaturesCount={maxHighlightedFeaturesCount}
                     maxNonHighlightedFeaturesCount={maxNonHighlightedFeaturesCount}
                     licenseQuantities={licenseQuantities}
+                    currentLicenseQuantities={currentLicenseQuantities}
                     planPackage={visiblePlanPackage}
                     changeLicensesHandler={this.props.changeLicensesHandler}
                     upgradeHandler={this.props.upgradeHandler}
@@ -456,8 +512,8 @@ class PackagesContainer extends Component {
         return <Fragment>
             <nav className="fs-prev-package"><Icon icon={['fas', 'chevron-left']}/></nav>
             <section className="fs-packages-nav">
-                {packages.length > 3 && <select className="fs-packages-menu" onChange={this.props.changePlanHandler} value={selectedPlanID}>{mobileDropdownOptions}</select>}
-                {packages.length <= 3 && <ul className="fs-packages-tab">{mobileTabs}</ul>}
+                {packageComponents.length > 3 && <select className="fs-packages-menu" onChange={this.props.changePlanHandler} value={selectedPlanID}>{mobileDropdownOptions}</select>}
+                {packageComponents.length <= 3 && <ul className="fs-packages-tab">{mobileTabs}</ul>}
                 <ul className={"fs-packages" + (hasFeaturedPlan ? " fs-has-featured-plan" : "")}>{packageComponents}</ul>
             </section>
             <nav className="fs-next-package"><Icon icon={['fas', 'chevron-right']}/></nav>

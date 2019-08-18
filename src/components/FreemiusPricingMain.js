@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, Fragment} from 'react';
 
 import '.././assets/scss/App.scss';
 
@@ -50,10 +50,12 @@ class FreemiusPricingMain extends Component {
             featuredPlan                : null,
             isActivatingTrial           : false,
             isPayPalSupported           : false,
+            isNetworkTrial              : false,
             isTrial                     : ('true' === FSConfig.trial || true === FSConfig.trial),
             pendingConfirmationTrialPlan: null,
             plugin                      : {},
             plans                       : [],
+            selectedPlanID              : null,
             reviews                     : [],
             selectedBillingCycle        : Pricing.getBillingCyclePeriod(FSConfig.billing_cycle),
             selectedCurrency            : this.getDefaultCurrency(),
@@ -64,6 +66,7 @@ class FreemiusPricingMain extends Component {
         this.changeBillingCycle      = this.changeBillingCycle.bind(this);
         this.changeCurrency          = this.changeCurrency.bind(this);
         this.changeLicenses          = this.changeLicenses.bind(this);
+        this.changePlan              = this.changePlan.bind(this);
         this.getModuleIcon           = this.getModuleIcon.bind(this);
         this.startTrial              = this.startTrial.bind(this);
         this.toggleRefundPolicyModal = this.toggleRefundPolicyModal.bind(this);
@@ -137,6 +140,18 @@ class FreemiusPricingMain extends Component {
         this.setState({selectedLicenseQuantity: selectedLicenseQuantity});
     }
 
+    changePlan(e) {
+        let selectedPlanID = e.target.value ?
+            e.target.value :
+            (e.target.dataset.planId ?
+                e.target.dataset.planId :
+                e.target.parentNode.dataset.planId);
+
+        e.preventDefault();
+
+        this.setState({selectedPlanID: selectedPlanID});
+    }
+
     getModuleIcon() {
         let defaultIconUrl = ('theme' === this.state.plugin.type) ?
             defaultThemeIcon :
@@ -151,8 +166,6 @@ class FreemiusPricingMain extends Component {
 
     componentDidMount() {
         this.fetchPricingData();
-
-        this.appendScripts();
     }
 
     /**
@@ -226,13 +239,21 @@ class FreemiusPricingMain extends Component {
      * @return {boolean}
      */
     isEmbeddedDashboardMode() {
-        return ( ! Helper.isUndefinedOrNull(FSConfig.wp));
+        if ( ! this.isDashboardMode()) {
+            return false;
+        }
+
+        return (Helper.isUndefinedOrNull(FS.PostMessage.parent_url()));
     }
 
     /**
      * @return {boolean}
      */
     isProduction() {
+        if ( ! Helper.isUndefinedOrNull(FSConfig.is_production)) {
+            return FSConfig.is_production;
+        }
+
         return (-1 === ['3000', '8080'].indexOf(window.location.port));
     }
 
@@ -240,7 +261,7 @@ class FreemiusPricingMain extends Component {
      * @return {boolean}
      */
     isSandboxPaymentsMode() {
-        return (Helper.isNonEmptyString(FSConfig.sandbox_token) && Helper.isNumeric(FSConfig.timestamp));
+        return (Helper.isNonEmptyString(FSConfig.sandbox) && Helper.isNumeric(FSConfig.s_ctx_ts));
     }
 
     startTrial(planID) {
@@ -249,19 +270,28 @@ class FreemiusPricingMain extends Component {
             'upgradingToPlanID': planID
         });
 
-        RequestManager.getInstance().request({
+        let endpointUrl = this.isEmbeddedDashboardMode() ?
+            FSConfig.request_handler_url :
+            FSConfig.fs_wp_endpoint_url + '/action/service/subscribe/trial/';
+
+        RequestManager.getInstance().request(endpointUrl, {
+            http_referer  : window.location.href,
             pricing_action: 'start_trial',
             plan_id       : planID
         }).then(result => {
-            if (result.data && result.data.next_page) {
+            if (result.success) {
                 // Track trial start.
                 this.trackingManager.track('started');
 
-                if (Helper.isNonEmptyString(result.data.next_page)) {
-                    PageManager.getInstance().redirect(result.data.next_page);
+                const parentUrl = FS.PostMessage.parent_url();
+
+                if ( ! Helper.isNonEmptyString(parentUrl)) {
+                    if (Helper.isNonEmptyString(FSConfig.next)) {
+                        PageManager.getInstance().redirect(FSConfig.next);
+                    }
                 } else {
                     FS.PostMessage.post('forward', {
-                        url: FS.Page.url(FS.PostMessage.parent_url(), {
+                        url: PageManager.getInstance().addQueryArgs(parentUrl, {
                             page     : this.state.plugin.menu_slug + '-account',
                             fs_action: this.state.plugin.unique_affix + '_sync_license',
                             plugin_id: this.state.plugin.id
@@ -289,7 +319,7 @@ class FreemiusPricingMain extends Component {
             return;
         }
 
-        if ( ! this.isDashboardMode() && ! Helper.isUndefinedOrNull(window.FS)) {
+        if ( ! this.isEmbeddedDashboardMode()) {
             let handler = window.FS.Checkout.configure({
                 plugin_id    : this.state.plugin.id,
                 public_key   : this.state.plugin.public_key,
@@ -320,7 +350,7 @@ class FreemiusPricingMain extends Component {
             if (this.hasInstallContext()) {
                 this.startTrial(plan.id);
             } else {
-                if (this.isEmbeddedDashboardMode()) {
+                if (Helper.isUndefinedOrNull(FS.PostMessage.parent_url())) {
                     this.setState({pendingConfirmationTrialPlan: plan});
                 } else {
                     FS.PostMessage.post('start_trial', {
@@ -357,37 +387,36 @@ class FreemiusPricingMain extends Component {
                     billing_cycle : billingCycle
                 };
 
-                if ( ! this.isEmbeddedDashboardMode()) {
+                if (Helper.isUndefinedOrNull(FSConfig.checkout_url)) {
                     FS.PostMessage.post('forward', {
                         url: PageManager.getInstance().addQueryArgs(window.location.origin + '/action/service/paypal/express-checkout/', params)
                     });
                 } else {
-                    params.http_referer = (-1 !== FSConfig.wp.checkout_url.indexOf('?')) ?
+                    params.http_referer = (-1 !== FSConfig.checkout_url.indexOf('?')) ?
                         FSConfig.wp.checkout_url.split('?')[0] :
                         FSConfig.wp.checkout_url;
 
-                    PageManager.getInstance().redirect(FSConfig.wp.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', params);
+                    PageManager.getInstance().redirect(FSConfig.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', params);
                 }
             } else {
-                if (this.isEmbeddedDashboardMode()) {
-                    PageManager.getInstance().redirect(FSConfig.wp.checkout_url, {
-                        billing_cycle: billingCycle,
-                        currency     : this.state.selectedCurrency,
-                        plan_id      : plan.id,
-                        plan_name    : plan.name,
-                        pricing_id   : pricing.id
-                    });
+                let parentUrl = FS.PostMessage.parent_url(),
+                    urlParams = {
+                    checkout     : 'true',
+                    plan_id      : plan.id,
+                    plan_name    : plan.name,
+                    billing_cycle: billingCycle,
+                    pricing_id   : pricing.id,
+                    currency     : this.state.selectedCurrency
+                };
+
+                if ( ! Helper.isNonEmptyString(parentUrl)) {
+                    PageManager.getInstance().redirect(window.location.href, urlParams);
                 } else {
                     FS.PostMessage.post('forward', {
-                        url: PageManager.getInstance().addQueryArgs(FS.PostMessage.parent_url(), {
-                            page         : this.state.plugin.menu_slug + '-pricing',
-                            checkout     : 'true',
-                            plan_id      : plan.id,
-                            plan_name    : plan.name,
-                            billing_cycle: billingCycle,
-                            pricing_id   : pricing.id,
-                            currency     : this.state.selectedCurrency
-                        })
+                        url: PageManager.getInstance().addQueryArgs(
+                            parentUrl,
+                            {...urlParams, ...{page: this.state.plugin.menu_slug + '-pricing'}}
+                        )
                     });
                 }
             }
@@ -395,7 +424,13 @@ class FreemiusPricingMain extends Component {
     }
 
     fetchPricingData() {
-        RequestManager.getInstance().request({'pricing_action': 'fetch_pricing_data'}).then(pricingData => {
+        let params = {
+            pricing_action: 'fetch_pricing_data',
+            trial         : this.state.isTrial,
+            is_sandbox    : this.isSandboxPaymentsMode()
+        };
+
+        RequestManager.getInstance().request(FSConfig.request_handler_url, params).then(pricingData => {
             if (pricingData.data) {
                 pricingData = pricingData.data;
             }
@@ -421,7 +456,9 @@ class FreemiusPricingMain extends Component {
                 priorityEmailSupportPlanID      = null,
                 selectedBillingCycle            = this.state.selectedBillingCycle,
                 paidPlanWithTrial               = null,
-                isTrial                         = this.state.isTrial;
+                isNetworkTrial                  = false,
+                isTrial                         = ('true' === pricingData.trial_mode || true === pricingData.trial_mode),
+                trialUtilized                   = ('true' === pricingData.trial_utilized || true === pricingData.trial_utilized);
 
                 for (let planIndex = 0; planIndex < pricingData.plans.length; planIndex ++) {
                     if ( ! pricingData.plans.hasOwnProperty(planIndex)) {
@@ -527,6 +564,8 @@ class FreemiusPricingMain extends Component {
                         )
                     )
                 ) {
+                    isNetworkTrial = true;
+
                     /**
                      * Trial mode in the network level is currently disabled since the trial logic allows only one trial per user per product.
                      */
@@ -569,13 +608,17 @@ class FreemiusPricingMain extends Component {
 
                 let parentUrl = FS.PostMessage.parent_url();
 
-                if (Helper.isNonEmptyString(parentUrl)) {
+                if (Helper.isNonEmptyString(FSConfig.menu_slug)) {
+                    plugin.menu_slug = FSConfig.menu_slug;
+                } else if (Helper.isNonEmptyString(parentUrl)) {
                     let page = PageManager.getInstance().getQuerystringParam(parentUrl, 'page');
 
                     plugin.menu_slug = page.substring(0, page.length - ('-pricing').length);
                 }
 
-                plugin.unique_affix = FSConfig.unique_affix;
+                plugin.unique_affix = ( ! Helper.isUndefinedOrNull(FSConfig.unique_affix)) ?
+                    FSConfig.unique_affix :
+                    (plugin.slug + ('theme' === plugin.type ? '-theme' : ''));
 
                 this.setState({
                     active_installs               : pricingData.active_installs,
@@ -605,9 +648,13 @@ class FreemiusPricingMain extends Component {
                     reviews                       : pricingData.reviews,
                     selectedBillingCycle          : selectedBillingCycle,
                     skipDirectlyToPayPal          : pricingData.skip_directly_to_paypal,
+                    isNetworkTrial                : isNetworkTrial,
                     isTrial                       : isTrial,
+                    trialUtilized                 : trialUtilized,
                     showRefundPolicyModal         : false
                 });
+
+                this.appendScripts();
 
                 this.trackingManager = TrackingManager.getInstance({
                     billingCycle: Pricing.getBillingCyclePeriod(this.state.selectedBillingCycle),
@@ -619,7 +666,7 @@ class FreemiusPricingMain extends Component {
                     pluginID    : this.state.plugin.id,
                     type        : this.state.plugin.type,
                     uid         : this.hasInstallContext() ? this.state.install.id : null,
-                    userID      : (this.hasInstallContext() ? pricingData.install.user_id : null)
+                    userID      : (this.hasInstallContext() ? this.state.install.user_id : null)
                 });
 
                 FS.PostMessage.init_child();
@@ -638,7 +685,6 @@ class FreemiusPricingMain extends Component {
             trialUtilized = false;
 
         if (null !== featuredPlan) {
-            console.log(featuredPlan);
             let hasAnyVisiblePricing = false;
 
             for (let pricing of featuredPlan.pricing) {
@@ -669,9 +715,26 @@ class FreemiusPricingMain extends Component {
             }
         }
 
+        let trialMessage = null;
+
+        if (pricingData.trialUtilized || pricingData.isNetworkTrial) {
+            if (pricingData.isNetworkTrial) {
+                trialMessage = 'Multisite network level trials are currently not supported. Apologies for the inconvenience.';
+            } else if ( ! pricingData.isTrial) {
+                let supportEmailAddress = this.state.plugin.main_support_email_address;
+
+                trialMessage = <Fragment>Sorry, but you have already utilized a trial. Please <a href={`mailto:${supportEmailAddress}`}>contact us</a> if you still want to test the paid version.</Fragment>;
+            } else {
+                trialMessage = 'Trial was already utilized for this site and only enabled for testing purposes since you are running in a sandbox mode.';
+            }
+
+            trialMessage = <div className="fs-trial-message">{trialMessage}</div>;
+        }
+
         return (
             <FSPricingContext.Provider value={this.state}>
                 <div id="fs_pricing_wrapper">
+                    {trialMessage}
                     <header className="fs-app-header">
                         <section className="fs-page-title">
                             <h2>Plans and Pricing</h2>
@@ -702,7 +765,7 @@ class FreemiusPricingMain extends Component {
                                 <CurrencySelector handler={this.changeCurrency}/>
                             </Section>
                             <Section fs-section="packages">
-                                <PackagesContainer changeLicensesHandler={this.changeLicenses} upgradeHandler={this.upgrade}/>
+                                <PackagesContainer changeLicensesHandler={this.changeLicenses} changePlanHandler={this.changePlan} upgradeHandler={this.upgrade}/>
                             </Section>
                             <Section fs-section="custom-implementation">
                                 <h2>Need more sites, custom implementation and dedicated support?</h2>

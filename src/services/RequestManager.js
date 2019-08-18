@@ -1,5 +1,6 @@
 import {Helper} from "../Helper";
 import {FSConfig} from "../index";
+import {PageManager} from "./PageManager";
 
 /**
  * @author Leo Fajardo
@@ -31,15 +32,17 @@ function getInstance() {
             return params.join('&');
         },
         /**
+         * @param {string} url
          * @param {object} data
          *
          * @return {Promise}
          */
-        request: function(data) {
-            return fetch(FSConfig.api_url, {
-                method : 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body   : this.buildQueryString(data)
+        request: function(url, data) {
+            data = {...data, ...FSConfig};
+
+            return fetch(PageManager.getInstance().addQueryArgs(url, data), {
+                method : 'GET',
+                headers: {'Content-Type': 'application/json'},
             }).then(response => {
                 // Parse JSON response into native JavaScript object.
                 let jsonResponse = response.json();

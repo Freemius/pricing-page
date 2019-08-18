@@ -160,16 +160,16 @@ class Package extends Component {
     }
 
     render() {
-        let isSinglePlan                  = this.props.isSinglePlan,
-            planPackage                   = this.props.planPackage,
-            installPlanLicensesCount      = 1,
-            licenseQuantities             = this.props.licenseQuantities,
-            pricingLicenses               = null,
-            selectedLicenseQuantity       = this.context.selectedLicenseQuantity,
-            pricingCollection             = {},
-            selectedPricing               = null,
-            selectedPricingAmount         = null,
-            supportLabel                  = null;
+        let isSinglePlan             = this.props.isSinglePlan,
+            planPackage              = this.props.planPackage,
+            installPlanLicensesCount = this.props.installPlanLicensesCount,
+            currentLicenseQuantities = this.props.currentLicenseQuantities,
+            pricingLicenses          = null,
+            selectedLicenseQuantity  = this.context.selectedLicenseQuantity,
+            pricingCollection        = {},
+            selectedPricing          = null,
+            selectedPricingAmount    = null,
+            supportLabel             = null;
 
         if (this.props.isFirstPlanPackage) {
             Package.contextInstallPlanFound       = false;
@@ -177,39 +177,9 @@ class Package extends Component {
         }
 
         if ( ! planPackage.is_free_plan) {
-            planPackage.pricing.map(pricing => {
-                let licenses = pricing.getLicenses();
-
-                if (
-                    pricing.is_hidden ||
-                    this.context.selectedCurrency !== pricing.currency ||
-                    ! Helper.isUndefinedOrNull(Package.noBillingCycleSupportLicenses[licenses])
-                ) {
-                    return;
-                }
-
-                if ( ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)) {
-                    Package.noBillingCycleSupportLicenses[licenses] = true;
-
-                    return;
-                }
-
-                pricingCollection[licenses] = pricing;
-
-                if (isSinglePlan || selectedLicenseQuantity == licenses) {
-                    selectedPricing = pricing;
-                }
-
-                if (this.context.license && this.context.license.pricing_id == pricing.id) {
-                    installPlanLicensesCount = pricing.licenses;
-                }
-            });
-
-            pricingLicenses = Object.keys(pricingCollection);
-
-            if (0 === pricingLicenses.length) {
-                return null;
-            }
+            pricingCollection = planPackage.pricingCollection;
+            pricingLicenses   = planPackage.pricingLicenses;
+            selectedPricing   = planPackage.selectedPricing;
 
             if ( ! selectedPricing) {
                 if (
@@ -323,14 +293,10 @@ class Package extends Component {
                 { ! isSinglePlan &&
                 <table className="fs-license-quantities">
                     <tbody>{
-                        Object.keys(licenseQuantities).map(licenseQuantity => {
+                        Object.keys(currentLicenseQuantities).map(licenseQuantity => {
                             let pricing = pricingCollection[licenseQuantity];
 
                             if (Helper.isUndefinedOrNull(pricing)) {
-                                if ( ! Helper.isUndefinedOrNull(Package.noBillingCycleSupportLicenses[licenseQuantity])) {
-                                    return null;
-                                }
-
                                 return <tr className="fs-license-quantity-container" key={licenseQuantity}><td><Placeholder/></td><td></td><td></td></tr>;
                             }
 
