@@ -887,10 +887,10 @@
     }
 
     .fs-section--faq {
-      max-width: 850px;
       background: #f1f1f1;
 
       .fs-section--faq-items {
+        max-width: 850px;
         text-align: left;
         columns: 2;
         column-gap: 20px;
