@@ -64,7 +64,7 @@ class Faq extends Component {
                             isNonBlocking ?
                                 " You'll" :
                                 ' If you cancel ' + ( ! isBlockingAnnually ? 'an annual' : 'a monthly') + " subscription, you'll"
-                        ) + `still be able to use the ${moduleLabel} without updates or support.`
+                        ) + ` still be able to use the ${moduleLabel} without updates or support.`
                 )
         });
 
@@ -113,7 +113,7 @@ class Faq extends Component {
 
         faq.push({
             'q': 'What payment methods are accepted?',
-            'a': (context.isPaypalSupported ?
+            'a': (context.isPayPalSupported ?
                     'We accept all major credit cards including Visa, Mastercard, American Express, as well as PayPal payments.' :
                     <Fragment>We accept all major credit cards including Visa, Mastercard and American Express.<br />Unfortunately, due to regulations in your country related to PayPal’s subscriptions, we won’t be able to accept payments via PayPal.</Fragment>)
         });

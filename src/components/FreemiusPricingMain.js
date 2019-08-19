@@ -443,6 +443,7 @@ class FreemiusPricingMain extends Component {
                 hasEmailSupportForAllPaidPlans  = true,
                 hasEmailSupportForAllPlans      = true,
                 featuredPlan                    = null,
+                firstPaidPlan                   = null,
                 hasLifetimePricing              = false,
                 hasMonthlyCycle                 = false,
                 licenseQuantities               = {},
@@ -524,6 +525,10 @@ class FreemiusPricingMain extends Component {
                     }
 
                     let isPaidPlan = planManager.isPaidPlan(pricingCollection);
+
+                    if (isPaidPlan && null === firstPaidPlan) {
+                        firstPaidPlan = plan;
+                    }
 
                     if ( ! plan.hasEmailSupport()) {
                         hasEmailSupportForAllPlans = false;
@@ -631,10 +636,12 @@ class FreemiusPricingMain extends Component {
                     hasEmailSupportForAllPaidPlans: hasEmailSupportForAllPaidPlans,
                     hasEmailSupportForAllPlans    : hasEmailSupportForAllPlans,
                     featuredPlan                  : featuredPlan,
+                    firstPaidPlan                 : firstPaidPlan,
                     hasLifetimePricing            : hasLifetimePricing,
                     hasMonthlyCycle               : hasMonthlyCycle,
-                    hasPremiumVersion             : pricingData.hasPremiumVersion,
+                    hasPremiumVersion             : ('true' === pricingData.plugin.has_premium_version || true === pricingData.plugin.has_premium_version),
                     install                       : pricingData.install,
+                    isPayPalSupported             : ('true' === pricingData.is_paypal_supported || true === pricingData.is_paypal_supported),
                     licenseQuantities             : licenseQuantities,
                     paidPlansCount                : paidPlansCount,
                     paidPlanWithTrial             : paidPlanWithTrial,
