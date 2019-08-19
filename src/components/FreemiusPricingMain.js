@@ -364,7 +364,9 @@ class FreemiusPricingMain extends Component {
                 pricing = this.getSelectedPlanPricing(plan.id);
             }
 
-            let billingCycle = this.state.selectedBillingCycle;
+            let parentUrl    = FS.PostMessage.parent_url(),
+                hasParentUrl = Helper.isNonEmptyString(parentUrl),
+                billingCycle = this.state.selectedBillingCycle;
 
             if (this.state.skipDirectlyToPayPal) {
                 let data         = {},
@@ -384,20 +386,17 @@ class FreemiusPricingMain extends Component {
                     billing_cycle : billingCycle
                 };
 
-                if (Helper.isUndefinedOrNull(FSConfig.checkout_url)) {
+                if (hasParentUrl) {
                     FS.PostMessage.post('forward', {
-                        url: PageManager.getInstance().addQueryArgs(window.location.origin + '/action/service/paypal/express-checkout/', params)
+                        url: PageManager.getInstance().addQueryArgs(FSConfig.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', params)
                     });
                 } else {
-                    params.http_referer = (-1 !== FSConfig.checkout_url.indexOf('?')) ?
-                        FSConfig.wp.checkout_url.split('?')[0] :
-                        FSConfig.wp.checkout_url;
+                    params.http_referer = window.location.href;
 
                     PageManager.getInstance().redirect(FSConfig.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', params);
                 }
             } else {
-                let parentUrl = FS.PostMessage.parent_url(),
-                    urlParams = {
+                let urlParams = {
                     checkout     : 'true',
                     plan_id      : plan.id,
                     plan_name    : plan.name,
@@ -406,7 +405,7 @@ class FreemiusPricingMain extends Component {
                     currency     : this.state.selectedCurrency
                 };
 
-                if ( ! Helper.isNonEmptyString(parentUrl)) {
+                if ( ! hasParentUrl) {
                     PageManager.getInstance().redirect(window.location.href, urlParams);
                 } else {
                     FS.PostMessage.post('forward', {
