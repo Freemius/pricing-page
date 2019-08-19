@@ -47,10 +47,6 @@ class Testimonials extends Component {
     }
 
     render() {
-        if ( ! this.context || 0 === this.context.reviews.length ) {
-            return <Fragment></Fragment>;
-        }
-
         let pricingData = this.context;
 
         (function() {

@@ -789,9 +789,9 @@ class FreemiusPricingMain extends Component {
                                 ]}/>
                             </Section>
                         </Section>
-                        <Section fs-section="testimonials">
+                        {( ! Helper.isUndefinedOrNull(this.state.reviews) && this.state.reviews.length > 0) && <Section fs-section="testimonials">
                             <Testimonials />
-                        </Section>
+                        </Section>}
                         <Section fs-section="faq">
                             <Faq toggleRefundPolicyModal={this.toggleRefundPolicyModal}/>
                         </Section>
