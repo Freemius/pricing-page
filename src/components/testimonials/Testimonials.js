@@ -269,7 +269,7 @@ class Testimonials extends Component {
                         <div className="fs-testimonial-logo">
                             <img src={
                                 review.email ?
-                                    '//gravatar.com/avatar/' + md5(review.email) + '?s=80&d=' . encodeURIComponent(defaultPicUrl) :
+                                    '//gravatar.com/avatar/' + md5(review.email) + '?s=80&d=' + encodeURIComponent(defaultPicUrl) :
                                     defaultPicUrl
                             } />
                         </div>

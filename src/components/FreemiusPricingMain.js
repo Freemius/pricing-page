@@ -651,7 +651,7 @@ class FreemiusPricingMain extends Component {
                     priorityEmailSupportPlanID    : priorityEmailSupportPlanID,
                     reviews                       : pricingData.reviews,
                     selectedBillingCycle          : selectedBillingCycle,
-                    skipDirectlyToPayPal          : pricingData.skip_directly_to_paypal,
+                    skipDirectlyToPayPal          : ('true' === pricingData.skip_directly_to_paypal || true === pricingData.skip_directly_to_paypal),
                     isNetworkTrial                : isNetworkTrial,
                     isTrial                       : isTrial,
                     trialUtilized                 : trialUtilized,
