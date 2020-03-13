@@ -32,8 +32,8 @@ function getInstance() {
             return baseUrl;
         },
         getContactUrl(plugin, topic) {
-            let contactUrl = ( ! Helper.isUndefinedOrNull(FSConfig.wp)) ?
-                FSConfig.wp.contact_url :
+            let contactUrl = Helper.isNonEmptyString(FSConfig.contact_url) ?
+                FSConfig.contact_url :
                 FS.PostMessage.parent_url();
 
             if ( ! Helper.isNonEmptyString(contactUrl)) {
