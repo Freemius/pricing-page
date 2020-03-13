@@ -6,14 +6,14 @@ import './assets/js/fontawesome';
 
 let FSConfig = null,
     pricing  = {
-    new: (config) => {
-        FSConfig = config;
+        new: (config) => {
+            FSConfig = config;
 
-        ReactDOM.render(
-            <FreemiusPricingMain />,
-            document.querySelector(config.selector)
-        );
-    }
-};
+            ReactDOM.render(
+                <FreemiusPricingMain />,
+                document.querySelector(config.selector)
+            );
+        }
+    };
 
 export {pricing, FSConfig};
