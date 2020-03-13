@@ -806,7 +806,7 @@
                 left: 50%;
                 margin-left: -44px;
 
-                img {
+                object, img {
                   max-width: 100%;
                   border-radius: 40px;
                 }
@@ -851,7 +851,7 @@
           display: inline-block;
           margin: 0 8px;
 
-          button.fs-circle-button {
+          button.fs-round-button {
             cursor: pointer;
             border: 1px solid #d2d2d2;
             vertical-align: middle;
@@ -878,7 +878,7 @@
               border: 0 none;
             }
 
-            button.fs-circle-button span {
+            button.fs-round-button span {
               background: #c9c9c9;
             }
           }

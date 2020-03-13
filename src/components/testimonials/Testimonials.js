@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import FSPricingContext from "../../FSPricingContext";
 import md5 from 'md5';
 import Icon from "../Icon";
-import CircleButton from "./CircleButton"
+import RoundButton from "./RoundButton"
 import {Helper} from "../../Helper";
 import defaultProfilePic0 from '../.././assets/img/fs/profile-pic-0.png';
 import defaultProfilePic1 from '../.././assets/img/fs/profile-pic-1.png';
@@ -263,11 +263,16 @@ class Testimonials extends Component {
                 <section className={'fs-testimonial' + ((i < 0 || i >= reviewsCount) ? ' clone' : '')} data-index={i} data-id={review.id} key={i}>
                     <header className="fs-testimonial-header">
                         <div className="fs-testimonial-logo">
-                            <img src={
-                                review.email ?
-                                    '//gravatar.com/avatar/' + md5(review.email) + '?s=80&d=' + encodeURIComponent(defaultPicUrl) :
-                                    defaultPicUrl
-                            } />
+                            <object
+                                data={
+                                    review.email ?
+                                        '//gravatar.com/avatar/' + md5(review.email) + '?s=80&d=' + encodeURIComponent(defaultPicUrl) :
+                                        defaultPicUrl
+                                    }
+                                type="image/png"
+                            >
+                                <img src={defaultPicUrl} />
+                            </object>
                         </div>
                         <h4>{review.title}</h4>
                         <div className="fs-testimonial-rating">
@@ -292,7 +297,7 @@ class Testimonials extends Component {
                     aria-hidden="true" role="presentation"
                     aria-selected={(0 == i) ? 'true' : 'false'}
                     aria-controls={'navigation' + i}>
-                    <CircleButton type="button" role="button" tabIndex="0" />
+                    <RoundButton type="button" role="button" tabIndex="0" />
                 </li>
             );
         }

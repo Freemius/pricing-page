@@ -10,7 +10,7 @@ class Section extends Component {
 
     render() {
         return (
-            <button className="fs-circle-button" type="button" role="button" tabIndex="0">
+            <button className="fs-round-button" type="button" role="button" tabIndex="0">
                 <span></span>
             </button>
         );
