@@ -2,7 +2,9 @@
 
 A modern, API-driven, ReactJS-based pricing app for Freemius sellers.
 
-> This pricing app is currently in *Beta*. Once out of *Beta*, its compiled version will be shipped as part of the Freemius' [WordPress SDK](https://github.com/Freemius/wordpress-sdk).
+**Note:** This pricing app is currently in *Beta*. Once out of *Beta*, its compiled version will be shipped as part of the Freemius' [WordPress SDK](https://github.com/Freemius/wordpress-sdk).
+
+![Pricing app screenshot](screenshot-1.png?raw=true)
 
 ## Why?
 
