@@ -558,10 +558,10 @@ class FreemiusPricingMain extends Component {
                 if (
                     isTrial &&
                     (
-                        FSConfig.wp &&
+                        ! Helper.isUndefinedOrNull(FSConfig.is_network_admin) &&
                         (
-                            'true' === FSConfig.wp.is_network_admin ||
-                            true === FSConfig.wp.is_network_admin
+                            'true' === FSConfig.is_network_admin ||
+                            true === FSConfig.is_network_admin
                         )
                     )
                 ) {
