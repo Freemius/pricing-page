@@ -112,7 +112,7 @@ class Package extends Component {
             return <Placeholder className={"fs-undiscounted-price"}/>
         }
 
-        return <div className="fs-undiscounted-price">Normally {selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true)} / mo</div>;
+        return <div className="fs-undiscounted-price">Normally {this.context.currencySymbols[this.context.selectedCurrency]}{selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true)} / mo</div>;
     }
 
     getSitesLabel(planPackage, selectedPricing, pricingLicenses) {
