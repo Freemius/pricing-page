@@ -764,9 +764,11 @@ class FreemiusPricingMain extends Component {
                                     <PeriodSelector handler={this.changeBillingCycle} billingCycleDescription={this.billingCycleDescription}/>
                                 </Section>
                             }
-                            <Section fs-section="currencies">
-                                <CurrencySelector handler={this.changeCurrency}/>
-                            </Section>
+                            {pricingData.currencies.length > 1 &&
+                                <Section fs-section="currencies">
+                                    <CurrencySelector handler={this.changeCurrency}/>
+                                </Section>
+                            }
                             <Section fs-section="packages">
                                 <PackagesContainer changeLicensesHandler={this.changeLicenses} changePlanHandler={this.changePlan} upgradeHandler={this.upgrade}/>
                             </Section>
