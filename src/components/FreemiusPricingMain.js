@@ -681,7 +681,9 @@ class FreemiusPricingMain extends Component {
         let pricingData = this.state;
 
         if ( ! pricingData.plugin.id) {
-            return <Loader />;
+            const leftPos = document.querySelector(FSConfig.selector).getBoundingClientRect().left;
+
+            return <Loader style={{left: leftPos + 'px'}} />;
         }
 
         let featuredPlan  = pricingData.featuredPlan,
