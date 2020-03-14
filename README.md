@@ -8,11 +8,11 @@ A modern, API-driven, ReactJS-based pricing app for Freemius sellers.
 
 ## Why?
 
-### Faster Developement | Modern Technology - ReactJS
+### Faster Development | Modern Technology - ReactJS
 Freemius current in-dashboard pricing page was initially developed back in 2015. Obviously, the page has undergone extensive development as we’ve added many features throughout the years. But the front-end technologies it uses are already outdated, making the maintenance, bug fixing, and new features development, much slower.
 
 ### Flexibility | Coverage of More Use-Cases
-After seeing so many pricing structures, we have a much better understanding of the limitations of the legacy pricing page. For example, if you have a single paid plan with several site-level prices (e.g., single-site, 3-sites, and 5-sites prices), the current pricing page will only show a single package with multiple price options. The new pricing page is much "smarter" and facilitates many pricing use-cases we haven't supported before. For the particular example mentioned above, the new pricing page will expend that single plan into multiple packages according to the number of site-level prices you offer.
+After seeing so many pricing structures, we have a much better understanding of the limitations of the legacy pricing page. For example, if you have a single paid plan with several site-level prices (e.g., single-site, 3-sites, and 5-sites prices), the current pricing page will only show a single package with multiple price options. The new pricing page is much "smarter" and facilitates many pricing use-cases we haven't supported before. For the particular example mentioned above, the new pricing page will expand that single plan into multiple packages according to the number of site-level prices you offer.
 
 ### Responsiveness | Mobile-Friendly
 While most of the traffic in the WP Admin is still happening via desktop devices, we do see a growing trend of in-dashboard purchases through mobile devices. The current pricing page is responsive but not very mobile-friendly, as one of the main challenges is figuring out how to present multiple packages in a user-friendly way. After reviewing dozens of mobile-friendly pricing pages, we believe that we cracked it!
