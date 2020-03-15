@@ -416,16 +416,18 @@ class PackagesContainer extends Component {
             maxHighlightedFeaturesCount    = Math.max(maxHighlightedFeaturesCount, planPackage.highlighted_features.length);
             maxNonHighlightedFeaturesCount = Math.max(maxNonHighlightedFeaturesCount, planPackage.nonhighlighted_features.length);
 
-            for (let pricing of planPackage.pricing) {
-                if (
-                    pricing.is_hidden ||
-                    this.context.selectedCurrency !== pricing.currency ||
-                    ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)
-                ) {
-                    continue;
-                }
+            if ( ! isFreePlan) {
+                for (let pricing of planPackage.pricing) {
+                    if (
+                        pricing.is_hidden ||
+                        this.context.selectedCurrency !== pricing.currency ||
+                        ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)
+                    ) {
+                        continue;
+                    }
 
-                currentLicenseQuantities[pricing.getLicenses()] = true;
+                    currentLicenseQuantities[pricing.getLicenses()] = true;
+                }
             }
 
             if ( ! isSinglePlan) {
