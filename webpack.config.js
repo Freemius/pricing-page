@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = (env, options) =>  {
     return {
+        mode: 'production',
         entry: './src/index.js',
         devtool: 'source-map',
         module: {
@@ -13,7 +14,13 @@ module.exports = (env, options) =>  {
                     options: {
                         presets: [
                             '@babel/preset-react',
-                            {"plugins": ['@babel/plugin-proposal-class-properties', '@babel/plugin-syntax-dynamic-import']}
+                            {
+                                "plugins": [
+                                    '@babel/plugin-proposal-class-properties',
+                                    '@babel/plugin-syntax-dynamic-import',
+                                    '@babel/plugin-syntax-export-namespace-from'
+                                ]
+                            }
                         ]
                     }
                 },
@@ -37,5 +44,9 @@ module.exports = (env, options) =>  {
             library: ["Freemius"],
             libraryTarget: 'umd',
         },
+        optimization: {
+            nodeEnv: 'production',
+            minimize: true,
+        }
     };
 };
