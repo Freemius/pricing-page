@@ -305,10 +305,10 @@ class Testimonials extends Component {
         return (
             <Fragment>
                 {pricingData.active_installs > 1000 &&
-                    <header className="fs-section-header"><h2>Trusted by More Than { Helper.formatNumber(Math.ceil(pricingData.active_installs/1000) * 1000) } Blogs, Online Shops & Websites!</h2></header>
+                    <header className="fs-section-header"><h2>Trusted by More than { Helper.formatNumber(Math.ceil(pricingData.active_installs/1000) * 1000) } Blogs, Online Shops & Websites!</h2></header>
                 }
                 {pricingData.active_installs <= 1000 && pricingData.downloads > 1000 &&
-                    <header className="fs-section-header"><h2>Downloaded more than { Helper.formatNumber(Math.ceil(pricingData.downloads/1000) * 1000) } times!</h2></header>
+                    <header className="fs-section-header"><h2>Downloaded More than { Helper.formatNumber(Math.ceil(pricingData.downloads/1000) * 1000) } Times!</h2></header>
                 }
                 <section className="fs-testimonials-nav">
                     <nav className="fs-nav fs-nav-prev"><Icon icon={['fas', 'arrow-left']}/></nav>
