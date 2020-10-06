@@ -270,7 +270,7 @@ class FreemiusPricingMain extends Component {
             FSConfig.fs_wp_endpoint_url + '/action/service/subscribe/trial/';
 
         RequestManager.getInstance().request(endpointUrl, {
-            http_referer  : window.location.href,
+            prev_url      : window.location.href,
             pricing_action: 'start_trial',
             plan_id       : planID
         }).then(result => {
@@ -391,7 +391,7 @@ class FreemiusPricingMain extends Component {
                         url: PageManager.getInstance().addQueryArgs(FSConfig.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', params)
                     });
                 } else {
-                    params.http_referer = window.location.href;
+                    params.prev_url = window.location.href;
 
                     PageManager.getInstance().redirect(FSConfig.fs_wp_endpoint_url + '/action/service/paypal/express-checkout/', params);
                 }
