@@ -435,12 +435,12 @@ class PackagesContainer extends Component {
             }
         }
 
-        let packageComponents     = [],
-            isFirstPlanPackage    = true,
-            hasFeaturedPlan       = false,
-            mobileTabs            = [],
-            mobileDropdownOptions = [],
-            selectedPlanID        = this.context.selectedPlanID;
+        let packageComponents       = [],
+            isFirstPlanPackage      = true,
+            hasFeaturedPlan         = false,
+            mobileTabs              = [],
+            mobileDropdownOptions   = [],
+            selectedPlanOrPricingID = this.context.selectedPlanID;
 
         for (let visiblePlanPackage of visiblePlanPackages) {
             if (visiblePlanPackage.highlighted_features.length < maxHighlightedFeaturesCount) {
@@ -471,26 +471,28 @@ class PackagesContainer extends Component {
                 hasFeaturedPlan = true;
             }
 
-            if ( ! selectedPlanID && isFirstPlanPackage) {
-                selectedPlanID = visiblePlanPackage.id;
+            const visiblePlanOrPricingID = isSinglePlan ? visiblePlanPackage.pricing[0].id : visiblePlanPackage.id;
+
+            if ( ! selectedPlanOrPricingID && isFirstPlanPackage) {
+                selectedPlanOrPricingID = visiblePlanOrPricingID;
             }
 
             mobileTabs.push(
-                <li key={visiblePlanPackage.id} className={"fs-package-tab" + (visiblePlanPackage.id == selectedPlanID ? ' fs-package-tab--selected' : '')} data-plan-id={visiblePlanPackage.id} onClick={this.props.changePlanHandler}><a href="#">{visiblePlanPackage.title}</a></li>
+                <li key={visiblePlanOrPricingID} className={"fs-package-tab" + (visiblePlanOrPricingID == selectedPlanOrPricingID ? ' fs-package-tab--selected' : '')} data-plan-id={visiblePlanOrPricingID} onClick={this.props.changePlanHandler}><a href="#">{isSinglePlan ? visiblePlanPackage.pricing[0].sitesLabel(): visiblePlanPackage.title}</a></li>
             );
 
             mobileDropdownOptions.push(
                 <option
-                    key={visiblePlanPackage.id}
+                    key={visiblePlanOrPricingID}
                     className="fs-package-option"
-                    id={`fs_package_${visiblePlanPackage.id}_option`}
-                    value={visiblePlanPackage.id}
-                >{(visiblePlanPackage.id == selectedPlanID || isFirstPlanPackage ? 'Selected Plan: ' : '') + visiblePlanPackage.title}</option>
+                    id={`fs_package_${visiblePlanOrPricingID}_option`}
+                    value={visiblePlanOrPricingID}
+                >{(visiblePlanOrPricingID == selectedPlanOrPricingID || isFirstPlanPackage ? 'Selected Plan: ' : '') + visiblePlanPackage.title}</option>
             );
 
             packageComponents.push(
                 <Package
-                    key={isSinglePlan ? visiblePlanPackage.pricing[0].id : visiblePlanPackage.id}
+                    key={visiblePlanOrPricingID}
                     isFirstPlanPackage={isFirstPlanPackage}
                     installPlanLicensesCount={installPlanLicensesCount}
                     isSinglePlan={isSinglePlan}
@@ -514,7 +516,7 @@ class PackagesContainer extends Component {
         return <Fragment>
             <nav className="fs-prev-package"><Icon icon={['fas', 'chevron-left']}/></nav>
             <section className="fs-packages-nav">
-                {packageComponents.length > 3 && <select className="fs-packages-menu" onChange={this.props.changePlanHandler} value={selectedPlanID}>{mobileDropdownOptions}</select>}
+                {packageComponents.length > 3 && <select className="fs-packages-menu" onChange={this.props.changePlanHandler} value={selectedPlanOrPricingID}>{mobileDropdownOptions}</select>}
                 {packageComponents.length <= 3 && <ul className="fs-packages-tab">{mobileTabs}</ul>}
                 <ul className={"fs-packages" + (hasFeaturedPlan ? " fs-has-featured-plan" : "")}>{packageComponents}</ul>
             </section>
