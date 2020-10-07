@@ -248,6 +248,9 @@ class Package extends Component {
             packageClassName += ' fs-featured-plan';
         }
 
+        let selectedAmountInteger = Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]));
+        let selectedAmountFraction = selectedPricingAmount.split('.')[1];
+
         return <li key={planPackage.id} className={packageClassName}>
             <div className="fs-most-popular"><h4><strong>Most Popular</strong></h4></div>
             <div className="fs-package-content">
@@ -258,9 +261,9 @@ class Package extends Component {
                 {this.getUndiscountedPrice(planPackage, selectedPricing)}
                 <div className="fs-selected-pricing-amount">
                     <strong className="fs-currency-symbol">{ ! planPackage.is_free_plan ? this.context.currencySymbols[this.context.selectedCurrency] : ''}</strong>
-                    <span className="fs-selected-pricing-amount-integer"><strong>{planPackage.is_free_plan ? 'Free' : Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]))}</strong></span>
+                    <span className="fs-selected-pricing-amount-integer"><strong>{planPackage.is_free_plan ? 'Free' : selectedAmountInteger}</strong></span>
                     <span className="fs-selected-pricing-amount-fraction-container">
-                        <strong className="fs-selected-pricing-amount-fraction">.{ ! planPackage.is_free_plan ? selectedPricingAmount.split('.')[1] : ''}</strong>
+                        <strong className="fs-selected-pricing-amount-fraction">{( ! planPackage.is_free_plan && selectedAmountFraction) ? '.' + selectedAmountFraction : ''}</strong>
                         {
                             ! planPackage.is_free_plan &&
                             BillingCycleString.LIFETIME !== this.context.selectedBillingCycle &&
