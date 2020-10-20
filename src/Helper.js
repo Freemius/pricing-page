@@ -25,15 +25,6 @@ export const Helper = (function() {
             return ('' != str) ?
                 str.charAt(0).toUpperCase() + str.slice(1) :
                 str;
-        },
-        formatFraction: function(num) {
-            if ( ! num)
-                return '';
-
-            num = parseFloat('0.' + num.toString());
-
-            return (num.toLocaleString(undefined, {maximumFractionDigits: 2}))
-                .slice(1);
         }
     };
 })();
