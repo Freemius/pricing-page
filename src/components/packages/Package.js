@@ -200,9 +200,9 @@ class Package extends Component {
 
             this.previouslySelectedPricingByPlan[planPackage.id] = selectedPricing;
 
-            selectedPricingAmount = (BillingCycleString.ANNUAL === this.context.selectedBillingCycle) ?
-                selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL, true) :
-                selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
+            selectedPricingAmount = ((BillingCycleString.ANNUAL === this.context.selectedBillingCycle) ?
+                selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL) :
+                selectedPricing[`${this.context.selectedBillingCycle}_price`]).toString();
         }
 
         if ( ! planPackage.hasAnySupport()) {
@@ -249,7 +249,7 @@ class Package extends Component {
         }
 
         let selectedAmountInteger = Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]));
-        let selectedAmountFraction = selectedPricingAmount.split('.')[1];
+        let selectedAmountFraction = Helper.formatFraction(parseInt(selectedPricingAmount.split('.')[1]));
 
         return <li key={planPackage.id} className={packageClassName}>
             <div className="fs-most-popular"><h4><strong>Most Popular</strong></h4></div>
@@ -263,7 +263,7 @@ class Package extends Component {
                     <strong className="fs-currency-symbol">{ ! planPackage.is_free_plan ? this.context.currencySymbols[this.context.selectedCurrency] : ''}</strong>
                     <span className="fs-selected-pricing-amount-integer"><strong>{planPackage.is_free_plan ? 'Free' : selectedAmountInteger}</strong></span>
                     <span className="fs-selected-pricing-amount-fraction-container">
-                        <strong className="fs-selected-pricing-amount-fraction">{( ! planPackage.is_free_plan && selectedAmountFraction) ? '.' + selectedAmountFraction : ''}</strong>
+                        <strong className="fs-selected-pricing-amount-fraction">{( ! planPackage.is_free_plan && selectedAmountFraction) ? selectedAmountFraction : ''}</strong>
                         {
                             ! planPackage.is_free_plan &&
                             BillingCycleString.LIFETIME !== this.context.selectedBillingCycle &&
