@@ -1166,7 +1166,7 @@
       }
     }
 
-    @media only screen and (max-width: 400px) {
+    @media only screen and (max-width: 455px) {
       .fs-section--plans-and-pricing .fs-section--packages .fs-packages .fs-package {
         width: 100%;
       }
@@ -1195,6 +1195,15 @@
         .fs-section--testimonials .fs-testimonials-nav .fs-testimonials .fs-testimonial {
           width: auto;
         }
+      }
+    }
+  }
+
+  #fs_pricing_wrapper .fs-app-header {
+    @media only screen and (max-width: 445px) {
+      .fs-page-title h3{
+        margin-left: 0px;
+        margin-top: 10px;
       }
     }
   }
