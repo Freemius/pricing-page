@@ -205,7 +205,7 @@ export class Pricing {
         amount = parseFloat(amount);
 
         if (format) {
-            amount = Helper.formatNumber(amount, 'en-US');
+            amount = Helper.formatNumber(amount);
         }
 
         return amount;
