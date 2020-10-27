@@ -27,13 +27,13 @@ export const Helper = (function() {
                 str;
         },
         formatFraction: function(num) {
+            if ( ! num)
+                return '00';
+
             if (num.length >= 2)
                 return num;
 
-            if (num.length == 1)
-                return num + '0';
-
-            return '00';
+            return num + '0';
         }
     };
 })();
