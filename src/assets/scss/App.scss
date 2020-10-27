@@ -246,8 +246,11 @@
             top: 0;
             bottom: 0;
             width: 60px;
-            z-index: 1;
             margin-bottom: 32px;
+          }
+
+          &:before {
+            z-index: 1;
           }
 
           &.fs-has-previous-plan:before {
