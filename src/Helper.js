@@ -25,6 +25,15 @@ export const Helper = (function() {
             return ('' != str) ?
                 str.charAt(0).toUpperCase() + str.slice(1) :
                 str;
+        },
+        formatFraction: function(num) {
+            if (num.length >= 2)
+                return num;
+
+            if (num.length == 1)
+                return num + '0';
+
+            return '00';
         }
     };
 })();
