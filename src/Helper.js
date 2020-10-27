@@ -18,8 +18,8 @@ export const Helper = (function() {
         isUndefinedOrNull: function(val) {
             return (typeof val === 'undefined' || val === null);
         },
-        formatNumber: function(num) {
-            return num.toLocaleString(undefined, {maximumFractionDigits:2});
+        formatNumber: function(num, countryCode) {
+            return num.toLocaleString(countryCode ? countryCode : undefined, {maximumFractionDigits:2});
         },
         ucfirst: function(str) {
             return ('' != str) ?
