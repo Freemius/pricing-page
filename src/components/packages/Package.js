@@ -100,7 +100,7 @@ class Package extends Component {
         return label;
     }
 
-    getUndiscountedPrice(planPackage, selectedPricing) {
+    getUndiscountedPrice(planPackage, selectedPricing, selectedPricingCycleLabel) {
         if (
             BillingCycleString.ANNUAL !== this.context.selectedBillingCycle ||
             ! (this.context.annualDiscount > 0)
@@ -112,7 +112,15 @@ class Package extends Component {
             return <Placeholder className={"fs-undiscounted-price"}/>
         }
 
-        return <div className="fs-undiscounted-price">Normally {this.context.currencySymbols[this.context.selectedCurrency]}{selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true)} / mo</div>;
+        let amount;
+
+        if ('mo' === selectedPricingCycleLabel) {
+            amount = selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true);
+        } else {
+            amount = selectedPricing.getYearlyAmount(BillingCycle.MONTHLY, true);
+        }
+
+        return <div className="fs-undiscounted-price">Normally {this.context.currencySymbols[this.context.selectedCurrency]}{amount} / {selectedPricingCycleLabel}</div>;
     }
 
     getSitesLabel(planPackage, selectedPricing, pricingLicenses) {
@@ -160,16 +168,18 @@ class Package extends Component {
     }
 
     render() {
-        let isSinglePlan             = this.props.isSinglePlan,
-            planPackage              = this.props.planPackage,
-            installPlanLicensesCount = this.props.installPlanLicensesCount,
-            currentLicenseQuantities = this.props.currentLicenseQuantities,
-            pricingLicenses          = null,
-            selectedLicenseQuantity  = this.context.selectedLicenseQuantity,
-            pricingCollection        = {},
-            selectedPricing          = null,
-            selectedPricingAmount    = null,
-            supportLabel             = null;
+        let isSinglePlan              = this.props.isSinglePlan,
+            planPackage               = this.props.planPackage,
+            installPlanLicensesCount  = this.props.installPlanLicensesCount,
+            currentLicenseQuantities  = this.props.currentLicenseQuantities,
+            pricingLicenses           = null,
+            selectedLicenseQuantity   = this.context.selectedLicenseQuantity,
+            pricingCollection         = {},
+            selectedPricing           = null,
+            selectedPricingAmount     = null,
+            supportLabel              = null,
+            showAnnualInMonthly       = this.context.showAnnualInMonthly,
+            selectedPricingCycleLabel = 'mo';
 
         if (this.props.isFirstPlanPackage) {
             Package.contextInstallPlanFound       = false;
@@ -200,9 +210,21 @@ class Package extends Component {
 
             this.previouslySelectedPricingByPlan[planPackage.id] = selectedPricing;
 
-            selectedPricingAmount = (BillingCycleString.ANNUAL === this.context.selectedBillingCycle) ?
-                selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL, true) :
-                selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
+            if (BillingCycleString.ANNUAL === this.context.selectedBillingCycle)
+            {
+                if (true === showAnnualInMonthly || (Helper.isUndefinedOrNull(showAnnualInMonthly) && selectedPricing.hasMonthlyPrice())) {
+                    selectedPricingAmount = selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL, true);
+                }
+
+                if (false === showAnnualInMonthly || (Helper.isUndefinedOrNull(showAnnualInMonthly) && ! selectedPricing.hasMonthlyPrice())) {
+                    selectedPricingAmount     = selectedPricing.getYearlyAmount(BillingCycle.ANNUAL, true);
+                    selectedPricingCycleLabel = 'yr';
+                }
+
+            } else {
+                selectedPricingAmount = selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
+            }
+
         }
 
         if ( ! planPackage.hasAnySupport()) {
@@ -248,6 +270,9 @@ class Package extends Component {
             packageClassName += ' fs-featured-plan';
         }
 
+        const selectedAmountInteger = Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]), 'en-US');
+        const selectedAmountFraction = Helper.formatFraction(selectedPricingAmount.split('.')[1]);
+
         return <li key={planPackage.id} className={packageClassName}>
             <div className="fs-most-popular"><h4><strong>Most Popular</strong></h4></div>
             <div className="fs-package-content">
@@ -255,16 +280,16 @@ class Package extends Component {
                 <h3 className="fs-plan-description">
                     <strong>{planPackage.description_lines}</strong>
                 </h3>
-                {this.getUndiscountedPrice(planPackage, selectedPricing)}
+                {this.getUndiscountedPrice(planPackage, selectedPricing, selectedPricingCycleLabel)}
                 <div className="fs-selected-pricing-amount">
                     <strong className="fs-currency-symbol">{ ! planPackage.is_free_plan ? this.context.currencySymbols[this.context.selectedCurrency] : ''}</strong>
-                    <span className="fs-selected-pricing-amount-integer"><strong>{planPackage.is_free_plan ? 'Free' : Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]))}</strong></span>
+                    <span className="fs-selected-pricing-amount-integer"><strong>{planPackage.is_free_plan ? 'Free' : selectedAmountInteger}</strong></span>
                     <span className="fs-selected-pricing-amount-fraction-container">
-                        <strong className="fs-selected-pricing-amount-fraction">.{ ! planPackage.is_free_plan ? selectedPricingAmount.split('.')[1] : ''}</strong>
+                        <strong className="fs-selected-pricing-amount-fraction">{ ! planPackage.is_free_plan ? '.' + selectedAmountFraction : ''}</strong>
                         {
                             ! planPackage.is_free_plan &&
                             BillingCycleString.LIFETIME !== this.context.selectedBillingCycle &&
-                            <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>
+                            <sub className="fs-selected-pricing-amount-cycle">/ {selectedPricingCycleLabel}</sub>
                         }
                     </span>
                 </div>
