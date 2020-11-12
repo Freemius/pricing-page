@@ -152,10 +152,11 @@ export class Pricing {
     /**
      * @param {int}     billingCycle One of the following: 1, 12, 0 (for lifetime).
      * @param {boolean} [format]     If true, the number 1299 for example will become 1,299.
+     * @param {string}  [locale]     The country code and language code combination (e.g. 'fr-FR').
      *
      * @return {string|number}
      */
-    getAmount(billingCycle, format) {
+    getAmount(billingCycle, format, locale) {
         let amount = .0;
 
         switch (billingCycle)
@@ -174,7 +175,7 @@ export class Pricing {
         amount = parseFloat(amount);
 
         if (format) {
-            amount = Helper.formatNumber(amount);
+            amount = Helper.formatNumber(amount, locale);
         }
 
         return amount;
@@ -183,10 +184,11 @@ export class Pricing {
     /**
      * @param {int}     billingCycle One of the following: 1, 12, 0 (for lifetime).
      * @param {boolean} [format]     If true, the number 1299 for example will become 1,299.
+     * @param {string}  [locale]     The country code and language code combination (e.g. 'fr-FR'). 
      *
      * @return {string|number}
      */
-    getMonthlyAmount(billingCycle, format) {
+    getMonthlyAmount(billingCycle, format, locale) {
         let amount = .0;
 
         switch (billingCycle) {
@@ -205,7 +207,7 @@ export class Pricing {
         amount = parseFloat(amount);
 
         if (format) {
-            amount = Helper.formatNumber(amount);
+            amount = Helper.formatNumber(amount, locale);
         }
 
         return amount;

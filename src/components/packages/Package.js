@@ -13,6 +13,14 @@ class Package extends Component {
     static noBillingCycleSupportLicenses = {};
     static contextInstallPlanFound       = false;
 
+    /**
+     * If we unset it (or set it to `undefined`) it will use the browser's locale.
+     * For now we are going to use the 'en-US' locale, until we start supporting other locales in our checkout for a consistent experience.
+     * 
+     * @author Vova Feldman
+     */
+    static locale = 'en-US';
+
     previouslySelectedPricingByPlan = {};
 
     constructor(props) {
@@ -112,7 +120,7 @@ class Package extends Component {
             return <Placeholder className={"fs-undiscounted-price"}/>
         }
 
-        return <div className="fs-undiscounted-price">Normally {this.context.currencySymbols[this.context.selectedCurrency]}{selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true)} / mo</div>;
+        return <div className="fs-undiscounted-price">Normally {this.context.currencySymbols[this.context.selectedCurrency]}{selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true, Package.locale)} / mo</div>;
     }
 
     getSitesLabel(planPackage, selectedPricing, pricingLicenses) {
@@ -131,17 +139,18 @@ class Package extends Component {
     }
 
     /**
-     * @param {Object} pricing Pricing entity.
+     * @param {Object} pricing   Pricing entity.
+     * @param {string} [locale]  The country code and language code combination (e.g. 'fr-FR').
      *
      * @return {string} The price label in this format: `$4.99 / mo` or `$4.99 / year`
      */
-    priceLabel(pricing) {
+    priceLabel(pricing, locale) {
         let pricingData = this.context,
             label       = '',
             price       = pricing[pricingData.selectedBillingCycle + '_price'];
 
         label += pricingData.currencySymbols[pricingData.selectedCurrency];
-        label += Helper.formatNumber(price);
+        label += Helper.formatNumber(price, locale);
 
         if (BillingCycleString.MONTHLY === pricingData.selectedBillingCycle)
             label += ' / mo';
@@ -200,9 +209,10 @@ class Package extends Component {
 
             this.previouslySelectedPricingByPlan[planPackage.id] = selectedPricing;
 
-            selectedPricingAmount = (BillingCycleString.ANNUAL === this.context.selectedBillingCycle) ?
-                selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL, true) :
-                selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
+            selectedPricingAmount = ((BillingCycleString.ANNUAL === this.context.selectedBillingCycle) ?
+                // The 'en-US' is intentionally hard-coded here because we are spliting the decimal by '.'.
+                Helper.formatNumber(selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL), 'en-US') :
+                selectedPricing[`${this.context.selectedBillingCycle}_price`]).toString();
         }
 
         if ( ! planPackage.hasAnySupport()) {
@@ -248,6 +258,12 @@ class Package extends Component {
             packageClassName += ' fs-featured-plan';
         }
 
+        const
+            localDecimalSeparator = Helper.formatNumber(0.1, Package.locale)[1],
+            amountParts = selectedPricingAmount.split('.'),
+            selectedAmountInteger = Helper.formatNumber(parseInt(amountParts[0], 10)),
+            selectedAmountFraction = Helper.formatFraction(amountParts[1]);
+
         return <li key={planPackage.id} className={packageClassName}>
             <div className="fs-most-popular"><h4><strong>Most Popular</strong></h4></div>
             <div className="fs-package-content">
@@ -258,9 +274,9 @@ class Package extends Component {
                 {this.getUndiscountedPrice(planPackage, selectedPricing)}
                 <div className="fs-selected-pricing-amount">
                     <strong className="fs-currency-symbol">{ ! planPackage.is_free_plan ? this.context.currencySymbols[this.context.selectedCurrency] : ''}</strong>
-                    <span className="fs-selected-pricing-amount-integer"><strong>{planPackage.is_free_plan ? 'Free' : Helper.formatNumber(parseInt(selectedPricingAmount.split('.')[0]))}</strong></span>
+                    <span className="fs-selected-pricing-amount-integer"><strong>{planPackage.is_free_plan ? 'Free' : selectedAmountInteger}</strong></span>
                     <span className="fs-selected-pricing-amount-fraction-container">
-                        <strong className="fs-selected-pricing-amount-fraction">.{ ! planPackage.is_free_plan ? selectedPricingAmount.split('.')[1] : ''}</strong>
+                        <strong className="fs-selected-pricing-amount-fraction">{!planPackage.is_free_plan ? localDecimalSeparator + selectedAmountFraction : ''}</strong>
                         {
                             ! planPackage.is_free_plan &&
                             BillingCycleString.LIFETIME !== this.context.selectedBillingCycle &&
@@ -327,7 +343,7 @@ class Package extends Component {
                                             <td className="fs-license-quantity-discount"><span>Save {multiSiteDiscount}%</span></td> :
                                             <td></td>
                                     }
-                                    <td className="fs-license-quantity-price">{this.priceLabel(pricing)}</td>
+                                    <td className="fs-license-quantity-price">{this.priceLabel(pricing, Package.locale)}</td>
                                 </tr>
                             );
                         })

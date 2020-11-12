@@ -94,20 +94,22 @@ function getInstance(plans) {
         tryCalcSingleSitePrice: function (
             pricing,
             billingCycle,
-            format
+            format,
+            locale
         ) {
             return this.tryCalcSingleSitePrices(
                 pricing,
                 billingCycle,
-                format
+                format,
+                locale
             );
         },
-        tryCalcSingleSitePrices: function (pricing, billingCycle, format) {
+        tryCalcSingleSitePrices: function (pricing, billingCycle, format, locale) {
             return (BillingCycle.LIFETIME !== billingCycle) ?
-                this.tryCalcSingleSiteSubscriptionPrice(pricing, billingCycle, format) :
-                this.tryCalcSingleSiteLifetimePrice(pricing, format);
+                this.tryCalcSingleSiteSubscriptionPrice(pricing, billingCycle, format, locale) :
+                this.tryCalcSingleSiteLifetimePrice(pricing, format, locale);
         },
-        tryCalcSingleSiteSubscriptionPrice(pricing, billingCycle, format) {
+        tryCalcSingleSiteSubscriptionPrice(pricing, billingCycle, format, locale) {
             let isMonthly = (BillingCycle.MONTHLY === billingCycle),
                 amount    = .0;
 
@@ -136,7 +138,7 @@ function getInstance(plans) {
                     amount /= _pricing.licenses;
 
                 if (format) {
-                    amount = Helper.formatNumber(amount);
+                    amount = Helper.formatNumber(amount, locale);
                 }
 
                 break;
@@ -144,7 +146,7 @@ function getInstance(plans) {
 
             return amount;
         },
-        tryCalcSingleSiteLifetimePrice(pricing, format) {
+        tryCalcSingleSiteLifetimePrice(pricing, format, locale) {
             let amount = .0;
 
             for (let _pricing of allPlansPricingCollection) {
@@ -162,7 +164,7 @@ function getInstance(plans) {
                     amount /= _pricing.licenses;
 
                 if (format) {
-                    amount = Helper.formatNumber(amount);
+                    amount = Helper.formatNumber(amount, locale);
                 }
 
                 break;

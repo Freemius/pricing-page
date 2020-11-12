@@ -284,6 +284,7 @@
           border-top-right-radius: 10px;
           position: relative;
           transition: left 500ms ease,right 500ms ease;
+          padding-top: 5px;
 
           &.fs-has-featured-plan {
             margin-top: 2.8em;
