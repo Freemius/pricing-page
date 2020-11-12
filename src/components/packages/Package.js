@@ -132,16 +132,17 @@ class Package extends Component {
 
     /**
      * @param {Object} pricing Pricing entity.
+     * @param {string} [locale]  The country code and language code combination (e.g. 'fr-FR').
      *
      * @return {string} The price label in this format: `$4.99 / mo` or `$4.99 / year`
      */
-    priceLabel(pricing) {
+    priceLabel(pricing, locale) {
         let pricingData = this.context,
             label       = '',
             price       = pricing[pricingData.selectedBillingCycle + '_price'];
 
         label += pricingData.currencySymbols[pricingData.selectedCurrency];
-        label += Helper.formatNumber(price);
+        label += Helper.formatNumber(price, locale);
 
         if (BillingCycleString.MONTHLY === pricingData.selectedBillingCycle)
             label += ' / mo';
