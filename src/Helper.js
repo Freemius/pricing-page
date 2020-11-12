@@ -33,7 +33,7 @@ export const Helper = (function() {
             if ( ! num)
                 return '00';
 
-            if (num.length >= 2)
+            if (num.toString().length >= 2)
                 return num;
 
             return num + '0';
