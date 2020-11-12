@@ -334,7 +334,7 @@ class Package extends Component {
                     }</tbody>
                 </table>}
                 <div className="fs-upgrade-button-container">
-                    <button className="fs-button fs-button--size-large fs-upgrade-button" onClick={() => {this.props.upgradeHandler(planPackage, isSinglePlan ? planPackage.pricing[0] : null)}}>{this.getCtaButtonLabel(planPackage, installPlanLicensesCount)}</button>
+                    <button className="fs-button fs-button--size-large fs-upgrade-button" onClick={() => {this.props.upgradeHandler(planPackage, selectedPricing)}}>{this.getCtaButtonLabel(planPackage, installPlanLicensesCount)}</button>
                 </div>
                 <ul className="fs-plan-features">
                     {planPackage.nonhighlighted_features.map(feature => {
