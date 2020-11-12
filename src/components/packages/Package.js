@@ -169,7 +169,8 @@ class Package extends Component {
             pricingCollection        = {},
             selectedPricing          = null,
             selectedPricingAmount    = null,
-            supportLabel             = null;
+            supportLabel             = null,
+            featuredPricingId        = this.context.featuredPricingId;
 
         if (this.props.isFirstPlanPackage) {
             Package.contextInstallPlanFound       = false;
@@ -244,7 +245,7 @@ class Package extends Component {
 
         if (planPackage.is_free_plan) {
             packageClassName += ' fs-free-plan';
-        } else if ( ! isSinglePlan && planPackage.is_featured) {
+        } else if (( ! isSinglePlan && planPackage.is_featured) || (isSinglePlan && selectedPricing.id == featuredPricingId)) {
             packageClassName += ' fs-featured-plan';
         }
 

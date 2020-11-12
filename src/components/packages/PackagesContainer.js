@@ -440,7 +440,8 @@ class PackagesContainer extends Component {
             hasFeaturedPlan       = false,
             mobileTabs            = [],
             mobileDropdownOptions = [],
-            selectedPlanID        = this.context.selectedPlanID;
+            selectedPlanID        = this.context.selectedPlanID,
+            featuredPricingId     = this.context.featuredPricingId;
 
         for (let visiblePlanPackage of visiblePlanPackages) {
             if (visiblePlanPackage.highlighted_features.length < maxHighlightedFeaturesCount) {
@@ -467,7 +468,8 @@ class PackagesContainer extends Component {
                 }
             }
 
-            if (visiblePlanPackage.is_featured && ! isSinglePlan && this.context.paidPlansCount > 1) {
+            if ((visiblePlanPackage.is_featured && ! isSinglePlan && this.context.paidPlansCount > 1) ||
+                (isSinglePlan && visiblePlanPackage.selectedPricing.id == featuredPricingId)) {
                 hasFeaturedPlan = true;
             }
 
