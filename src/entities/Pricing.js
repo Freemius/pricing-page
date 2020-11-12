@@ -205,7 +205,38 @@ export class Pricing {
         amount = parseFloat(amount);
 
         if (format) {
-            amount = Helper.formatNumber(amount);
+            amount = Helper.formatNumber(amount, 'en-US');
+        }
+
+        return amount;
+    }
+
+    /**
+     * @param {int}              billingCycle One of the following: 1, 12, 0 (for lifetime).
+     * @param {boolean} [format] If true, the number 1299 for example will become 1,299.
+     *
+     * @return {string|number}
+     */
+    getYearlyAmount(billingCycle, format) {
+        let amount = .0;
+
+        switch (billingCycle) {
+            case BillingCycle.MONTHLY:
+                amount = this.hasMonthlyPrice() ?
+                    this.monthly_price * 12 :
+                    this.annual_price;
+                break;
+            case BillingCycle.ANNUAL:
+                amount = this.hasAnnualPrice() ?
+                    this.annual_price :
+                    this.monthly_price * 12;
+                break;
+        }
+
+        amount = parseFloat(amount);
+
+        if (format) {
+            amount = Helper.formatNumber(amount, 'en-US');
         }
 
         return amount;
