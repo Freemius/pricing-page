@@ -156,6 +156,13 @@ class Testimonials extends Component {
                     $testimonialsSection.classList.remove('ready');
 
                     sectionWidth = parseFloat(window.getComputedStyle($track).width);
+
+                    if (sectionWidth < cardMinWidth) {
+                        // In case of `sectionWidth` is below `cardMinWidth`, we should reduce `cardMinWidth`
+                        // by `sectionWidth` to set the width of the testimonial accordingly.
+                        cardMinWidth = sectionWidth;
+                    }
+
                     visibleCards = Math.min(maxVisibleReviews, Math.floor(sectionWidth / cardMinWidth));
                     cardWidth    = Math.floor(sectionWidth / visibleCards);
 
@@ -172,6 +179,10 @@ class Testimonials extends Component {
                         let $testimonial        = $testimonials[i],
                             $testimonialHeader  = $testimonial.querySelector('header'),
                             $testimonialSection = $testimonial.querySelector('section');
+
+                        // Since each height was fixed before, we should change it to the original height and then pick the maximum one.
+                        $testimonialHeader.style.height = '100%';
+                        $testimonialSection.style.height = '100%';
 
                         maxHeaderHeight  = Math.max(maxHeaderHeight, parseFloat(window.getComputedStyle($testimonialHeader).height));
                         maxContentHeight = Math.max(maxContentHeight, parseFloat(window.getComputedStyle($testimonialSection).height));
