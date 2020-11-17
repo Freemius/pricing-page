@@ -77,7 +77,8 @@ class PackagesContainer extends Component {
                     cardWidth,
                     nextPrevPreviewWidth,
                     screenWidth,
-                    visibleCards;
+                    visibleCards,
+                    mobileSectionOffset;
 
                 let init = function () {
                     firstVisibleIndex           = 0;
@@ -92,10 +93,18 @@ class PackagesContainer extends Component {
                     defaultNextPrevPreviewWidth = 60;
                     cardMinWidth                = 315;
                     maxMobileScreenWidth        = 768;
+                    mobileSectionOffset         = 20;
                 };
 
+                const isMobileDevice = function () {
+                    const sectionComputedStyle = window.getComputedStyle($plansAndPricingSection),
+                        sectionWidth = parseFloat(sectionComputedStyle.width);
+
+                    return sectionWidth < (cardMinWidth * 2 - mobileSectionOffset);
+                }
+
                 let slide = function (selectedIndex, leftOffset) {
-                    let leftPos = (-1 * selectedIndex * cardWidth) + (leftOffset ? leftOffset : 0);
+                    let leftPos = (-1 * selectedIndex * cardWidth) + (leftOffset ? leftOffset : 0) - 1;
 
                     $packagesContainer.style.left = (leftPos + 'px');
                 };
@@ -105,7 +114,7 @@ class PackagesContainer extends Component {
 
                     let leftOffset = 0;
 
-                    if (screenWidth > maxMobileScreenWidth) {
+                    if ( ! isMobileDevice() && screenWidth > maxMobileScreenWidth) {
                         leftOffset = defaultNextPrevPreviewWidth;
 
                         if (firstVisibleIndex + visibleCards >= $packages.length) {
@@ -131,7 +140,7 @@ class PackagesContainer extends Component {
 
                     let leftOffset = 0;
 
-                    if (screenWidth > maxMobileScreenWidth) {
+                    if ( ! isMobileDevice() && screenWidth > maxMobileScreenWidth) {
                         if (firstVisibleIndex - 1 < 0) {
                             $prevPackage.style.visibility = 'hidden';
                             $packagesContainer.parentNode.classList.remove('fs-has-previous-plan');
@@ -159,7 +168,7 @@ class PackagesContainer extends Component {
                     let sectionComputedStyle = window.getComputedStyle($plansAndPricingSection),
                         sectionWidth         = parseFloat(sectionComputedStyle.width),
                         sectionLeftPos       = 0,
-                        isMobile             = (screenWidth <= maxMobileScreenWidth);
+                        isMobile             = (screenWidth <= maxMobileScreenWidth) || isMobileDevice();
 
                     nextPrevPreviewWidth = defaultNextPrevPreviewWidth;
 
