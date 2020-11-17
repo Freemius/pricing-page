@@ -285,7 +285,8 @@
 
         .fs-packages {
           width: auto;
-          display: inline-block;
+          display: flex;
+          flex-direction: row;
           margin-bottom: 30px;
           border-top-right-radius: 10px;
           position: relative;
