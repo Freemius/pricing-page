@@ -258,6 +258,11 @@
             right: 0;
             background: linear-gradient(to left, #cccccc96, transparent);
           }
+
+          &.fs-has-featured-plan:before,
+          &.fs-has-featured-plan:after {
+            top: 2.8em;
+          }
         }
 
         .fs-prev-package, .fs-next-package {
@@ -274,6 +279,10 @@
           z-index: 2;
         }
 
+        .fs-has-featured-plan .fs-packages {
+          margin-top: 2.8em;
+        }
+
         .fs-packages {
           width: auto;
           display: inline-block;
@@ -281,10 +290,6 @@
           border-top-right-radius: 10px;
           position: relative;
           transition: left 500ms ease,right 500ms ease;
-
-          &.fs-has-featured-plan {
-            margin-top: 2.8em;
-          }
 
           &:before {
             content: '';
@@ -1153,7 +1158,7 @@
 
         .fs-packages-tab {
           display: flex;
-          font-size: 24px;
+          font-size: 18px;
         }
 
         .fs-packages, .fs-package {
@@ -1164,6 +1169,10 @@
 
         .fs-packages-menu {
           display: flex;
+        }
+
+        .fs-has-featured-plan .fs-packages {
+          margin-top: 0;
         }
       }
     }

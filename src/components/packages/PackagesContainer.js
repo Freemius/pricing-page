@@ -524,10 +524,10 @@ class PackagesContainer extends Component {
 
         return <Fragment>
             <nav className="fs-prev-package"><Icon icon={['fas', 'chevron-left']}/></nav>
-            <section className="fs-packages-nav">
+            <section className={"fs-packages-nav" + (hasFeaturedPlan ? " fs-has-featured-plan" : "")}>
                 {packageComponents.length > 3 && <select className="fs-packages-menu" onChange={this.props.changePlanHandler} value={selectedPlanOrPricingID}>{mobileDropdownOptions}</select>}
                 {packageComponents.length <= 3 && <ul className="fs-packages-tab">{mobileTabs}</ul>}
-                <ul className={"fs-packages" + (hasFeaturedPlan ? " fs-has-featured-plan" : "")}>{packageComponents}</ul>
+                <ul className="fs-packages">{packageComponents}</ul>
             </section>
             <nav className="fs-next-package"><Icon icon={['fas', 'chevron-right']}/></nav>
         </Fragment>
