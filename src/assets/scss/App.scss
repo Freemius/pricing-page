@@ -717,7 +717,8 @@
       padding: 4em 4em 1.6em 4em;
 
       .fs-section-header {
-        color: #2da1d0;
+        margin-left: -30px;
+        margin-right: -30px;
       }
 
       .fs-testimonials-nav {
@@ -1015,7 +1016,7 @@
     z-index: 1000;
     zoom: 1;
     text-align: left;
-    display: block important;
+    display: block !important;
 
     .fs-modal-content-container {
       display: block;
@@ -1179,6 +1180,10 @@
 
       .fs-section--testimonials .fs-nav-pagination {
         display: none !important;
+      }
+
+      .fs-section > header h2 {
+        font-size: 1.5em;
       }
     }
 
