@@ -258,11 +258,17 @@ class Package extends Component {
             packageClassName += ' fs-featured-plan';
         }
 
-        const
-            localDecimalSeparator = Helper.formatNumber(0.1, Package.locale)[1],
-            amountParts = selectedPricingAmount.split('.'),
-            selectedAmountInteger = Helper.formatNumber(parseInt(amountParts[0], 10)),
+        const localDecimalSeparator = Helper.formatNumber(0.1, Package.locale)[1];
+
+        let selectedAmountInteger, selectedAmountFraction;
+
+        if (selectedPricingAmount) {
+            const amountParts = selectedPricingAmount.split('.');
+
+            selectedAmountInteger = Helper.formatNumber(parseInt(amountParts[0], 10));
             selectedAmountFraction = Helper.formatFraction(amountParts[1]);
+        }
+
 
         return <li key={planPackage.id} className={packageClassName}>
             <div className="fs-most-popular"><h4><strong>Most Popular</strong></h4></div>
