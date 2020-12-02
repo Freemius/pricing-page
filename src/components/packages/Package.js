@@ -272,6 +272,9 @@ class Package extends Component {
 
         const selectedPricing = planPackage.selectedPricing;
 
+        if ( ! selectedPricing)
+            return;
+
         /**
          * @todo We will have an option to show annual prices in two different ways(monthly, annual) after merging
          * @todo with `feature/enrich-showing-prices-in-annual`. Therefore, below logic should be updated accordingly at that time.
@@ -281,7 +284,7 @@ class Package extends Component {
         const showAnnualInMonthly = true;
 
         let price = BillingCycleString.ANNUAL === billingCycle ?
-            selectedPricing.annual_price :
+            (selectedPricing.hasAnnualPrice() ? selectedPricing.annual_price : selectedPricing.monthly_price * 12) :
             selectedPricing.monthly_price;
 
         price = DiscountType.DOLLAR === renewals.discount_type ?
