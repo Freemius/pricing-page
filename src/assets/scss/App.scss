@@ -415,10 +415,16 @@
               font-size: 48px;
             }
 
-            .fs-selected-pricing-cycle {
+            .fs-selected-pricing-cycle,
+            .fs-selected-renewals-discount {
               margin-bottom: 5px;
               text-transform: uppercase;
               color: #606060;
+            }
+
+            .fs-selected-renewals-discount:before {
+                content: "";
+                display: inline-block;
             }
 
             .fs-selected-pricing-license-quantity {

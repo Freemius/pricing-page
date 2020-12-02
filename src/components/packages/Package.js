@@ -1,12 +1,13 @@
 import React, {Component, Fragment} from 'react';
 import FSPricingContext from "../../FSPricingContext";
-import {BillingCycle, BillingCycleString} from "../../entities/Pricing";
+import {BillingCycle, BillingCycleString, UnlimitedLicenses} from "../../entities/Pricing";
 import {PlanManager} from "../../services/PlanManager";
 import Tooltip from "../Tooltip";
 import Icon from "../Icon";
 import {Helper} from "../../Helper";
 import {Plan} from "../../entities/Plan";
 import Placeholder from "./Placeholder";
+import {DiscountType} from "../../entities/Plugin";
 
 class Package extends Component {
     static contextType                   = FSPricingContext;
@@ -168,6 +169,126 @@ class Package extends Component {
         return (Date.parse(install.trial_ends) > new Date().getTime());
     }
 
+    getRenewalsDiscount() {
+        const pricingData = this.context,
+            discounts = pricingData.discounts;
+
+        if (0 == discounts.length)
+            return null;
+
+        const planID  = this.props.planPackage.id,
+            licenses  = UnlimitedLicenses == pricingData.selectedLicenseQuantity ? null : pricingData.selectedLicenseQuantity,
+            variation = null,
+            cycle     = pricingData.selectedBillingCycle,
+            currency  = pricingData.selectedCurrency,
+            weights   = [];
+
+        // Finds the most specific discount that is applicable for the given criteria.
+        // We give the weight to the each criteria and the priority will be like below.
+        // Plan(10000) > Licenses(1000) > Variation(100) > Billing Cycle(10) > Currency(1)
+        // We sum up the weight value of each discount and find the maximum weight among the discounts.
+        // With this way, we can simply find the most suitable discount for the given criteria.
+        for (let i = 0; i < discounts.length; i ++)
+        {
+            const discount = discounts[i];
+
+            weights[i] = 0;
+
+            if (0 == discounts[i].discount)
+                continue;
+
+            if (null != planID) {
+                if (planID == discount.plan_id) {
+                    // If the plan is set and it is same as the current discount's plan id,
+                    // we give this discount high priority.
+                    weights[i] += 10000;
+                } else if (null != discount.plan_id) {
+                    // Even though the plan is set, if the current discount's
+                    // plan is not 'All plans', we can assume that this discount is not applicable
+                    // for the given criteria and so we will exclude this discount.
+                    weights[i] = -1;
+                    continue;
+                }
+            }
+
+            if (0 != licenses) {
+                if (licenses == discount.licenses) {
+                    weights[i] += 1000;
+                } else if (0 != discount.licenses) {
+                    weights[i] = -1;
+                    continue;
+                }
+            }
+
+            if (null != variation) {
+                if (variation == discount.variation) {
+                    weights[i] += 100;
+                } else if (null != discount.variation) {
+                    weights[i] = -1;
+                    continue;
+                }
+            }
+
+            if (null != cycle) {
+                if (cycle == discount.billing_cycle) {
+                    weights[i] += 10;
+                } else if (null != discount.billing_cycle) {
+                    weights[i] = -1;
+                    continue;
+                }
+            }
+
+            if (null != currency) {
+                if (currency == discount.currency) {
+                    weights[i] += 1;
+                } else if (null != discount.currency) {
+                    weights[i] = -1;
+                }
+            }
+        }
+
+        const maxWeight = Math.max.apply(Math, weights);
+
+        if (-1 == maxWeight) {
+            // It means that all the discounts are not applicable for the given criteria and so in this case,
+            // there won't be any discount for this pricing.
+            return null;
+        }
+
+        return discounts[weights.indexOf(maxWeight)];
+    }
+
+    getRenewalsDiscountLabel() {
+        const planPackage = this.props.planPackage,
+            billingCycle = this.context.selectedBillingCycle;
+
+        if (BillingCycleString.LIFETIME == billingCycle || planPackage.is_free_plan)
+            return;
+
+        const renewals = this.getRenewalsDiscount();
+
+        if ( ! renewals)
+            return;
+
+        const selectedPricing = planPackage.selectedPricing;
+
+        /**
+         * @todo We will have an option to show annual prices in two different ways(monthly, annual) after merging
+         * @todo with `feature/enrich-showing-prices-in-annual`. Therefore, below logic should be updated accordingly at that time.
+         *
+         * @author Xiaheng Chen
+         */
+        let price = ((BillingCycleString.ANNUAL === billingCycle) ?
+            selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL) :
+            selectedPricing[`${billingCycle}_price`]);
+
+        price = DiscountType.DOLLAR == renewals.discount_type ?
+            Math.max(0, price - (renewals.discount / 100)) :
+            price * ((100 - renewals.discount) / 100);
+
+        return 'THEN ' + this.context.currencySymbols[this.context.selectedCurrency] + price.toFixed(2) + ' / mo';
+    }
+
     render() {
         let isSinglePlan             = this.props.isSinglePlan,
             planPackage              = this.props.planPackage,
@@ -284,6 +405,7 @@ class Package extends Component {
                         }
                     </span>
                 </div>
+                <div className="fs-selected-renewals-discount"><strong>{this.getRenewalsDiscountLabel()}</strong></div>
                 <div className="fs-selected-pricing-cycle">{ ! planPackage.is_free_plan ? <strong>{this.billingCycleLabel()}</strong> : <Placeholder/>}</div>
                 {this.getSitesLabel(planPackage, selectedPricing, pricingLicenses)}
                 <div className="fs-support-and-main-features">
