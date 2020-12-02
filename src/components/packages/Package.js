@@ -278,15 +278,25 @@ class Package extends Component {
          *
          * @author Xiaheng Chen
          */
-        let price = ((BillingCycleString.ANNUAL === billingCycle) ?
-            selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL) :
-            selectedPricing[`${billingCycle}_price`]);
+        const showAnnualInMonthly = true;
 
-        price = DiscountType.DOLLAR == renewals.discount_type ?
+        let price = BillingCycleString.ANNUAL === billingCycle ?
+            selectedPricing.annual_price :
+            selectedPricing.monthly_price;
+
+        price = DiscountType.DOLLAR === renewals.discount_type ?
             Math.max(0, price - (renewals.discount / 100)) :
             price * ((100 - renewals.discount) / 100);
 
-        return 'THEN ' + this.context.currencySymbols[this.context.selectedCurrency] + price.toFixed(2) + ' / mo';
+        if (BillingCycleString.ANNUAL === billingCycle && selectedPricing.hasMonthlyPrice() && showAnnualInMonthly) {
+            // If the billing cycle is annual and also the selected pricing has monthly price, we need to
+            // convert it to the monthly price.
+            price /= 12;
+        }
+
+        const shortCycleLabel = selectedPricing.hasMonthlyPrice() && showAnnualInMonthly ? 'mo' : 'yr';
+
+        return 'THEN ' + this.context.currencySymbols[this.context.selectedCurrency] + price.toFixed(2) + ' / ' + shortCycleLabel;
     }
 
     render() {
