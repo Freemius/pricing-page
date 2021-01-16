@@ -52,28 +52,6 @@
    * MAIN HEADER
    */
   .fs-app-header {
-    .fs-page-title {
-      margin: 15px 0;
-      text-align: left;
-
-      h2, h3 {
-        display: inline-block;
-      }
-
-      h2 {
-        vertical-align: middle;
-      }
-
-      h3 {
-        font-size: small;
-        margin-left: 15px;
-        background: #e0e0e0;
-        padding: 3px;
-        border-radius: 2px;
-        vertical-align: sub;
-      }
-    }
-
     .fs-plugin-title-and-logo {
       background: #fff;
       padding-top: 12px;
@@ -90,8 +68,42 @@
       }
 
       .fs-plugin-logo {
-        width: 48px;
-        height: 48px;
+        width: 115px;
+        height: 115px;
+      }      
+
+      .fs-container {
+        display: flex;
+        justify-content: center;
+
+        .fs-logo {
+          flex-direction: row;
+          display: flex;
+        }
+
+        .fs-page-title {
+          flex-direction: column;
+          display: flex;
+          margin: 15px 0;
+          text-align: left;
+
+          h2, h3 {
+            display: inline-block;
+          }
+
+          h2 {
+            vertical-align: middle;
+          }
+
+          h3 {
+            font-size: small;
+            margin-left: 15px;
+            background: #e0e0e0;
+            padding: 3px;
+            border-radius: 2px;
+            vertical-align: sub;
+          }
+        }      
       }
     }
   }

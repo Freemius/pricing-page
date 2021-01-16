@@ -741,13 +741,17 @@ class FreemiusPricingMain extends Component {
                 <div id="fs_pricing_wrapper">
                     {trialMessage}
                     <header className="fs-app-header">
-                        <section className="fs-page-title">
-                            <h2>Plans and Pricing</h2>
-                            <h3>Choose your plan and upgrade in minutes!</h3>
-                        </section>
                         <section className="fs-plugin-title-and-logo">
-                            {this.getModuleIcon()}
-                            <h1><strong>{pricingData.plugin.title}</strong></h1>
+                            <div className="fs-container">
+                                <div className="fs-logo">
+                                    {this.getModuleIcon()}
+                                </div>
+                                <div className="fs-page-title">
+                                    <h1><strong>{pricingData.plugin.title}</strong></h1>
+                                    <h2>Plans and Pricing</h2>
+                                    <h3>Choose your plan and upgrade in minutes!</h3>
+                                </div>
+                            </div>
                         </section>
                     </header>
                     <main className="fs-app-main">
