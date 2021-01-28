@@ -59,7 +59,8 @@ class FreemiusPricingMain extends Component {
             selectedBillingCycle        : Pricing.getBillingCyclePeriod(FSConfig.billing_cycle),
             selectedCurrency            : this.getDefaultCurrency(),
             selectedLicenseQuantity     : this.getDefaultLicenseQuantity(),
-            upgradingToPlanID           : null
+            upgradingToPlanID           : null,
+            featuredPricingId           : FSConfig.featured_pricing_id
         };
 
         this.changeBillingCycle      = this.changeBillingCycle.bind(this);
