@@ -273,7 +273,7 @@ class Package extends Component {
         return <li key={planPackage.id} className={packageClassName}>
             <div className="fs-most-popular"><h4><strong>Most Popular</strong></h4></div>
             <div className="fs-package-content">
-                <h2 className="fs-plan-title"><strong>{planPackage.title}</strong></h2>
+                <h2 className="fs-plan-title"><strong>{isSinglePlan ? selectedPricing.sitesLabel() : planPackage.title}</strong></h2>
                 <h3 className="fs-plan-description">
                     <strong>{planPackage.description_lines}</strong>
                 </h3>

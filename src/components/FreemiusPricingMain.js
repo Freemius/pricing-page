@@ -742,7 +742,7 @@ class FreemiusPricingMain extends Component {
                     {trialMessage}
                     <header className="fs-app-header">
                         <section className="fs-page-title">
-                            <h2>Plans and Pricing</h2>
+                            <h1>Plans and Pricing</h1>
                             <h3>Choose your plan and upgrade in minutes!</h3>
                         </section>
                         <section className="fs-plugin-title-and-logo">

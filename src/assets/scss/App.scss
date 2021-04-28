@@ -56,18 +56,12 @@
       margin: 15px 0;
       text-align: left;
 
-      h2, h3 {
-        display: inline-block;
-      }
-
       h2 {
         vertical-align: middle;
       }
 
       h3 {
         font-size: small;
-        margin-left: 15px;
-        background: #e0e0e0;
         padding: 3px;
         border-radius: 2px;
         vertical-align: sub;
@@ -247,9 +241,11 @@
             top: 0;
             bottom: 0;
             width: 60px;
-            margin-top: 2.8em;
-            z-index: 1;
             margin-bottom: 32px;
+          }
+
+          &:before {
+            z-index: 1;
           }
 
           &.fs-has-previous-plan:before {
@@ -263,6 +259,11 @@
             right: 0;
             background: linear-gradient(to left, #cccccc96, transparent);
           }
+
+          &.fs-has-featured-plan:before,
+          &.fs-has-featured-plan:after {
+            top: 2.8em;
+          }
         }
 
         .fs-prev-package, .fs-next-package {
@@ -271,24 +272,29 @@
           margin-top: -11px;
           cursor: pointer;
           font-size: 48px;
+          z-index: 1;
         }
 
         .fs-prev-package {
           visibility: hidden;
+          z-index: 2;
+        }
+
+        .fs-has-featured-plan .fs-packages {
+          margin-top: 2.8em;
         }
 
         .fs-packages {
           width: auto;
-          display: inline-block;
+          display: flex;
+          flex-direction: row;
+          margin-left: auto;
+          margin-right: auto;
           margin-bottom: 30px;
           border-top-right-radius: 10px;
           position: relative;
           transition: left 500ms ease,right 500ms ease;
           padding-top: 5px;
-
-          &.fs-has-featured-plan {
-            margin-top: 2.8em;
-          }
 
           &:before {
             content: '';
@@ -447,6 +453,8 @@
 
               li {
                 font-size: 16px;
+                display: flex;
+                margin-bottom: 8px;
 
                 &:not(:first-child) {
                   margin-top: 8px;
@@ -461,6 +469,8 @@
                 .fs-feature-title {
                   margin: 0 5px;
                   color: #606060;
+                  max-width: 260px;
+                  overflow-wrap: break-word;
                 }
 
                 .fs-icon, .fs-tooltip {
@@ -711,7 +721,8 @@
       padding: 4em 4em 1.6em 4em;
 
       .fs-section-header {
-        color: #2da1d0;
+        margin-left: -30px;
+        margin-right: -30px;
       }
 
       .fs-testimonials-nav {
@@ -1009,7 +1020,7 @@
     z-index: 1000;
     zoom: 1;
     text-align: left;
-    display: block important;
+    display: block !important;
 
     .fs-modal-content-container {
       display: block;
@@ -1153,7 +1164,7 @@
 
         .fs-packages-tab {
           display: flex;
-          font-size: 24px;
+          font-size: 18px;
         }
 
         .fs-packages, .fs-package {
@@ -1165,10 +1176,22 @@
         .fs-packages-menu {
           display: flex;
         }
+
+        .fs-has-featured-plan .fs-packages {
+          margin-top: 0;
+        }
+      }
+
+      .fs-section--testimonials .fs-nav-pagination {
+        display: none !important;
+      }
+
+      .fs-section > header h2 {
+        font-size: 1.5em;
       }
     }
 
-    @media only screen and (max-width: 400px) {
+    @media only screen and (max-width: 455px) {
       .fs-section--plans-and-pricing .fs-section--packages .fs-packages .fs-package {
         width: 100%;
       }
@@ -1197,6 +1220,15 @@
         .fs-section--testimonials .fs-testimonials-nav .fs-testimonials .fs-testimonial {
           width: auto;
         }
+      }
+    }
+  }
+
+  #fs_pricing_wrapper .fs-app-header {
+    @media only screen and (max-width: 445px) {
+      .fs-page-title h3{
+        margin-left: 0px;
+        margin-top: 10px;
       }
     }
   }
