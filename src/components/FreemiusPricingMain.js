@@ -654,7 +654,8 @@ class FreemiusPricingMain extends Component {
                     isNetworkTrial                : isNetworkTrial,
                     isTrial                       : isTrial,
                     trialUtilized                 : trialUtilized,
-                    showRefundPolicyModal         : false
+                    showRefundPolicyModal         : false,
+                    discounts                     : pricingData.discounts
                 });
 
                 this.appendScripts();
