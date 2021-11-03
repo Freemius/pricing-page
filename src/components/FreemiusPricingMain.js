@@ -605,6 +605,16 @@ class FreemiusPricingMain extends Component {
                     hasLifetimePricing = true;
                 }
 
+                if (Helper.isUndefinedOrNull(billingCycles[selectedBillingCycle])) {
+                    if (hasAnnualCycle) {
+                        selectedBillingCycle = BillingCycleString.ANNUAL;
+                    } else if (hasMonthlyCycle) {
+                        selectedBillingCycle = BillingCycleString.MONTHLY;
+                    } else {
+                        selectedBillingCycle = BillingCycleString.LIFETIME;
+                    }
+                }
+
                 let plugin = new Plugin(pricingData.plugin);
 
                 let parentUrl = FS.PostMessage.parent_url();
