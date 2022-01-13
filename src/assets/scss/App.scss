@@ -1,4 +1,4 @@
-#root, #fs_pricing_wrapper {
+#root, #fs_pricing_app {
   background: #f1f1f1;
   height: auto;
   line-height: normal;
@@ -1111,7 +1111,7 @@
     }
   }
 
-  #fs_pricing_wrapper .fs-modal--trial-confirmation .fs-button {
+  #fs_pricing_app .fs-modal--trial-confirmation .fs-button {
     width: auto;
     font-size: 13px;
     line-height: 26px;
@@ -1150,7 +1150,7 @@
     }
   }
 
-  #fs_pricing_wrapper .fs-app-main {
+  #fs_pricing_app .fs-app-main {
     @media only screen and (max-width: 768px) {
       .fs-section--plans-and-pricing .fs-section--packages {
         .fs-next-package, .fs-prev-package {
@@ -1212,7 +1212,7 @@
     }
 
     @media only screen and (max-width: 375px) {
-      #fs_pricing_wrapper .fs-app-main {
+      #fs_pricing_app .fs-app-main {
         .fs-section--plans-and-pricing .fs-section--packages .fs-packages .fs-package {
           width: 100%;
         }
@@ -1224,7 +1224,7 @@
     }
   }
 
-  #fs_pricing_wrapper .fs-app-header {
+  #fs_pricing_app .fs-app-header {
     @media only screen and (max-width: 445px) {
       .fs-page-title h3{
         margin-left: 0px;

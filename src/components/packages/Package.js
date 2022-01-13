@@ -9,9 +9,8 @@ import {Plan} from "../../entities/Plan";
 import Placeholder from "./Placeholder";
 
 class Package extends Component {
-    static contextType                   = FSPricingContext;
-    static noBillingCycleSupportLicenses = {};
-    static contextInstallPlanFound       = false;
+    static contextType             = FSPricingContext;
+    static contextInstallPlanFound = false;
 
     /**
      * If we unset it (or set it to `undefined`) it will use the browser's locale.
@@ -181,8 +180,7 @@ class Package extends Component {
             supportLabel             = null;
 
         if (this.props.isFirstPlanPackage) {
-            Package.contextInstallPlanFound       = false;
-            Package.noBillingCycleSupportLicenses = {};
+            Package.contextInstallPlanFound = false;
         }
 
         if ( ! planPackage.is_free_plan) {
