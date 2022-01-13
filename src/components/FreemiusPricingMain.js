@@ -748,7 +748,7 @@ class FreemiusPricingMain extends Component {
 
         return (
             <FSPricingContext.Provider value={this.state}>
-                <div id="fs_pricing_wrapper">
+                <div id="fs_pricing_app">
                     {trialMessage}
                     <header className="fs-app-header">
                         <section className="fs-page-title">
