@@ -343,15 +343,12 @@ class PackagesContainer extends Component {
 
                     if (
                         pricing.is_hidden ||
-                        this.context.selectedCurrency !== pricing.currency ||
-                        ! Helper.isUndefinedOrNull(Package.noBillingCycleSupportLicenses[licenses])
+                        this.context.selectedCurrency !== pricing.currency
                     ) {
                         return;
                     }
 
                     if ( ! pricing.supportsBillingCycle(this.context.selectedBillingCycle)) {
-                        Package.noBillingCycleSupportLicenses[licenses] = true;
-
                         return;
                     }
 
