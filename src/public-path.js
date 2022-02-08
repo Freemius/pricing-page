@@ -1,4 +1,4 @@
-let fsPricingWrapperElement = document.getElementById('fs_pricing_app');
+let fsPricingWrapperElement = document.getElementById('fs_pricing_wrapper');
 
 if (
     fsPricingWrapperElement &&
