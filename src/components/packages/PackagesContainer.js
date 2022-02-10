@@ -15,6 +15,12 @@ class PackagesContainer extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            rightPackageID: null
+        }
+        
+        this.updateRightPackageID = this.updateRightPackageID.bind(this);
     }
 
     /**
@@ -54,14 +60,26 @@ class PackagesContainer extends Component {
         return label;
     }
 
+    /**
+     * @author Xiaheng Chen
+     * 
+     * @param {number} rightPackageID 
+     */
+    updateRightPackageID(rightPackageID) {
+        if (this.state.rightPackageID !== rightPackageID) {
+            // To prevent unnecessary renderings
+            this.setState({rightPackageID});
+        }
+    }
+
     initSlider() {
         setTimeout(() => {
             if (null !== this.slider) {
-                this.slider.adjustPackages();
+                this.slider.adjustPackages(this.updateRightPackageID);
                 return;
             }
 
-            this.slider = (function() {
+            this.slider = (function(updateRightPackageID) {
                 let firstVisibleIndex,
                     $plansAndPricingSection,
                     $track,
@@ -94,6 +112,21 @@ class PackagesContainer extends Component {
                     cardMinWidth                = 315;
                     maxMobileScreenWidth        = 768;
                     mobileSectionOffset         = 20;
+                    
+                    if ($packagesMenu) {
+                        firstVisibleIndex = $packagesMenu.selectedIndex;
+                    } else if ($packagesTab) {
+                        let $tabs = $packagesTab.querySelectorAll('li');
+
+                        for (let i = 0; i < $tabs.length; i ++) {
+                            let $tab = $tabs[i];
+
+                            if ($tab.classList.contains('fs-package-tab--selected')) {
+                                firstVisibleIndex = i;
+                                break;
+                            }
+                        }
+                    }
                 };
 
                 const isMobileDevice = function () {
@@ -107,6 +140,8 @@ class PackagesContainer extends Component {
                     let leftPos = (-1 * selectedIndex * cardWidth) + (leftOffset ? leftOffset : 0) - 1;
 
                     $packagesContainer.style.left = (leftPos + 'px');
+
+                    updateRightPackageID(firstVisibleIndex + visibleCards - 1);
                 };
 
                 let nextSlide = function () {
@@ -159,7 +194,9 @@ class PackagesContainer extends Component {
                     slide(firstVisibleIndex, leftOffset);
                 };
 
-                let adjustPackages = function () {
+                let adjustPackages = function (updateRightPackageID) {
+                    updateRightPackageID(firstVisibleIndex + visibleCards - 1);
+
                     $packagesContainer.parentNode.classList.remove('fs-has-previous-plan');
                     $packagesContainer.parentNode.classList.remove('fs-has-next-plan');
 
@@ -225,21 +262,6 @@ class PackagesContainer extends Component {
                         $package.style.width = (cardWidth + 'px');
                     }
 
-                    if ($packagesMenu) {
-                        firstVisibleIndex = $packagesMenu.selectedIndex;
-                    } else if ($packagesTab) {
-                        let $tabs = $packagesTab.querySelectorAll('li');
-
-                        for (let i = 0; i < $tabs.length; i ++) {
-                            let $tab = $tabs[i];
-
-                            if ($tab.classList.contains('fs-package-tab--selected')) {
-                                firstVisibleIndex = i;
-                                break;
-                            }
-                        }
-                    }
-
                     if (firstVisibleIndex > 0) {
                         firstVisibleIndex --;
                         nextSlide();
@@ -247,7 +269,7 @@ class PackagesContainer extends Component {
                 };
 
                 init();
-                adjustPackages();
+                adjustPackages(updateRightPackageID);
 
                 if ($packagesMenu) {
                     $packagesMenu.addEventListener('change', function(evt) {
@@ -258,15 +280,10 @@ class PackagesContainer extends Component {
 
                 $nextPackage.addEventListener('click', nextSlide);
                 $prevPackage.addEventListener('click', prevSlide);
-                window.addEventListener('resize', adjustPackages);
+                window.addEventListener('resize', () => adjustPackages(updateRightPackageID));
 
-                return {
-                    adjustPackages: function() {
-                        init();
-                        adjustPackages();
-                    }
-                };
-            })();
+                return { adjustPackages };
+            })(this.updateRightPackageID);
         }, 10);
     }
 
@@ -442,13 +459,15 @@ class PackagesContainer extends Component {
         }
 
         let packageComponents       = [],
-            isFirstPlanPackage      = true,
             hasFeaturedPlan         = false,
             mobileTabs              = [],
             mobileDropdownOptions   = [],
             selectedPlanOrPricingID = this.context.selectedPlanID;
 
-        for (let visiblePlanPackage of visiblePlanPackages) {
+        for (let i = 0 ; i < visiblePlanPackages.length; i ++) {
+            const isFirstPlanPackage = (0 === i);
+            const visiblePlanPackage = visiblePlanPackages[i];
+
             if (visiblePlanPackage.highlighted_features.length < maxHighlightedFeaturesCount) {
                 const total = (maxHighlightedFeaturesCount - visiblePlanPackage.highlighted_features.length);
 
@@ -509,12 +528,9 @@ class PackagesContainer extends Component {
                     planPackage={visiblePlanPackage}
                     changeLicensesHandler={this.props.changeLicensesHandler}
                     upgradeHandler={this.props.upgradeHandler}
+                    isMostRightPackage={i === this.state.rightPackageID}
                 />
             );
-
-            if (isFirstPlanPackage) {
-                isFirstPlanPackage = false;
-            }
         }
 
         this.initSlider();

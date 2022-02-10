@@ -129,7 +129,7 @@ class Package extends Component {
 
         return <div className="fs-selected-pricing-license-quantity">
             {selectedPricing.sitesLabel()}
-            { ! planPackage.is_free_plan && <Tooltip>
+            { ! planPackage.is_free_plan && <Tooltip direction={this.getTooltipDirection()}>
                 <Fragment>
                     If you are running a multi-site network, each site in the network requires a license.{pricingLicenses.length > 0 ? 'Therefore, if you need to use it on multiple sites, check out our multi-site prices.' : ''}
                 </Fragment>
@@ -165,6 +165,15 @@ class Package extends Component {
         }
 
         return (Date.parse(install.trial_ends) > new Date().getTime());
+    }
+
+    /**
+     * @author Xiaheng Chen
+     * 
+     * @returns {string}
+     */
+    getTooltipDirection() {
+        return (this.props.isMostRightPackage ? 'top': 'right');
     }
 
     render() {
@@ -304,7 +313,7 @@ class Package extends Component {
                                         <span><strong>{feature.value}</strong></span>
                                         <span className="fs-feature-title">{feature.title}</span>
                                     </span>
-                                    {Helper.isNonEmptyString(feature.description) && <Tooltip><Fragment>{feature.description}</Fragment></Tooltip>}
+                                    {Helper.isNonEmptyString(feature.description) && <Tooltip direction={this.getTooltipDirection()}><Fragment>{feature.description}</Fragment></Tooltip>}
                                 </li>;
                             }
                         )}
@@ -370,7 +379,7 @@ class Package extends Component {
                                     key={feature.id}>
                                     <Icon icon={['fas', 'check']} />
                                     <span className="fs-feature-title">{featureTitle}</span>
-                                    {Helper.isNonEmptyString(feature.description) && <Tooltip><Fragment>{feature.description}</Fragment></Tooltip>}
+                                    {Helper.isNonEmptyString(feature.description) && <Tooltip direction={this.getTooltipDirection()}><Fragment>{feature.description}</Fragment></Tooltip>}
                                 </li>
                         })
                     }
