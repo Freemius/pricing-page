@@ -1,8 +1,9 @@
 const path = require('path');
 
 module.exports = (env, options) =>  {
+    const buildMode = process.env.BUILDMODE;
     return {
-        mode: 'production',
+        mode: buildMode,
         entry: './src/index.js',
         devtool: 'source-map',
         module: {
@@ -45,8 +46,8 @@ module.exports = (env, options) =>  {
             libraryTarget: 'umd',
         },
         optimization: {
-            nodeEnv: 'production',
-            minimize: true,
+            nodeEnv: buildMode,
+            minimize: buildMode === 'production',
         }
     };
 };
