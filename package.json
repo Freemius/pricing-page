@@ -13,8 +13,8 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "webpack --mode production",
+    "start": "cross-env BUILDMODE=development webpack --mode development --watch",
+    "build": "cross-env BUILDMODE=production webpack --mode production",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -38,6 +38,7 @@
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-imports": "^2.0.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^4.3.0",
     "file-loader": "^6.1.0",
     "node-sass": "^4.12.0",
