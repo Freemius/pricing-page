@@ -1,0 +1,162 @@
+#root,
+#fs_pricing_app {
+  .fs-section--packages {
+    display: inline-block;
+    width: 100%;
+    position: relative;
+
+    .fs-packages-menu {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .fs-packages-tab {
+      display: none;
+    }
+
+    .fs-package-tab {
+      display: inline-block;
+      flex: 1;
+
+      a {
+        display: block;
+        padding: 4px 10px 7px;
+        border-bottom: 2px solid transparent;
+        color: #000;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      &.fs-package-tab--selected {
+        a {
+          border-color: #0085ba;
+        }
+      }
+    }
+
+    .fs-packages-nav {
+      position: relative;
+      overflow: hidden;
+      margin: auto;
+
+      &:before,
+      &:after {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 60px;
+        margin-bottom: 32px;
+      }
+
+      &:before {
+        z-index: 1;
+      }
+
+      &.fs-has-previous-plan:before {
+        content: "";
+        left: 0;
+        background: linear-gradient(to right, #cccccc96, transparent);
+      }
+
+      &.fs-has-next-plan:after {
+        content: "";
+        right: 0;
+        background: linear-gradient(to left, #cccccc96, transparent);
+      }
+
+      &.fs-has-featured-plan:before,
+      &.fs-has-featured-plan:after {
+        top: 2.8em;
+      }
+    }
+
+    .fs-prev-package,
+    .fs-next-package {
+      position: absolute;
+      top: 50%;
+      margin-top: -11px;
+      cursor: pointer;
+      font-size: 48px;
+      z-index: 1;
+    }
+
+    .fs-prev-package {
+      visibility: hidden;
+      z-index: 2;
+    }
+
+    .fs-has-featured-plan .fs-packages {
+      margin-top: 2.8em;
+    }
+
+    .fs-packages {
+      width: auto;
+      display: flex;
+      flex-direction: row;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 30px;
+      border-top-right-radius: 10px;
+      position: relative;
+      transition: left 500ms ease, right 500ms ease;
+      padding-top: 5px;
+
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100px;
+        height: 100px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .fs-section--plans-and-pricing .fs-section--packages {
+      .fs-next-package, .fs-prev-package {
+        display: none;
+      }
+
+      .fs-packages-menu {
+        display: block;
+        font-size: 24px;
+        margin: 0 auto 10px;
+      }
+
+      .fs-packages-tab {
+        display: flex;
+        font-size: 18px;
+        margin: 0 auto 10px;
+      }
+
+      .fs-packages, .fs-package {
+        .fs-most-popular {
+          display: none;
+        }
+      }
+
+      .fs-has-featured-plan .fs-packages {
+        margin-top: 0;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 455px) {
+    .fs-section--plans-and-pricing .fs-section--packages .fs-packages .fs-package {
+      width: 100%;
+    }
+
+    .fs-section--plans-and-pricing {
+      padding: 10px;
+    }
+  }
+
+  @media only screen and (max-width: 375px) {
+      .fs-section--plans-and-pricing .fs-section--packages .fs-packages .fs-package {
+        width: 100%;
+      }
+  }
+}
