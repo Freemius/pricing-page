@@ -15,6 +15,7 @@ let _FS = null;
     global.FS.PostMessage = (function () {
       let _isChild = false,
         _isChildInitialized = false,
+        // eslint-disable-next-line no-undef
         _postman = new NoJQueryPostMessageMixin(
           'postMessage',
           'receiveMessage'

@@ -14,7 +14,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "format": "prettier ./src --write"
+    "format": "prettier ./src --write",
+    "test": "eslint ./src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,6 +40,8 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "esbuild-loader": "^2.18.0",
+    "eslint": "^8.11.0",
+    "eslint-config-react-app": "^7.0.0",
     "file-loader": "^6.2.0",
     "prettier": "^2.6.0",
     "sass": "^1.49.9",
