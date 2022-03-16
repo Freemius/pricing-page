@@ -1,0 +1,147 @@
+// The complex selectors are intentional because how Loader component is
+// sometimes rendered.
+// 1. It could be rendered directly inside `#fs_pricing_wrapper` which comes from the server.
+// 2. It could be rendered inside #fs_pricing_app which comes from our React App.
+#fs_pricing_app,
+#fs_pricing_wrapper,
+#fs_pricing_wrapper #fs_pricing_app {
+  .fs-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    zoom: 1;
+    text-align: left;
+    display: block !important;
+
+    .fs-modal-content-container {
+      display: block;
+      position: absolute;
+      left: 50%;
+      background: #fff;
+      box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3);
+
+      .fs-modal-header {
+        background: #534741;
+        padding: 15px;
+
+        h3,
+        .fs-modal-close {
+          color: #fff;
+        }
+      }
+
+      .fs-modal-content {
+        font-size: 1.2em;
+      }
+    }
+  }
+
+  .fs-modal--loading {
+    background-color: rgba(0, 0, 0, 0.3);
+
+    .fs-modal-content-container {
+      width: 220px;
+      margin-left: -126px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      text-align: center;
+      top: 50%;
+
+      span {
+        display: block;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: center;
+        color: #29abe1;
+        margin-bottom: 10px;
+      }
+
+      i {
+        display: block;
+        width: 128px;
+        margin: 0 auto;
+        height: 15px;
+        background: url(//img.freemius.com/blue-loader.gif);
+      }
+    }
+  }
+
+  .fs-modal--refund-policy,
+  .fs-modal--trial-confirmation {
+    background: rgba(0, 0, 0, 0.7);
+
+    .fs-modal-content-container {
+      width: 510px;
+      margin-left: -255px;
+      top: 20%;
+
+      .fs-modal-header .fs-modal-close {
+        line-height: 24px;
+        font-size: 24px;
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        cursor: pointer;
+      }
+
+      .fs-modal-content {
+        background: #f2f2f2;
+        height: 100%;
+        padding: 1px 15px;
+      }
+
+      .fs-modal-footer {
+        padding: 20px;
+        text-align: right;
+        border-top: 1px solid #e4e4e4;
+        background: #f2f2f2;
+
+        .fs-button--approve-trial {
+          margin: 0 7px;
+        }
+      }
+    }
+  }
+
+  .fs-modal--trial-confirmation .fs-button {
+    width: auto;
+    font-size: 13px;
+    line-height: 26px;
+    height: 28px;
+    padding: 0 10px 1px;
+    border-width: 1px;
+    text-transform: none;
+    font-weight: normal;
+    box-shadow: 0 1px 0 #cccccc;
+    background: #f7f7f7;
+    border-color: #cccccc;
+    color: #555;
+    cursor: pointer;
+    outline: none;
+
+    &:hover {
+      background: #fafafa;
+      border-color: #999;
+      color: #23282d;
+    }
+
+    &:active {
+      background: #eee;
+      border-color: #999;
+      box-shadow: inset 0 2px 5px -3px rgba(0, 0, 0, 0.5);
+
+      transform: translateY(1px);
+    }
+
+    &.fs-button--primary {
+      background: #0085ba;
+      border-color: #0073aa #006799 #006799;
+      box-shadow: 0 1px 0 #006799;
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
