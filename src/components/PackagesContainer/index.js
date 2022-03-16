@@ -8,6 +8,8 @@ import Package from "../Package";
 import Icon from "../Icon";
 import Placeholder from "../Placeholder";
 
+import './style.scss';
+
 class PackagesContainer extends Component {
     static contextType = FSPricingContext;
 
@@ -493,7 +495,7 @@ class PackagesContainer extends Component {
                     className="fs-package-option"
                     id={`fs_package_${visiblePlanOrPricingID}_option`}
                     value={visiblePlanOrPricingID}
-                >{(visiblePlanOrPricingID == selectedPlanOrPricingID || isFirstPlanPackage ? 'Selected Plan: ' : '') + visiblePlanPackage.title}</option>
+                >{((visiblePlanOrPricingID == selectedPlanOrPricingID) || (!selectedPlanOrPricingID) ? 'Selected Plan: ' : '') + visiblePlanPackage.title}</option>
             );
 
             packageComponents.push(
