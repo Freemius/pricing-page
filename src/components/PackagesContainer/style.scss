@@ -54,13 +54,13 @@
       }
 
       &.fs-has-previous-plan:before {
-        content: "";
+        content: '';
         left: 0;
         background: linear-gradient(to right, #cccccc96, transparent);
       }
 
       &.fs-has-next-plan:after {
-        content: "";
+        content: '';
         right: 0;
         background: linear-gradient(to left, #cccccc96, transparent);
       }
@@ -103,7 +103,7 @@
       padding-top: 5px;
 
       &:before {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         right: 0;
@@ -116,7 +116,8 @@
 
   @media only screen and (max-width: 768px) {
     .fs-section--plans-and-pricing .fs-section--packages {
-      .fs-next-package, .fs-prev-package {
+      .fs-next-package,
+      .fs-prev-package {
         display: none;
       }
 
@@ -132,7 +133,8 @@
         margin: 0 auto 10px;
       }
 
-      .fs-packages, .fs-package {
+      .fs-packages,
+      .fs-package {
         .fs-most-popular {
           display: none;
         }
@@ -145,7 +147,10 @@
   }
 
   @media only screen and (max-width: 455px) {
-    .fs-section--plans-and-pricing .fs-section--packages .fs-packages .fs-package {
+    .fs-section--plans-and-pricing
+      .fs-section--packages
+      .fs-packages
+      .fs-package {
       width: 100%;
     }
 
@@ -155,8 +160,11 @@
   }
 
   @media only screen and (max-width: 375px) {
-      .fs-section--plans-and-pricing .fs-section--packages .fs-packages .fs-package {
-        width: 100%;
-      }
+    .fs-section--plans-and-pricing
+      .fs-section--packages
+      .fs-packages
+      .fs-package {
+      width: 100%;
+    }
   }
 }
