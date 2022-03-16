@@ -4,9 +4,9 @@ import { BillingCycleString } from "../../entities/Pricing";
 import { PlanManager } from "../../services/PlanManager";
 import { Helper } from "../../Helper";
 import { Plan } from "../../entities/Plan";
-import Package from "./Package";
+import Package from "../Package";
 import Icon from "../Icon";
-import Placeholder from "./Placeholder";
+import Placeholder from "../Placeholder";
 
 class PackagesContainer extends Component {
     static contextType = FSPricingContext;
