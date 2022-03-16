@@ -1,16 +1,18 @@
 const path = require('path');
 
+const buildMode = process.env.NODE_ENV;
+const isProductionMode = buildMode === 'production';
+
 /**
  * Targeting `>0.1%, not dead`.
  *
  * {@link https://browserslist.dev/?q=PjAuMSUsIG5vdCBkZWFk}
  */
-const targetBrowsers = ['chrome79', 'firefox95', 'safari13.1', 'edge96'];
+const targetBrowsers = isProductionMode
+  ? ['chrome79', 'firefox95', 'safari13.1', 'edge96']
+  : ['es2020'];
 
 module.exports = () => {
-  const buildMode = process.env.NODE_ENV;
-  const isProductionMode = buildMode === 'production';
-
   return {
     mode: buildMode,
     entry: './src/index.js',
