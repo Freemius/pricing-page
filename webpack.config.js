@@ -1,8 +1,12 @@
 const path = require('path');
 const { ESBuildMinifyPlugin } = require('esbuild-loader')
 
-// Targeting >0.2%, not dead https://browserslist.dev/?q=PjAuMiUsIG5vdCBkZWFk
-const targetBrowsers = ['chrome93','firefox95','safari14','edge96'];
+/**
+ * Targeting `>0.1%, not dead`.
+ *
+ * {@link https://browserslist.dev/?q=PjAuMSUsIG5vdCBkZWFk}
+ */
+const targetBrowsers = ['chrome79','firefox95','safari13.1','edge96'];
 
 module.exports = () =>  {
     const buildMode = process.env.NODE_ENV;
