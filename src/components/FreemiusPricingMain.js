@@ -18,7 +18,7 @@ import FSPricingContext from ".././FSPricingContext";
 import Section from './Section';
 import PeriodSelector from './PeriodSelector';
 import CurrencySelector from './CurrencySelector';
-import PackagesContainer from './packages/PackagesContainer';
+import PackagesContainer from './PackagesContainer';
 import Badges from './Badges';
 import Testimonials from './testimonials/Testimonials';
 import Faq from './faq/Faq';

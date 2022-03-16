@@ -6,7 +6,9 @@ import Tooltip from "../Tooltip";
 import Icon from "../Icon";
 import {Helper} from "../../Helper";
 import {Plan} from "../../entities/Plan";
-import Placeholder from "./Placeholder";
+import Placeholder from "../Placeholder";
+
+import './style.scss'
 
 class Package extends Component {
     static contextType             = FSPricingContext;
@@ -15,7 +17,7 @@ class Package extends Component {
     /**
      * If we unset it (or set it to `undefined`) it will use the browser's locale.
      * For now we are going to use the 'en-US' locale, until we start supporting other locales in our checkout for a consistent experience.
-     * 
+     *
      * @author Vova Feldman
      */
     static locale = 'en-US';

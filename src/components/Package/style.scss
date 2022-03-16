@@ -1,0 +1,353 @@
+#root, #fs_pricing_app {
+    .fs-package {
+        display: inline-block;
+        vertical-align: top;
+        background: #fff;
+        border-bottom: 3px solid #e8e8e8;
+        width: 315px;
+        box-sizing: border-box;
+
+        &:first-child, &+.fs-package {
+          border-left: 1px solid #e8e8e8;
+        }
+
+        &:last-child {
+          border-right: 1px solid #e8e8e8;
+        }
+
+        &:not(.fs-featured-plan) {
+          &:first-child {
+            &, .fs-plan-title {
+              border-top-left-radius: 10px;
+            }
+          }
+        }
+
+        .fs-package-content {
+          vertical-align: middle;
+          padding-bottom: 30px;
+        }
+
+        .fs-plan-title {
+          padding: 10px 0;
+          background: #f8f8f9;
+          text-transform: uppercase;
+          border-bottom: 1px solid #f1f1f2;
+          border-right: 1px solid #f1f1f2;
+          width: 100%;
+          text-align: center;
+
+          &:last-child {
+            border-right: none;
+          }
+        }
+
+        .fs-plan-description, .fs-undiscounted-price, .fs-licenses, .fs-upgrade-button, .fs-plan-features {
+          margin-top: 10px;
+        }
+
+        .fs-plan-description {
+          text-transform: uppercase;
+        }
+
+        .fs-undiscounted-price {
+          margin: auto;
+          position: relative;
+          display: inline-block;
+          color: #808080;
+          top: 6px;
+
+          &::after {
+            content: '';
+            border-bottom: 1px solid #dd89a8;
+            position: absolute;
+            left: -2px;
+            top: 50%;
+            width: 100%;
+            padding: 0px 2px;
+          }
+        }
+
+        .fs-selected-pricing-amount {
+          margin: 5px 0;
+
+          .fs-currency-symbol {
+            font-size: 39px;
+          }
+
+          .fs-selected-pricing-amount-integer {
+            font-size: 58px;
+            margin: 0 5px;
+          }
+
+          .fs-currency-symbol,
+          .fs-selected-pricing-amount-integer,
+          .fs-selected-pricing-amount-fraction-container {
+            display: inline-block;
+            vertical-align: middle;
+
+            &:not(.fs-selected-pricing-amount-integer) {
+              line-height: 18px;
+            }
+
+            .fs-selected-pricing-amount-fraction,
+            .fs-selected-pricing-amount-cycle {
+              display: block;
+              font-size: 12px;
+            }
+
+            .fs-selected-pricing-amount-fraction {
+              vertical-align: top;
+            }
+
+            .fs-selected-pricing-amount-cycle {
+              vertical-align: bottom;
+            }
+          }
+
+          .fs-selected-pricing-amount-fraction-container {
+            color: #606060;
+          }
+        }
+
+        .fs-selected-pricing-amount-free {
+          font-size: 48px;
+        }
+
+        .fs-selected-pricing-cycle {
+          margin-bottom: 5px;
+          text-transform: uppercase;
+          color: #606060;
+        }
+
+        .fs-selected-pricing-license-quantity {
+          color: #47aed6;
+
+          .fs-tooltip {
+            margin-left: 5px;
+          }
+        }
+
+        .fs-upgrade-button-container {
+          padding: 0 13px;
+          display: block;
+
+          .fs-upgrade-button {
+            margin-top: 20px;
+            margin-bottom: 5px;
+            outline: none;
+            cursor: pointer;
+          }
+        }
+
+        .fs-plan-features {
+          text-align: left;
+          margin-left: 13px;
+
+          li {
+            font-size: 16px;
+            display: flex;
+            margin-bottom: 8px;
+
+            &:not(:first-child) {
+              margin-top: 8px;
+            }
+
+            > span, .fs-tooltip {
+              font-size: small;
+              vertical-align: middle;
+              display: inline-block;
+            }
+
+            .fs-feature-title {
+              margin: 0 5px;
+              color: #606060;
+              max-width: 260px;
+              overflow-wrap: break-word;
+            }
+
+            .fs-icon, .fs-tooltip {
+              color: #2da1d0;
+            }
+          }
+        }
+
+        .fs-support-and-main-features {
+          margin-top: 12px;
+          padding-top: 18px;
+          padding-bottom: 18px;
+
+          .fs-plan-support {
+            margin-bottom: 15px;
+          }
+
+          .fs-plan-features-with-value {
+            li {
+              font-size: small;
+
+              .fs-feature-title {
+                margin: 0 2px;
+              }
+
+              &:not(:first-child) {
+                margin-top: 5px;
+              }
+            }
+          }
+        }
+
+        .fs-license-quantities {
+          border-collapse: collapse;
+          position: relative;
+          width: 100%;
+
+          &, input {
+            cursor: pointer;
+          }
+
+          .fs-license-quantity-discount span {
+            background: #2da1d0;
+            color: #fff;
+            display: inline;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 0 5px;
+            white-space: nowrap;
+
+            &.fs-license-quantity-no-discount {
+              visibility: hidden;
+            }
+          }
+
+          .fs-license-quantity-container {
+            line-height: 30px;
+            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: small;
+
+            &.fs-license-quantity-selected {
+              background: #2da1d0;
+              color: #fff;
+
+              .fs-license-quantity-discount > span {
+                background: #fff;
+                color: #2da1d0;
+              }
+            }
+
+            > td:not(.fs-license-quantity-discount):not(.fs-license-quantity-price) {
+              text-align: left;
+            }
+          }
+
+          .fs-license-quantity, .fs-license-quantity-discount, .fs-license-quantity-price {
+            vertical-align: middle;
+            color: #606060;
+          }
+
+          .fs-license-quantity {
+            position: relative;
+            white-space: nowrap;
+
+            input {
+              position: relative;
+              margin-top: -1px;
+              margin-left: 7px;
+              margin-right: 7px;
+            }
+          }
+
+          .fs-license-quantity-price {
+            position: relative;
+            margin-right: auto;
+            padding-right: 7px;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+            text-align: right;
+          }
+        }
+
+        &.fs-free-plan {
+          .fs-license-quantity-container:not(:last-child) {
+            border-color: transparent;
+          }
+        }
+
+        &.fs-featured-plan .fs-plan-title {
+          background: #1fbc99;
+        }
+
+        .fs-most-popular {
+          display: none;
+        }
+
+        &.fs-featured-plan {
+          .fs-most-popular {
+            display: block;
+            line-height: 2.8em;
+            margin-top: -2.8em;
+            border-radius: 20px 20px 0 0;
+            color: #fff;
+            background: #158369;
+            text-transform: uppercase;
+            font-size: 14px;
+          }
+
+          .fs-plan-title {
+            color: #fff;
+          }
+
+          .fs-selected-pricing-license-quantity {
+            color: #1fbc99;
+          }
+
+          .fs-license-quantity-selected {
+            .fs-license-quantity:before {
+              content: "";
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: -1px;
+              border-left: 2px solid #1fbc99;
+            }
+
+            .fs-license-quantity-price:after {
+              content: "";
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              right: -1px;
+              border-right: 2px solid #1fbc99;
+            }
+          }
+
+          .fs-license-quantities .fs-license-quantity-selected {
+            background: #1fbc99;
+
+            .fs-license-quantity-discount > span {
+              color: #1fbc99;
+            }
+          }
+
+          .fs-upgrade-button, .fs-license-quantities .fs-license-quantity-discount span {
+            background: #1fbc99;
+            color: #fff;
+          }
+
+          .fs-upgrade-button {
+            border-bottom: 3px solid #15846a;
+          }
+
+          .fs-tooltip .fs-icon {
+            color: #1fbc99 !important;
+          }
+        }
+
+        .fs-license-quantity-selected {
+          .fs-license-quantity, .fs-license-quantity-discount, .fs-license-quantity-price {
+            color: #fff;
+          }
+        }
+      }
+}
