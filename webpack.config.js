@@ -1,39 +1,47 @@
 const path = require('path');
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
 
-module.exports = (env, options) =>  {
-    const buildMode = process.env.BUILDMODE;
+// Targeting >0.2%, not dead https://browserslist.dev/?q=PjAuMiUsIG5vdCBkZWFk
+const targetBrowsers = ['chrome93','firefox95','safari14','edge96'];
+
+module.exports = () =>  {
+    const buildMode = process.env.NODE_ENV;
+    const isProductionMode = buildMode === 'production';
+
     return {
         mode: buildMode,
         entry: './src/index.js',
-        devtool: 'source-map',
+        devtool: isProductionMode ? false : 'eval-source-map',
         module: {
             rules: [
                 {
                     test: /\.(js|jsx)$/,
                     exclude: /node_modules/,
-                    loader: "babel-loader",
-                    options: {
-                        presets: [
-                            '@babel/preset-react',
-                            {
-                                "plugins": [
-                                    '@babel/plugin-proposal-class-properties',
-                                    '@babel/plugin-syntax-dynamic-import',
-                                    '@babel/plugin-syntax-export-namespace-from'
-                                ]
+                    use: [
+                        {
+                            loader: 'esbuild-loader',
+                            options: {
+                                loader: 'jsx',
+                                target: targetBrowsers,
                             }
-                        ]
-                    }
+                        }
+                    ],
                 },
                 {
                     test: /\.scss$/,
-                    loaders: [
-                        "style-loader", "css-loader", "sass-loader"
+                    use: [
+                        "style-loader", "css-loader", {
+                            loader: 'esbuild-loader',
+                            options: {
+                                loader: 'css',
+                                minify: isProductionMode
+                            },
+                        }, "sass-loader"
                     ]
                 },
                 {
                     test: /\.(svg|png)/,
-                    loaders: [
+                    use: [
                         "file-loader"
                     ]
                 }
@@ -45,6 +53,17 @@ module.exports = (env, options) =>  {
             library: ["Freemius"],
             libraryTarget: 'umd',
         },
+        // We cannot use ESBuild mimizer because our code-base isn't strictly ES Module.
+        // We still have some side-effecty imports.
+        // optimization: isProductionMode ?
+        // {
+        //     minimize: isProductionMode,
+        //     nodeEnv: buildMode,
+        //     minimizer: [new ESBuildMinifyPlugin({
+        //         target: targetBrowsers
+        //     })]
+        // } :
+        // undefined,
         optimization: {
             nodeEnv: buildMode,
             minimize: buildMode === 'production',
