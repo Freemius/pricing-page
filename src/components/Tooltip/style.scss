@@ -18,13 +18,13 @@
       line-height: 18px;
 
       &:before {
-        content: "";
+        content: '';
         position: absolute;
         z-index: 1;
       }
 
       &:not(.fs-tooltip-message--position-none) {
-          display: block;
+        display: block;
       }
 
       // Positioning on the right
