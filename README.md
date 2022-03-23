@@ -46,17 +46,19 @@ offering the pricing page as a service, we decided to open-source it and give
 you complete flexibility to modify it as you wish, something that is currently
 impossible since it's running remotely from our end.
 
-## How can I test it?
+## How can I use or test it in my own plugin or theme?
 
 1. Check out the [pricing-page repo](https://github.com/Freemius/pricing-page).
 2. Make sure you have the latest LTS of node (v16 at the time of writing)
    installed.
-3. Switch to the `develop` branch.
+3. Switch to the `develop` branch if you want the most up-to-date version. Keep
+   using the `master` branch if you want the stable version.
 4. Run `npm install`.
 5. Run `npm run build` (it will create a `dist` directory).
-6. Replace the WordPress SDK version integrated with your plugin/theme with its
-   latest
-   [`develop` branch](https://github.com/Freemius/wordpress-sdk/tree/develop).
+6. Replace the WordPress SDK version integrated with your plugin/theme with
+   at-least the
+   [2.4.3](https://github.com/Freemius/wordpress-sdk/releases/tag/2.4.3)
+   version.
 7. Copy the the `dist` folder into the SDK's `/includes` folder and rename it to
    `freemius-pricing`.
 8. That’s it! If you navigate to the pricing page you'll see the new pricing app
@@ -79,7 +81,8 @@ our [Contributors Guide](CONTRIBUTING.md).
 3. Edit the app as you wish.
 4. Once ready, run `npm run build` (it will create a `dist` directory).
 5. Copy the `dist` folder into your plugin/theme's main folder and rename it to
-   `freemius-pricing`
+   `freemius-pricing`.
+6. Kindly follow the instruction below for your plugin or theme.
 
 > **IMPORTANT:** Do not add it to the SDK because it will be overridden the next
 > time you upgrade the SDK).
@@ -118,8 +121,8 @@ directory.
 ```
 
 If for some reasons, you are using a child theme and would like to refer to the
-parent theme for **SDK and pricing app**, please use `get_template_directory`
-instead.
+parent theme for **the SDK and the pricing app**, please use
+`get_template_directory` instead.
 
 ```php
 <?php
@@ -132,7 +135,7 @@ instead.
 ```
 
 If for some reasons, the output of the `get_stylesheet_directory` is filtered in
-an unexpected way, you could use this:
+an unexpected way, you can use this:
 
 ```php
 <?php
