@@ -307,10 +307,6 @@ class PackagesContainer extends Component {
     })();
   }
 
-  componentDidUpdate() {
-    // this.slider?.adjustPackages();
-  }
-
   componentWillUnmount() {
     this.slider?.clearEventListeners();
   }
