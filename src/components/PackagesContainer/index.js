@@ -275,11 +275,13 @@ class PackagesContainer extends Component {
       init();
       adjustPackages();
 
+      const handlePackagesMenuChange = evt => {
+        firstVisibleIndex = evt.target.selectedIndex - 1;
+        nextSlide();
+      };
+
       if ($packagesMenu) {
-        $packagesMenu.addEventListener('change', function (evt) {
-          firstVisibleIndex = evt.target.selectedIndex - 1;
-          nextSlide();
-        });
+        $packagesMenu.addEventListener('change', handlePackagesMenuChange);
       }
 
       const debouncedAdjustPackages = debounce(adjustPackages, 250);
@@ -289,21 +291,24 @@ class PackagesContainer extends Component {
       window.addEventListener('resize', debouncedAdjustPackages);
 
       return {
-        adjustPackages: function () {
-          init();
-          adjustPackages();
-        },
+        adjustPackages,
         clearEventListeners() {
           $nextPackage.removeEventListener('click', nextSlide);
           $prevPackage.removeEventListener('click', prevSlide);
           window.removeEventListener('resize', debouncedAdjustPackages);
+          if ($packagesMenu) {
+            $packagesMenu.removeEventListener(
+              'change',
+              handlePackagesMenuChange
+            );
+          }
         },
       };
     })();
   }
 
   componentDidUpdate() {
-    this.slider?.adjustPackages();
+    // this.slider?.adjustPackages();
   }
 
   componentWillUnmount() {
