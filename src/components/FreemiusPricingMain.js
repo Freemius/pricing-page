@@ -713,6 +713,7 @@ class FreemiusPricingMain extends Component {
           billingCycles: Object.keys(billingCycles),
           currencies: Object.keys(currencies),
           currencySymbols: { usd: '$', eur: '€', gbp: '£' },
+          discountsModel: FSConfig.discounts_model,
           downloads: pricingData.downloads,
           hasAnnualCycle: hasAnnualCycle,
           hasEmailSupportForAllPaidPlans: hasEmailSupportForAllPaidPlans,

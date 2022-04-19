@@ -423,7 +423,8 @@ class Package extends Component {
                   let multiSiteDiscount =
                     PlanManager.getInstance().calculateMultiSiteDiscount(
                       pricing,
-                      this.context.selectedBillingCycle
+                      this.context.selectedBillingCycle,
+                      this.context.discountsModel
                     );
 
                   return (
