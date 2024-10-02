@@ -223,6 +223,8 @@ class Faq extends Component {
               this.context.plugin,
               'pre_sale_question'
             )}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             support page
           </a>

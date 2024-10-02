@@ -295,11 +295,13 @@ class Package extends Component {
     }
 
     let packageClassName = 'fs-package';
+    let isFeatured = false;
 
     if (planPackage.is_free_plan) {
       packageClassName += ' fs-free-plan';
     } else if (!isSinglePlan && planPackage.is_featured) {
       packageClassName += ' fs-featured-plan';
+      isFeatured = true;
     }
 
     const localDecimalSeparator = Helper.formatNumber(0.1, Package.locale)[1];
@@ -475,7 +477,9 @@ class Package extends Component {
           )}
           <div className="fs-upgrade-button-container">
             <button
-              className="fs-button fs-button--size-large fs-upgrade-button"
+              className={`fs-button fs-button--size-large fs-upgrade-button ${
+                isFeatured ? 'fs-button--type-primary' : ''
+              }`}
               onClick={() => {
                 this.props.upgradeHandler(planPackage, selectedPricing);
               }}

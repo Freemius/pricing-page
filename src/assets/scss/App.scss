@@ -1,23 +1,14 @@
+@import 'colors';
+
 #root,
 #fs_pricing_app {
-  background: #f1f1f1;
+  background: #f0f0f1;
+  color: $fs-brand-neutral-90;
   height: auto;
   line-height: normal;
 
   font-size: 13px;
   margin: 0;
-
-  &,
-  span,
-  input,
-  select,
-  label,
-  a,
-  div,
-  th,
-  td {
-    font-family: 'Open Sans', sans-serif;
-  }
 
   h1,
   h2,
@@ -28,6 +19,7 @@
     margin: 0;
     padding: 0;
     text-align: center;
+    color: $fs-brand-neutral-90;
   }
 
   h1 {
@@ -52,7 +44,7 @@
 
   p,
   blockquote {
-    color: #606060;
+    color: $fs-brand-neutral-70;
   }
 
   strong {
@@ -85,13 +77,13 @@
     }
 
     .fs-plugin-title-and-logo {
-      background: #fff;
+      background: $fs-brand-neutral-00;
       padding-top: 12px;
       padding-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
+      border: 1px solid $fs-brand-neutral-20;
+      border-left-width: 0;
+      border-right-width: 0;
       text-align: center;
-      background: #fff;
 
       .fs-plugin-logo,
       h1 {
@@ -109,12 +101,15 @@
 
   .fs-trial-message {
     padding: 20px;
-    background: #ffe4bf;
-    color: #e07b00;
+    background: $fs-brand-secondary-10;
+    color: $fs-brand-primary-50;
     font-weight: bold;
     text-align: center;
-    border: 2px solid darkorange;
+    border: 2px solid $fs-brand-primary-50;
     font-size: 1.2em;
+    margin: 0 auto;
+    max-width: 945px;
+    box-sizing: border-box;
   }
 
   /**
@@ -137,7 +132,7 @@
       margin: 4em auto 0 auto;
 
       &:nth-child(even) {
-        background: white;
+        background: $fs-brand-neutral-00;
       }
 
       > header {
@@ -170,9 +165,11 @@
 
       .fs-section--trial-header {
         text-align: center;
-        background: #f9f9f9;
+        background: $fs-brand-neutral-00;
         padding: 20px;
         border-radius: 5px;
+        box-sizing: border-box;
+        max-width: 945px;
 
         h2 {
           margin-bottom: 10px;
@@ -183,6 +180,10 @@
         }
       }
 
+      .fs-currencies {
+        border-color: $fs-brand-neutral-60;
+      }
+
       .fs-section--billing-cycles {
         display: inline-block;
         vertical-align: middle;
@@ -190,24 +191,34 @@
         width: auto;
 
         .fs-billing-cycles {
-          border: 1px solid #ccc;
-          border-radius: 20px;
           overflow: hidden;
 
           li {
+            border: 1px solid $fs-brand-neutral-20;
+            border-right-width: 0;
             display: inline-block;
             font-weight: bold;
             margin: 0;
             padding: 10px 10px;
             cursor: pointer;
 
-            &.fs-selected-billing-cycle {
-              background: #1fbc99;
-              color: #fff;
+            &:first-child {
+              border-radius: 20px 0 0 20px;
             }
 
-            &:not(:last-child) {
-              border-right: 1px solid #ccc;
+            &:last-child {
+              border-radius: 0 20px 20px 0;
+              border-right-width: 1px;
+            }
+
+            &.fs-selected-billing-cycle {
+              background: $fs-brand-primary-50;
+              border-color: $fs-brand-primary-50;
+              color: $fs-brand-neutral-00;
+
+              + li {
+                border-left-color: $fs-brand-primary-50;
+              }
             }
           }
         }
@@ -215,9 +226,12 @@
 
       .fs-section--custom-implementation {
         padding: 15px 15px;
-        background: #fff;
-        border: 1px solid #ccc;
+        background: $fs-brand-neutral-00;
+        border: 1px solid $fs-brand-neutral-20;
         border-radius: 8px;
+        box-sizing: border-box;
+        max-width: 945px;
+        margin: 0 auto;
 
         h2 {
           margin-bottom: 10px;
@@ -236,7 +250,7 @@
         position: relative;
 
         .fs-money-back-guarantee-title {
-          color: #1fbc99;
+          color: $fs-brand-accent-50;
           font-weight: bold;
           margin-bottom: 15px;
         }
@@ -274,9 +288,9 @@
     }
 
     .fs-section--testimonials {
-      border-top: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
-      padding: 4em 4em 1.6em 4em;
+      border-top: 1px solid $fs-brand-neutral-20;
+      border-bottom: 1px solid $fs-brand-neutral-20;
+      padding: 3em 4em 4em;
 
       .fs-section-header {
         margin-left: -30px;
@@ -285,7 +299,6 @@
 
       .fs-testimonials-nav {
         margin: auto;
-        margin-top: 40px;
         display: block;
         width: auto;
         position: relative;
@@ -294,7 +307,7 @@
           &.fs-nav-prev,
           &.fs-nav-next {
             top: 50%;
-            border: 1px solid #c9c9c9;
+            border: 1px solid $fs-brand-neutral-20;
             border-radius: 14px;
             cursor: pointer;
             margin-top: 11px;
@@ -306,7 +319,7 @@
               height: 1em;
               width: 1em;
               line-height: 1em;
-              color: #c9c9c9;
+              color: $fs-brand-neutral-20;
               padding: 5px;
             }
           }
@@ -347,15 +360,15 @@
               box-sizing: border-box;
             }
             .fs-testimonial-rating {
-              color: #f7941d;
+              color: $fs-brand-accent-50;
             }
 
             .fs-testimonial-header,
             > section {
-              background: #f7f7f7;
+              background: $fs-brand-neutral-00;
               padding: 10px;
               margin: 0 2em;
-              border: 1px solid #e2e2e2;
+              border: 1px solid $fs-brand-neutral-10;
             }
 
             > section {
@@ -368,10 +381,10 @@
               border-radius: 20px 20px 0 0;
 
               .fs-testimonial-logo {
-                border: 1px solid #e4e4e4;
+                border: 1px solid $fs-brand-neutral-10;
                 border-radius: 44px;
                 padding: 5px;
-                background: #fff;
+                background: $fs-brand-neutral-00;
                 width: 76px;
                 height: 76px;
                 position: relative;
@@ -392,7 +405,7 @@
             }
 
             .fs-icon-quote {
-              color: #2da1d0;
+              color: $fs-brand-accent-50;
             }
 
             .fs-testimonial-message {
@@ -405,11 +418,7 @@
               .fs-testimonial-author-name {
                 font-weight: bold;
                 margin-bottom: 2px;
-                color: #505050;
-              }
-
-              &:last-child {
-                color: #8f8f8f;
+                color: $fs-brand-neutral-90;
               }
             }
           }
@@ -417,7 +426,7 @@
       }
 
       .fs-nav-pagination {
-        margin: 45px 0 25px 0;
+        margin: 4em 0 0;
         position: relative;
 
         li {
@@ -427,7 +436,7 @@
 
           button.fs-round-button {
             cursor: pointer;
-            border: 1px solid #d2d2d2;
+            border: 1px solid $fs-brand-neutral-20;
             vertical-align: middle;
             display: inline-block;
             line-height: 0;
@@ -443,7 +452,7 @@
               display: inline-block;
               width: 100%;
               height: 100%;
-              background: #f7f7f7;
+              background: $fs-brand-neutral-05;
             }
           }
 
@@ -453,7 +462,7 @@
             }
 
             button.fs-round-button span {
-              background: #c9c9c9;
+              background: $fs-brand-neutral-10;
             }
           }
         }
@@ -461,10 +470,12 @@
     }
 
     .fs-section--faq {
-      background: #f1f1f1;
+      background: #f0f0f1;
 
       .fs-section--faq-items {
-        max-width: 850px;
+        max-width: 945px;
+        margin: 0 auto;
+        box-sizing: border-box;
         text-align: left;
         columns: 2;
         column-gap: 20px;
@@ -487,20 +498,21 @@
           }
 
           h3 {
-            background: #f7f7f7;
+            background: $fs-brand-neutral-70;
+            color: $fs-brand-neutral-00;
             padding: 15px;
             font-weight: bold;
-            border: 1px solid #dbdbdb;
-            border-bottom: 1px solid #dedede;
+            border: 1px solid $fs-brand-neutral-70;
+            border-bottom: 1px solid $fs-brand-neutral-10;
             border-radius: 3px 3px 0 0;
           }
 
           p {
-            background: #fff;
+            background: $fs-brand-neutral-00;
             font-size: small;
             padding: 15px;
             line-height: 20px;
-            border: 1px solid #dbdbdb;
+            border: 1px solid $fs-brand-neutral-20;
             border-top: 0 none;
             border-radius: 0 0 3px 3px;
           }
@@ -510,7 +522,7 @@
   }
 
   .fs-button {
-    background: #e0e0e0;
+    background: $fs-brand-neutral-10;
     padding: 10px;
     display: inline-block;
     text-transform: uppercase;
@@ -518,11 +530,48 @@
     font-size: 18px;
     width: 100%;
     border-radius: 4px;
-    border-bottom: 3px solid #a0a0a0;
+    border: 0 none;
+    border-bottom: 3px solid $fs-brand-neutral-60;
+    cursor: pointer;
+
+    &:focus {
+      border-bottom-color: $fs-brand-primary-50;
+    }
+
+    transition: background 200ms ease-out, border-bottom-color 200ms ease-out;
+
+    &:hover {
+      will-change: background, border-bottom;
+      background: $fs-brand-neutral-20;
+      border-bottom: 3px solid $fs-brand-neutral-70;
+    }
+
+    &:active {
+      will-change: background, border-bottom;
+      padding-top: 12px;
+      background: $fs-brand-neutral-20;
+      border-bottom: 1px solid $fs-brand-neutral-70;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
 
     &.fs-button--size-small {
       font-size: 14px;
       width: auto;
+    }
+
+    &.fs-button--type-primary {
+      background-color: $fs-brand-primary-50;
+      color: $fs-brand-neutral-00;
+      border-color: $fs-brand-primary-80;
+
+      &:focus {
+        border-bottom-color: $fs-brand-accent-50;
+      }
+
+      &:hover,
+      &:active {
+        background-color: $fs-brand-primary-60;
+      }
     }
   }
 
@@ -530,146 +579,6 @@
     &:before {
       content: '';
       display: inline-block;
-    }
-  }
-
-  .fs-modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1000;
-    zoom: 1;
-    text-align: left;
-    display: block !important;
-
-    .fs-modal-content-container {
-      display: block;
-      position: absolute;
-      left: 50%;
-      background: #fff;
-      box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3);
-
-      .fs-modal-header {
-        background: #534741;
-        padding: 15px;
-
-        h3,
-        .fs-modal-close {
-          color: #fff;
-        }
-      }
-
-      .fs-modal-content {
-        font-size: 1.2em;
-      }
-    }
-  }
-
-  .fs-modal--loading {
-    background-color: rgba(0, 0, 0, 0.3);
-
-    .fs-modal-content-container {
-      width: 220px;
-      margin-left: -126px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      text-align: center;
-      top: 50%;
-
-      span {
-        display: block;
-        font-weight: bold;
-        font-size: 16px;
-        text-align: center;
-        color: #29abe1;
-        margin-bottom: 10px;
-      }
-
-      i {
-        display: block;
-        width: 128px;
-        margin: 0 auto;
-        height: 15px;
-        background: url(//img.freemius.com/blue-loader.gif);
-      }
-    }
-  }
-
-  .fs-modal--refund-policy,
-  .fs-modal--trial-confirmation {
-    background: rgba(0, 0, 0, 0.7);
-
-    .fs-modal-content-container {
-      width: 510px;
-      margin-left: -255px;
-      top: 20%;
-
-      .fs-modal-header .fs-modal-close {
-        line-height: 24px;
-        font-size: 24px;
-        position: absolute;
-        top: -12px;
-        right: -12px;
-        cursor: pointer;
-      }
-
-      .fs-modal-content {
-        background: #f2f2f2;
-        height: 100%;
-        padding: 1px 15px;
-      }
-
-      .fs-modal-footer {
-        padding: 20px;
-        text-align: right;
-        border-top: 1px solid #e4e4e4;
-        background: #f2f2f2;
-
-        .fs-button--approve-trial {
-          margin: 0 7px;
-        }
-      }
-    }
-  }
-
-  .fs-modal--trial-confirmation .fs-button {
-    width: auto;
-    font-size: 13px;
-    line-height: 26px;
-    height: 28px;
-    padding: 0 10px 1px;
-    border-width: 1px;
-    text-transform: none;
-    font-weight: normal;
-    box-shadow: 0 1px 0 #cccccc;
-    background: #f7f7f7;
-    border-color: #cccccc;
-    color: #555;
-    cursor: pointer;
-    outline: none;
-
-    &:hover {
-      background: #fafafa;
-      border-color: #999;
-      color: #23282d;
-    }
-
-    &:active {
-      background: #eee;
-      border-color: #999;
-      box-shadow: inset 0 2px 5px -3px rgba(0, 0, 0, 0.5);
-
-      transform: translateY(1px);
-    }
-
-    &.fs-button--primary {
-      background: #0085ba;
-      border-color: #0073aa #006799 #006799;
-      box-shadow: 0 1px 0 #006799;
-      color: #fff;
-      text-decoration: none;
     }
   }
 

@@ -44,7 +44,7 @@ class TrialConfirmationModal extends Component {
               Cancel
             </button>
             <button
-              className="fs-button fs-button--primary fs-button--approve-trial"
+              className="fs-button fs-button--type-primary fs-button--approve-trial"
               onClick={() => this.props.startTrialHandler(plan.id)}
             >
               Approve & Start Trial

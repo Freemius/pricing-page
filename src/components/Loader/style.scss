@@ -1,3 +1,5 @@
+@import '../../assets/scss/colors';
+
 // The complex selectors are intentional because how Loader component is
 // sometimes rendered.
 // 1. It could be rendered directly inside `#fs_pricing_wrapper` which comes from the server.
@@ -20,16 +22,16 @@
       display: block;
       position: absolute;
       left: 50%;
-      background: #fff;
+      background: $fs-brand-neutral-00;
       box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3);
 
       .fs-modal-header {
-        background: #534741;
+        background: $fs-brand-primary-50;
         padding: 15px;
 
         h3,
         .fs-modal-close {
-          color: #fff;
+          color: $fs-brand-neutral-00;
         }
       }
 
@@ -46,7 +48,7 @@
       width: 220px;
       margin-left: -126px;
       padding: 15px;
-      border: 1px solid #ccc;
+      border: 1px solid $fs-brand-neutral-20;
       text-align: center;
       top: 50%;
 
@@ -55,7 +57,7 @@
         font-weight: bold;
         font-size: 16px;
         text-align: center;
-        color: #29abe1;
+        color: $fs-brand-primary-50;
         margin-bottom: 10px;
       }
 
@@ -88,16 +90,15 @@
       }
 
       .fs-modal-content {
-        background: #f2f2f2;
         height: 100%;
         padding: 1px 15px;
       }
 
       .fs-modal-footer {
-        padding: 20px;
+        padding: 10px;
         text-align: right;
-        border-top: 1px solid #e4e4e4;
-        background: #f2f2f2;
+        border-top: 1px solid $fs-brand-neutral-20;
+        background: $fs-brand-neutral-05;
 
         .fs-button--approve-trial {
           margin: 0 7px;
@@ -109,39 +110,5 @@
   .fs-modal--trial-confirmation .fs-button {
     width: auto;
     font-size: 13px;
-    line-height: 26px;
-    height: 28px;
-    padding: 0 10px 1px;
-    border-width: 1px;
-    text-transform: none;
-    font-weight: normal;
-    box-shadow: 0 1px 0 #cccccc;
-    background: #f7f7f7;
-    border-color: #cccccc;
-    color: #555;
-    cursor: pointer;
-    outline: none;
-
-    &:hover {
-      background: #fafafa;
-      border-color: #999;
-      color: #23282d;
-    }
-
-    &:active {
-      background: #eee;
-      border-color: #999;
-      box-shadow: inset 0 2px 5px -3px rgba(0, 0, 0, 0.5);
-
-      transform: translateY(1px);
-    }
-
-    &.fs-button--primary {
-      background: #0085ba;
-      border-color: #0073aa #006799 #006799;
-      box-shadow: 0 1px 0 #006799;
-      color: #fff;
-      text-decoration: none;
-    }
   }
 }
