@@ -311,6 +311,10 @@ class PackagesContainer extends Component {
     this.slider?.clearEventListeners();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    this.slider?.adjustPackages();
+  }
+
   render() {
     let packages = null,
       licenseQuantities =

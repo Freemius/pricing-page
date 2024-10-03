@@ -15,6 +15,7 @@ import {
   BillingCycleString,
   CurrencySymbol,
   DefaultCurrency,
+  DiscountsModel,
   Pricing,
   UnlimitedLicenses,
 } from '.././entities/Pricing';
@@ -387,7 +388,7 @@ class FreemiusPricingMain extends Component {
       return;
     }
 
-    if (this.state.isTrial) {
+    if (this.state.isTrial && !plan.requiresSubscription()) {
       if (this.hasInstallContext()) {
         this.startTrial(plan.id);
       } else {
@@ -456,6 +457,11 @@ class FreemiusPricingMain extends Component {
           pricing_id: pricing.id,
           currency: this.state.selectedCurrency,
         };
+
+        // Handle trial mode which requires payment method, this must go through the checkout.
+        if (this.state.isTrial) {
+          urlParams.trial = 'true';
+        }
 
         if (!hasParentUrl) {
           PageManager.getInstance().redirect(window.location.href, urlParams);
@@ -713,6 +719,7 @@ class FreemiusPricingMain extends Component {
           billingCycles: Object.keys(billingCycles),
           currencies: Object.keys(currencies),
           currencySymbols: { usd: '$', eur: '€', gbp: '£' },
+          discountsModel: FSConfig?.discounts_model ?? DiscountsModel.ABSOLUTE,
           downloads: pricingData.downloads,
           hasAnnualCycle: hasAnnualCycle,
           hasEmailSupportForAllPaidPlans: hasEmailSupportForAllPaidPlans,
@@ -776,7 +783,12 @@ class FreemiusPricingMain extends Component {
         .querySelector(FSConfig.selector)
         .getBoundingClientRect().left;
 
-      return <Loader style={{ left: leftPos + 'px' }} />;
+      return (
+        <Loader
+          style={{ left: leftPos + 'px' }}
+          isEmbeddedDashboardMode={this.isEmbeddedDashboardMode()}
+        />
+      );
     }
 
     let featuredPlan = pricingData.featuredPlan,
@@ -908,6 +920,8 @@ class FreemiusPricingMain extends Component {
                       this.state.plugin,
                       'pre_sale_question'
                     )}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Click here to contact us
                   </a>{' '}

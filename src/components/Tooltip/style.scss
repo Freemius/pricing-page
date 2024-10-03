@@ -1,18 +1,20 @@
+@import '../../assets/scss/colors';
+
 #root,
 #fs_pricing_app {
   .fs-tooltip {
     cursor: help;
     position: relative;
-    color: #2da1d0 !important;
+    color: inherit;
 
     .fs-tooltip-message {
       position: absolute;
       width: 200px;
-      background: #000;
+      background: $fs-brand-neutral-90;
       z-index: 1;
       display: none;
       border-radius: 4px;
-      color: #fff;
+      color: $fs-brand-neutral-00;
       padding: 8px;
       text-align: left;
       line-height: 18px;
@@ -39,7 +41,7 @@
           margin-top: -6px;
           border-top: 6px solid transparent;
           border-bottom: 6px solid transparent;
-          border-right: 8px solid #000;
+          border-right: 8px solid $fs-brand-neutral-90;
         }
       }
 
@@ -55,7 +57,7 @@
           margin-left: -6px;
           border-right: 6px solid transparent;
           border-left: 6px solid transparent;
-          border-top: 8px solid #000;
+          border-top: 8px solid $fs-brand-neutral-90;
         }
       }
 
@@ -71,7 +73,7 @@
           margin-left: -6px;
           border-right: 6px solid transparent;
           border-left: 6px solid transparent;
-          border-top: 8px solid #000;
+          border-top: 8px solid $fs-brand-neutral-90;
         }
       }
     }

@@ -1,4 +1,4 @@
-import { BillingCycle, Pricing } from '../entities/Pricing';
+import { BillingCycle, Pricing, DiscountsModel } from '../entities/Pricing';
 import { Helper } from '../Helper';
 
 /**
@@ -59,7 +59,7 @@ function getInstance(plans) {
   allPlansPricingCollection = getPricingSortedByLicensesAsc(plans);
 
   _instance = {
-    calculateMultiSiteDiscount: function (pricing, billingCycle) {
+    calculateMultiSiteDiscount: function (pricing, billingCycle, discountsModel) {
       if (pricing.isUnlimited() || 1 == pricing.licenses) {
         return 0.0;
       }
@@ -85,11 +85,17 @@ function getInstance(plans) {
         pricingBillingFrequency = BillingCycle.MONTHLY;
       }
 
+      const undiscountedPrice = (singleSitePrice * pricing.licenses);
+
       return Math.floor(
         100 *
-          ((singleSitePrice * pricing.licenses - price) /
-            (this.tryCalcSingleSitePrice(pricing, pricingBillingFrequency) *
-              pricing.licenses))
+				  (
+            (undiscountedPrice - price) /
+            (DiscountsModel.RELATIVE === discountsModel ?
+              undiscountedPrice :
+              (this.tryCalcSingleSitePrice(pricing, pricingBillingFrequency) * pricing.licenses)
+            )
+          )
       );
     },
     getPlanByID: function (planID) {

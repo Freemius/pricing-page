@@ -30,7 +30,7 @@ class PeriodSelector extends Component {
         {this.context.billingCycles.map(billingCycle => {
           let label =
             BillingCycleString.ANNUAL === billingCycle
-              ? 'Annually'
+              ? 'Annual'
               : Helper.ucfirst(billingCycle);
 
           return (

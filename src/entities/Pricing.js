@@ -21,6 +21,11 @@ export const BillingCycleString = {
   LIFETIME: 'lifetime',
 };
 
+export const DiscountsModel = {
+  ABSOLUTE: 'absolute',
+  RELATIVE: 'relative',
+};
+
 export const DefaultCurrency = 'usd';
 export const UnlimitedLicenses = 99999;
 
