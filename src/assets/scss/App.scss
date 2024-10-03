@@ -95,6 +95,7 @@
       .fs-plugin-logo {
         width: 48px;
         height: 48px;
+        border-radius: 4px;
       }
     }
   }
@@ -227,8 +228,8 @@
       .fs-section--custom-implementation {
         padding: 15px 15px;
         background: $fs-brand-neutral-00;
-        border: 1px solid $fs-brand-neutral-20;
-        border-radius: 8px;
+        border: 1px solid $fs-brand-neutral-10;
+        border-bottom-width: 3px;
         box-sizing: border-box;
         max-width: 945px;
         margin: 0 auto;
@@ -350,7 +351,6 @@
           .fs-testimonial {
             float: left;
             font-size: small;
-            border-radius: 15px;
             position: relative;
             width: 340px;
             box-sizing: border-box;
@@ -372,13 +372,13 @@
             }
 
             > section {
-              border-radius: 0 0 20px 20px;
+              border-radius: 0 0 8px 8px;
               border-top: 0 none;
             }
 
             .fs-testimonial-header {
               border-bottom: 0 none;
-              border-radius: 20px 20px 0 0;
+              border-radius: 8px 8px 0 0;
 
               .fs-testimonial-logo {
                 border: 1px solid $fs-brand-neutral-10;
@@ -504,7 +504,7 @@
             font-weight: bold;
             border: 1px solid $fs-brand-neutral-70;
             border-bottom: 1px solid $fs-brand-neutral-10;
-            border-radius: 3px 3px 0 0;
+            border-radius: 4px 4px 0 0;
           }
 
           p {
@@ -514,7 +514,7 @@
             line-height: 20px;
             border: 1px solid $fs-brand-neutral-20;
             border-top: 0 none;
-            border-radius: 0 0 3px 3px;
+            border-radius: 0 0 4px 4px;
           }
         }
       }

@@ -74,16 +74,7 @@
       display: inline-block;
       color: $fs-brand-neutral-60;
       top: 6px;
-
-      &::after {
-        content: '';
-        border-bottom: 1px solid $fs-brand-neutral-70;
-        position: absolute;
-        left: -2px;
-        top: 50%;
-        width: 100%;
-        padding: 0 2px;
-      }
+      text-decoration: line-through;
     }
 
     .fs-selected-pricing-amount {
@@ -312,7 +303,7 @@
         display: block;
         line-height: 2.8em;
         margin-top: -2.8em;
-        border-radius: 20px 20px 0 0;
+        border-radius: 10px 10px 0 0;
         color: $fs-brand-neutral-90;
         background: $fs-brand-primary-20;
         text-transform: uppercase;

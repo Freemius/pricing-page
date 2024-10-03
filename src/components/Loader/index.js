@@ -11,6 +11,19 @@ class Loader extends Component {
     super(props);
   }
 
+  getFSSdkLoaderBar() {
+    return (
+      <div className="fs-ajax-loader">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className={`fs-ajax-loader-bar fs-ajax-loader-bar-${i + 1}`}
+          ></div>
+        ))}
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="fs-modal fs-modal--loading" {...this.props}>
@@ -19,7 +32,11 @@ class Loader extends Component {
             {Helper.isNonEmptyString(this.props.title) && (
               <span>{this.props.title}</span>
             )}
-            <i></i>
+            {this.props.isEmbeddedDashboardMode ? (
+              this.getFSSdkLoaderBar()
+            ) : (
+              <i></i>
+            )}
           </div>
         </section>
       </div>

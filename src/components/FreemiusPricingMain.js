@@ -783,7 +783,12 @@ class FreemiusPricingMain extends Component {
         .querySelector(FSConfig.selector)
         .getBoundingClientRect().left;
 
-      return <Loader style={{ left: leftPos + 'px' }} />;
+      return (
+        <Loader
+          style={{ left: leftPos + 'px' }}
+          isEmbeddedDashboardMode={this.isEmbeddedDashboardMode()}
+        />
+      );
     }
 
     let featuredPlan = pricingData.featuredPlan,
