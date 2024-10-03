@@ -388,7 +388,7 @@ class FreemiusPricingMain extends Component {
       return;
     }
 
-    if (this.state.isTrial) {
+    if (this.state.isTrial && !plan.requiresSubscription()) {
       if (this.hasInstallContext()) {
         this.startTrial(plan.id);
       } else {
@@ -457,6 +457,11 @@ class FreemiusPricingMain extends Component {
           pricing_id: pricing.id,
           currency: this.state.selectedCurrency,
         };
+
+        // Handle trial mode which requires payment method, this must go through the checkout.
+        if (this.state.isTrial) {
+          urlParams.trial = 'true';
+        }
 
         if (!hasParentUrl) {
           PageManager.getInstance().redirect(window.location.href, urlParams);
