@@ -320,14 +320,25 @@ class FreemiusPricingMain extends Component {
 
           const parentUrl = FS.PostMessage.parent_url();
 
+          const page =
+            this.state.plugin.menu_slug +
+            (this.hasInstallContext() ? '-account' : '');
+
           if (!Helper.isNonEmptyString(parentUrl)) {
             if (Helper.isNonEmptyString(FSConfig.next)) {
-              PageManager.getInstance().redirect(FSConfig.next);
+              // Fix the `page` query string parameter, if no install context is available.
+              let nextPage = FSConfig.next;
+
+              if (!this.hasInstallContext()) {
+                nextPage = nextPage.replace(/page=[^&]+/, `page=${page}`);
+              }
+
+              PageManager.getInstance().redirect(nextPage);
             }
           } else {
             FS.PostMessage.post('forward', {
               url: PageManager.getInstance().addQueryArgs(parentUrl, {
-                page: this.state.plugin.menu_slug + '-account',
+                page,
                 fs_action: this.state.plugin.unique_affix + '_sync_license',
                 plugin_id: this.state.plugin.id,
               }),

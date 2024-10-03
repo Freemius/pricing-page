@@ -25,18 +25,16 @@ class Loader extends Component {
   }
 
   render() {
+    const { isEmbeddedDashboardMode, ...domProps } = this.props;
+
     return (
-      <div className="fs-modal fs-modal--loading" {...this.props}>
+      <div className="fs-modal fs-modal--loading" {...domProps}>
         <section className="fs-modal-content-container">
           <div className="fs-modal-content">
             {Helper.isNonEmptyString(this.props.title) && (
               <span>{this.props.title}</span>
             )}
-            {this.props.isEmbeddedDashboardMode ? (
-              this.getFSSdkLoaderBar()
-            ) : (
-              <i></i>
-            )}
+            {isEmbeddedDashboardMode ? this.getFSSdkLoaderBar() : <i></i>}
           </div>
         </section>
       </div>
