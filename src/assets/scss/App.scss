@@ -102,7 +102,7 @@
 
   .fs-trial-message {
     padding: 20px;
-    background: $fs-brand-secondary-10;
+    background: $fs-brand-primary-10;
     color: $fs-brand-primary-50;
     font-weight: bold;
     text-align: center;
@@ -251,7 +251,7 @@
         position: relative;
 
         .fs-money-back-guarantee-title {
-          color: $fs-brand-accent-50;
+          color: $fs-brand-primary-50;
           font-weight: bold;
           margin-bottom: 15px;
         }
@@ -360,7 +360,7 @@
               box-sizing: border-box;
             }
             .fs-testimonial-rating {
-              color: $fs-brand-accent-50;
+              color: $fs-brand-primary-50;
             }
 
             .fs-testimonial-header,
@@ -405,7 +405,7 @@
             }
 
             .fs-icon-quote {
-              color: $fs-brand-accent-50;
+              color: $fs-brand-primary-50;
             }
 
             .fs-testimonial-message {
@@ -503,7 +503,7 @@
             padding: 15px;
             font-weight: bold;
             border: 1px solid $fs-brand-neutral-70;
-            border-bottom: 1px solid $fs-brand-neutral-10;
+            border-bottom: 0 none;
             border-radius: 4px 4px 0 0;
           }
 
@@ -565,7 +565,7 @@
       border-color: $fs-brand-primary-80;
 
       &:focus {
-        border-bottom-color: $fs-brand-accent-50;
+        border-bottom-color: $fs-brand-primary-100;
       }
 
       &:hover,
