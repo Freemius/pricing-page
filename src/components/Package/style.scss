@@ -1,22 +1,22 @@
-@import '../../assets/scss/colors';
+@import '../../assets/scss/vars';
 
 #root,
 #fs_pricing_app {
   .fs-package {
     display: inline-block;
     vertical-align: top;
-    background: $fs-brand-neutral-00;
-    border-bottom: 3px solid $fs-brand-neutral-10;
+    background: $fsds-dark-background-text-color;
+    border-bottom: 3px solid $fsds-divider-color;
     width: 315px;
     box-sizing: border-box;
 
     &:first-child,
     & + .fs-package {
-      border-left: 1px solid $fs-brand-neutral-10;
+      border-left: 1px solid $fsds-divider-color;
     }
 
     &:last-child {
-      border-right: 1px solid $fs-brand-neutral-10;
+      border-right: 1px solid $fsds-divider-color;
     }
 
     &:not(.fs-featured-plan) {
@@ -44,10 +44,10 @@
 
     .fs-plan-title {
       padding: 10px 0;
-      background: $fs-brand-neutral-05;
+      background: $fsds-background-shade;
       text-transform: uppercase;
-      border-bottom: 1px solid $fs-brand-neutral-10;
-      border-top: 1px solid $fs-brand-neutral-10;
+      border-bottom: 1px solid $fsds-divider-color;
+      border-top: 1px solid $fsds-divider-color;
       width: 100%;
       text-align: center;
 
@@ -72,9 +72,20 @@
       margin: auto;
       position: relative;
       display: inline-block;
-      color: $fs-brand-neutral-60;
+      color: $fsds-muted-text-color;
       top: 6px;
-      text-decoration: line-through;
+
+      &::after {
+        display: block;
+        content: '';
+        position: absolute;
+        height: 1px;
+        background-color: $fsds-error-color;
+        left: -4px;
+        right: -4px;
+        top: 50%;
+        transform: translateY(-50%) skewY(1deg);
+      }
     }
 
     .fs-selected-pricing-amount {
@@ -115,7 +126,7 @@
       }
 
       .fs-selected-pricing-amount-fraction-container {
-        color: $fs-brand-neutral-70;
+        color: $fsds-muted-text-color;
       }
     }
 
@@ -126,11 +137,11 @@
     .fs-selected-pricing-cycle {
       margin-bottom: 5px;
       text-transform: uppercase;
-      color: $fs-brand-neutral-70;
+      color: $fsds-muted-text-color;
     }
 
     .fs-selected-pricing-license-quantity {
-      color: $fs-brand-neutral-70;
+      color: $fsds-muted-text-color;
 
       .fs-tooltip {
         margin-left: 5px;
@@ -144,8 +155,6 @@
       .fs-upgrade-button {
         margin-top: 20px;
         margin-bottom: 5px;
-        outline: none;
-        cursor: pointer;
       }
     }
 
@@ -171,7 +180,7 @@
 
         .fs-feature-title {
           margin: 0 5px;
-          color: $fs-brand-neutral-70;
+          color: $fsds-muted-text-color;
           max-width: 260px;
           overflow-wrap: break-word;
         }
@@ -182,7 +191,7 @@
       margin-top: 12px;
       padding-top: 18px;
       padding-bottom: 18px;
-      color: $fs-brand-neutral-70;
+      color: $fsds-muted-text-color;
 
       .fs-plan-support {
         margin-bottom: 15px;
@@ -204,7 +213,7 @@
     }
 
     .fs-plan-features-with-value {
-      color: $fs-brand-neutral-70;
+      color: $fsds-muted-text-color;
     }
 
     .fs-license-quantities {
@@ -218,8 +227,9 @@
       }
 
       .fs-license-quantity-discount span {
-        background: $fs-brand-primary-50;
-        color: $fs-brand-neutral-00;
+        background-color: $fsds-background-color;
+        border: 1px solid $fsds-primary-accent-color;
+        color: $fsds-primary-accent-color;
         display: inline;
         padding: 4px 8px;
         border-radius: 4px;
@@ -234,24 +244,24 @@
 
       .fs-license-quantity-container {
         line-height: 30px;
-        border-top: 1px solid $fs-brand-neutral-05;
+        border-top: 1px solid $fsds-background-shade;
         font-size: small;
-        color: $fs-brand-neutral-70;
+        color: $fsds-muted-text-color;
 
         &:last-child {
-          border-bottom: 1px solid $fs-brand-neutral-05;
+          border-bottom: 1px solid $fsds-background-shade;
           &.fs-license-quantity-selected {
-            border-bottom-color: $fs-brand-neutral-10;
+            border-bottom-color: $fsds-divider-color;
           }
         }
 
         &.fs-license-quantity-selected {
-          background: $fs-brand-neutral-05;
-          border-color: $fs-brand-neutral-10;
-          color: $fs-brand-neutral-90;
+          background: $fsds-background-shade;
+          border-color: $fsds-divider-color;
+          color: $fsds-text-color;
 
           + .fs-license-quantity-container {
-            border-top-color: $fs-brand-neutral-10;
+            border-top-color: $fsds-divider-color;
           }
         }
 
@@ -304,49 +314,44 @@
         line-height: 2.8em;
         margin-top: -2.8em;
         border-radius: 10px 10px 0 0;
-        color: $fs-brand-neutral-90;
-        background: $fs-brand-primary-20;
+        color: $fsds-text-color;
+        background: $fsds-package-popular-background;
         text-transform: uppercase;
         font-size: 14px;
       }
 
       .fs-plan-title {
-        color: $fs-brand-neutral-00;
-        background: $fs-brand-primary-50;
-        border-top-color: $fs-brand-primary-50;
+        color: $fsds-dark-background-text-color;
+        background: $fsds-primary-accent-color;
+        border-top-color: $fsds-primary-accent-color;
       }
 
       .fs-selected-pricing-license-quantity {
-        color: $fs-brand-primary-60;
+        color: $fsds-primary-accent-color;
       }
 
       .fs-license-quantity-discount span {
-        background: $fs-brand-primary-50;
-        color: $fs-brand-neutral-00;
+        background: $fsds-primary-accent-color;
+        color: $fsds-dark-background-text-color;
       }
 
       .fs-license-quantities .fs-license-quantity-selected {
-        background: $fs-brand-primary-50;
-        border-color: $fs-brand-primary-50;
-        color: $fs-brand-neutral-00;
+        background: $fsds-primary-accent-color;
+        border-color: $fsds-primary-accent-color;
+        color: $fsds-dark-background-text-color;
 
         + .fs-license-quantity-container {
-          border-top-color: $fs-brand-primary-50;
+          border-top-color: $fsds-primary-accent-color;
         }
 
         &:last-child {
-          border-bottom-color: $fs-brand-primary-50;
+          border-bottom-color: $fsds-primary-accent-color;
         }
 
         .fs-license-quantity-discount span {
-          background: $fs-brand-neutral-00;
-          color: $fs-brand-primary-60;
+          background: $fsds-background-color;
+          color: $fsds-primary-accent-color-hover;
         }
-      }
-
-      .fs-icon,
-      .fs-tooltip {
-        color: $fs-brand-primary-50;
       }
     }
   }

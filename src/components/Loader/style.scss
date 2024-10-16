@@ -1,4 +1,4 @@
-@import '../../assets/scss/colors';
+@import '../../assets/scss/vars';
 
 // The complex selectors are intentional because how Loader component is
 // sometimes rendered.
@@ -22,16 +22,16 @@
       display: block;
       position: absolute;
       left: 50%;
-      background: $fs-brand-neutral-00;
+      background: $fsds-background-color;
       box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3);
 
       .fs-modal-header {
-        background: $fs-brand-primary-50;
+        background: $fsds-primary-accent-color;
         padding: 15px;
 
         h3,
         .fs-modal-close {
-          color: $fs-brand-neutral-00;
+          color: $fsds-background-color;
         }
       }
 
@@ -48,7 +48,7 @@
       width: 220px;
       margin-left: -126px;
       padding: 15px;
-      border: 1px solid $fs-brand-neutral-20;
+      border: 1px solid $fsds-divider-color;
       text-align: center;
       top: 50%;
 
@@ -57,7 +57,7 @@
         font-weight: bold;
         font-size: 16px;
         text-align: center;
-        color: $fs-brand-primary-50;
+        color: $fsds-primary-accent-color;
         margin-bottom: 10px;
       }
 
@@ -101,8 +101,8 @@
       .fs-modal-footer {
         padding: 10px;
         text-align: right;
-        border-top: 1px solid $fs-brand-neutral-20;
-        background: $fs-brand-neutral-05;
+        border-top: 1px solid $fsds-border-color;
+        background: $fsds-background-shade;
 
         .fs-button--approve-trial {
           margin: 0 7px;

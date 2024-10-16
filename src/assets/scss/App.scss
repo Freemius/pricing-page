@@ -1,9 +1,14 @@
-@import 'colors';
+@import 'vars';
+@import 'style';
+
+#fs_pricing.fs-full-size-wrapper {
+  margin-top: 0;
+}
 
 #root,
 #fs_pricing_app {
-  background: #f0f0f1;
-  color: $fs-brand-neutral-90;
+  background: $fsds-background-shade;
+  color: $fsds-text-color;
   height: auto;
   line-height: normal;
 
@@ -19,7 +24,7 @@
     margin: 0;
     padding: 0;
     text-align: center;
-    color: $fs-brand-neutral-90;
+    color: $fsds-heading-text-color;
   }
 
   h1 {
@@ -44,7 +49,7 @@
 
   p,
   blockquote {
-    color: $fs-brand-neutral-70;
+    color: $fsds-text-color;
   }
 
   strong {
@@ -61,28 +66,36 @@
    */
   .fs-app-header {
     .fs-page-title {
-      margin: 15px 0;
+      margin: 0 0 15px;
       text-align: left;
+      display: flex;
+      flex-flow: row wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 20px 15px 10px;
 
-      h2 {
-        vertical-align: middle;
+      h1 {
+        font-size: 18px;
+        margin: 0;
       }
 
       h3 {
-        font-size: small;
-        padding: 3px;
-        border-radius: 2px;
-        vertical-align: sub;
+        margin: 0;
+        font-size: 14px;
+        padding: 4px 8px;
+        font-weight: normal;
+        border-radius: 4px;
+        background-color: $fsds-background-accented;
+        color: $fsds-muted-text-color;
       }
     }
 
     .fs-plugin-title-and-logo {
-      background: $fs-brand-neutral-00;
-      padding-top: 12px;
-      padding-bottom: 12px;
-      border: 1px solid $fs-brand-neutral-20;
-      border-left-width: 0;
-      border-right-width: 0;
+      margin: 0 15px;
+      background: $fsds-background-color;
+      padding: 12px 0;
+      border: 1px solid $fsds-divider-color;
+      border-radius: 4px;
       text-align: center;
 
       .fs-plugin-logo,
@@ -96,21 +109,26 @@
         width: 48px;
         height: 48px;
         border-radius: 4px;
+
+        @media screen and (min-width: $fsds-breakpoint-tablet) {
+          width: 64px;
+          height: 64px;
+        }
       }
     }
   }
 
   .fs-trial-message {
     padding: 20px;
-    background: $fs-brand-primary-10;
-    color: $fs-brand-primary-50;
+    background: $fsds-notice-warn-background;
+    color: $fsds-notice-warn-color;
     font-weight: bold;
     text-align: center;
-    border: 2px solid $fs-brand-primary-50;
+    border-top: 1px solid $fsds-notice-warn-border;
+    border-bottom: 1px solid $fsds-notice-warn-border;
     font-size: 1.2em;
-    margin: 0 auto;
-    max-width: 945px;
     box-sizing: border-box;
+    margin: 0 0 5px 0;
   }
 
   /**
@@ -133,7 +151,7 @@
       margin: 4em auto 0 auto;
 
       &:nth-child(even) {
-        background: $fs-brand-neutral-00;
+        background: $fsds-background-color;
       }
 
       > header {
@@ -166,7 +184,7 @@
 
       .fs-section--trial-header {
         text-align: center;
-        background: $fs-brand-neutral-00;
+        background: $fsds-background-color;
         padding: 20px;
         border-radius: 5px;
         box-sizing: border-box;
@@ -182,7 +200,7 @@
       }
 
       .fs-currencies {
-        border-color: $fs-brand-neutral-60;
+        border-color: $fsds-button-border-color;
       }
 
       .fs-section--billing-cycles {
@@ -195,7 +213,7 @@
           overflow: hidden;
 
           li {
-            border: 1px solid $fs-brand-neutral-20;
+            border: 1px solid $fsds-border-color;
             border-right-width: 0;
             display: inline-block;
             font-weight: bold;
@@ -213,13 +231,8 @@
             }
 
             &.fs-selected-billing-cycle {
-              background: $fs-brand-primary-50;
-              border-color: $fs-brand-primary-50;
-              color: $fs-brand-neutral-00;
-
-              + li {
-                border-left-color: $fs-brand-primary-50;
-              }
+              background: $fsds-background-color;
+              color: $fsds-primary-accent-color-hover;
             }
           }
         }
@@ -227,8 +240,8 @@
 
       .fs-section--custom-implementation {
         padding: 15px 15px;
-        background: $fs-brand-neutral-00;
-        border: 1px solid $fs-brand-neutral-10;
+        background: $fsds-background-color;
+        border: 1px solid $fsds-divider-color;
         border-bottom-width: 3px;
         box-sizing: border-box;
         max-width: 945px;
@@ -251,7 +264,7 @@
         position: relative;
 
         .fs-money-back-guarantee-title {
-          color: $fs-brand-primary-50;
+          color: $fsds-primary-accent-color;
           font-weight: bold;
           margin-bottom: 15px;
         }
@@ -289,8 +302,8 @@
     }
 
     .fs-section--testimonials {
-      border-top: 1px solid $fs-brand-neutral-20;
-      border-bottom: 1px solid $fs-brand-neutral-20;
+      border-top: 1px solid $fsds-border-color;
+      border-bottom: 1px solid $fsds-border-color;
       padding: 3em 4em 4em;
 
       .fs-section-header {
@@ -308,7 +321,7 @@
           &.fs-nav-prev,
           &.fs-nav-next {
             top: 50%;
-            border: 1px solid $fs-brand-neutral-20;
+            border: 1px solid $fsds-border-color;
             border-radius: 14px;
             cursor: pointer;
             margin-top: 11px;
@@ -320,7 +333,7 @@
               height: 1em;
               width: 1em;
               line-height: 1em;
-              color: $fs-brand-neutral-20;
+              color: $fsds-muted-text-color;
               padding: 5px;
             }
           }
@@ -360,15 +373,15 @@
               box-sizing: border-box;
             }
             .fs-testimonial-rating {
-              color: $fs-brand-primary-50;
+              color: $fsds-primary-accent-color;
             }
 
             .fs-testimonial-header,
             > section {
-              background: $fs-brand-neutral-00;
+              background: $fsds-background-color;
               padding: 10px;
               margin: 0 2em;
-              border: 1px solid $fs-brand-neutral-10;
+              border: 1px solid $fsds-divider-color;
             }
 
             > section {
@@ -381,10 +394,10 @@
               border-radius: 8px 8px 0 0;
 
               .fs-testimonial-logo {
-                border: 1px solid $fs-brand-neutral-10;
+                border: 1px solid $fsds-divider-color;
                 border-radius: 44px;
                 padding: 5px;
-                background: $fs-brand-neutral-00;
+                background: $fsds-background-color;
                 width: 76px;
                 height: 76px;
                 position: relative;
@@ -405,7 +418,7 @@
             }
 
             .fs-icon-quote {
-              color: $fs-brand-primary-50;
+              color: $fsds-primary-accent-color;
             }
 
             .fs-testimonial-message {
@@ -418,7 +431,7 @@
               .fs-testimonial-author-name {
                 font-weight: bold;
                 margin-bottom: 2px;
-                color: $fs-brand-neutral-90;
+                color: $fsds-text-color;
               }
             }
           }
@@ -436,7 +449,7 @@
 
           button.fs-round-button {
             cursor: pointer;
-            border: 1px solid $fs-brand-neutral-20;
+            border: 1px solid $fsds-border-color;
             vertical-align: middle;
             display: inline-block;
             line-height: 0;
@@ -452,7 +465,7 @@
               display: inline-block;
               width: 100%;
               height: 100%;
-              background: $fs-brand-neutral-05;
+              background: $fsds-background-shade;
             }
           }
 
@@ -462,7 +475,7 @@
             }
 
             button.fs-round-button span {
-              background: $fs-brand-neutral-10;
+              background: $fsds-background-accented;
             }
           }
         }
@@ -470,7 +483,7 @@
     }
 
     .fs-section--faq {
-      background: #f0f0f1;
+      background: $fsds-background-shade;
 
       .fs-section--faq-items {
         max-width: 945px;
@@ -498,21 +511,21 @@
           }
 
           h3 {
-            background: $fs-brand-neutral-70;
-            color: $fs-brand-neutral-00;
+            background: $fsds-background-dark;
+            color: $fsds-dark-background-text-color;
             padding: 15px;
             font-weight: bold;
-            border: 1px solid $fs-brand-neutral-70;
+            border: 1px solid $fsds-background-darkest;
             border-bottom: 0 none;
             border-radius: 4px 4px 0 0;
           }
 
           p {
-            background: $fs-brand-neutral-00;
+            background: $fsds-background-color;
             font-size: small;
             padding: 15px;
             line-height: 20px;
-            border: 1px solid $fs-brand-neutral-20;
+            border: 1px solid $fsds-border-color;
             border-top: 0 none;
             border-radius: 0 0 4px 4px;
           }
@@ -522,7 +535,8 @@
   }
 
   .fs-button {
-    background: $fs-brand-neutral-10;
+    background: $fsds-button-background-color;
+    color: $fsds-button-text-color;
     padding: 10px;
     display: inline-block;
     text-transform: uppercase;
@@ -531,26 +545,26 @@
     width: 100%;
     border-radius: 4px;
     border: 0 none;
-    border-bottom: 3px solid $fs-brand-neutral-60;
+    border-bottom: 3px solid $fsds-button-border-color;
     cursor: pointer;
 
-    &:focus {
-      border-bottom-color: $fs-brand-primary-50;
+    &:focus:not(:disabled) {
+      border-bottom-color: $fsds-button-border-focus-color;
     }
 
     transition: background 200ms ease-out, border-bottom-color 200ms ease-out;
 
-    &:hover {
+    &:hover:not(:disabled) {
       will-change: background, border-bottom;
-      background: $fs-brand-neutral-20;
-      border-bottom: 3px solid $fs-brand-neutral-70;
+      background: $fsds-button-background-hover-color;
+      border-bottom: 3px solid $fsds-button-border-hover-color;
     }
 
-    &:active {
+    &:active:not(:disabled) {
       will-change: background, border-bottom;
       padding-top: 12px;
-      background: $fs-brand-neutral-20;
-      border-bottom: 1px solid $fs-brand-neutral-70;
+      background: $fsds-button-background-hover-color;
+      border-bottom: 1px solid $fsds-button-border-hover-color;
       box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
     }
 
@@ -559,19 +573,72 @@
       width: auto;
     }
 
+    &.fs-button--outline {
+      background: $fsds-background-color;
+      border: 1px solid $fsds-button-border-color;
+      border-bottom-width: 3px;
+
+      &:focus:not(:disabled) {
+        background: $fsds-background-shade;
+        border-color: $fsds-button-border-focus-color;
+      }
+
+      &:hover:not(:disabled),
+      &:active:not(:disabled) {
+        background: $fsds-background-shade;
+        border-color: $fsds-button-border-hover-color;
+      }
+
+      &:active:not(:disabled) {
+        border-bottom-width: 1px;
+      }
+    }
+
     &.fs-button--type-primary {
-      background-color: $fs-brand-primary-50;
-      color: $fs-brand-neutral-00;
-      border-color: $fs-brand-primary-80;
+      background-color: $fsds-button-primary-background-color;
+      color: $fsds-button-primary-text-color;
+      border-color: $fsds-button-primary-border-color;
 
-      &:focus {
-        border-bottom-color: $fs-brand-primary-100;
+      &:focus:not(:disabled) {
+        border-bottom-color: $fsds-button-primary-border-focus-color;
       }
 
-      &:hover,
-      &:active {
-        background-color: $fs-brand-primary-60;
+      &:hover:not(:disabled),
+      &:active:not(:disabled) {
+        background-color: $fsds-button-primary-background-hover-color;
+        border-color: $fsds-button-primary-border-hover-color;
       }
+
+      &.fs-button--outline {
+        background-color: $fsds-background-color;
+        color: $fsds-primary-accent-color;
+        border: 1px solid $fsds-primary-accent-color;
+        border-bottom-width: 3px;
+
+        &:focus:not(:disabled) {
+          background-color: $fsds-background-shade;
+          color: $fsds-button-primary-background-hover-color;
+          border-bottom-color: $fsds-primary-accent-color-hover;
+        }
+
+        &:hover:not(:disabled),
+        &:active:not(:disabled) {
+          background-color: $fsds-background-shade;
+          color: $fsds-button-primary-background-hover-color;
+          border-color: $fsds-primary-accent-color-hover;
+        }
+
+        &:active:not(:disabled) {
+          border-bottom-width: 1px;
+        }
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: $fsds-button-disabled-background-color;
+      color: $fsds-button-disabled-text-color;
+      border-color: $fsds-button-disabled-border-color;
     }
   }
 
@@ -614,15 +681,6 @@
         .fs-testimonials
         .fs-testimonial {
         width: auto;
-      }
-    }
-  }
-
-  .fs-app-header {
-    @media only screen and (max-width: 445px) {
-      .fs-page-title h3 {
-        margin-left: 0px;
-        margin-top: 10px;
       }
     }
   }
