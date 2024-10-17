@@ -69,6 +69,7 @@ class FreemiusPricingMain extends Component {
       selectedCurrency: this.getDefaultCurrency(),
       selectedLicenseQuantity: this.getDefaultLicenseQuantity(),
       upgradingToPlanID: null,
+      license: FSConfig.license,
     };
 
     this.changeBillingCycle = this.changeBillingCycle.bind(this);

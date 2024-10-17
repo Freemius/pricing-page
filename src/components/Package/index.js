@@ -56,12 +56,80 @@ class Package extends Component {
   }
 
   /**
-   * @param {Plan} plan
-   * @param {int}  installPlanLicensesCount
+   * @returns {Plan|null}
+   */
+  getContextPlan() {
+    // If current install has no plan, then it is never a downgrade.
+    if (
+      Helper.isUndefinedOrNull(this.context.install) ||
+      Helper.isUndefinedOrNull(this.context.install.plan_id)
+    ) {
+      return null;
+    }
+
+    return PlanManager.getInstance().getPlanByID(this.context.install.plan_id);
+  }
+
+  /**
+   * @returns {'upgrade'|'downgrade'|'none'}
+   */
+  getPlanChangeType() {
+    const plan = this.props.planPackage;
+    const contextPlan = this.getContextPlan();
+
+    // If current install has no plan, then it is never a downgrade.
+    if (!contextPlan) {
+      return 'upgrade';
+    }
+
+    if (PlanManager.getInstance().isFreePlan(contextPlan.pricing)) {
+      return 'upgrade';
+    }
+
+    // At this point, the install has a plan. Now we need to compare the given plan with the context plan.
+
+    // If the given plan is free, then it is always a downgrade.
+    if (PlanManager.getInstance().isFreePlan(plan.pricing)) {
+      return 'downgrade';
+    }
+
+    // Now if the given plan is higher than the context plan, then it is a upgrade and vice-versa.
+    const planCompareResult = PlanManager.getInstance().comparePlanByIDs(
+      plan.id,
+      contextPlan.id
+    );
+
+    if (planCompareResult > 0) {
+      return 'upgrade';
+    }
+
+    if (planCompareResult < 0) {
+      return 'downgrade';
+    }
+
+    // We are on the same plan. Now we need to compare the license count.
+    const activeLicenseQuantity = this.props.installPlanLicensesCount;
+    const selectedLicenseQuantity = this.context.selectedLicenseQuantity;
+
+    if (activeLicenseQuantity < selectedLicenseQuantity) {
+      return 'upgrade';
+    }
+
+    if (activeLicenseQuantity > selectedLicenseQuantity) {
+      return 'downgrade';
+    }
+
+    return 'none';
+  }
+
+  /**
+   * @param {'upgrade'|'downgrade'|'none'} planChangeType
    *
    * @return {string|Fragment}
    */
-  getCtaButtonLabel(plan, installPlanLicensesCount) {
+  getCtaButtonLabel(planChangeType) {
+    const plan = this.props.planPackage;
+
     if (
       this.context.isActivatingTrial &&
       this.context.upgradingToPlanID == plan.id
@@ -69,51 +137,32 @@ class Package extends Component {
       return 'Activating...';
     }
 
-    let hasInstallContext = !Helper.isUndefinedOrNull(this.context.install),
-      isContextInstallPlan =
-        hasInstallContext && this.context.install.plan_id == plan.id,
-      currentPlanLicensesCount = installPlanLicensesCount,
-      isFreePlan = PlanManager.getInstance().isFreePlan(plan.pricing);
-
-    if (isContextInstallPlan) {
-      Package.contextInstallPlanFound = true;
-    }
-
-    let label = '',
-      installPlan = isContextInstallPlan
-        ? plan
-        : hasInstallContext
-        ? PlanManager.getInstance().getPlanByID(this.context.install.plan_id)
-        : null;
-
-    let isPayingUser =
-      !this.context.isTrial &&
-      null !== installPlan &&
-      !this.isInstallInTrial(this.context.install) &&
-      PlanManager.getInstance().isPaidPlan(installPlan.pricing);
-
-    if (isContextInstallPlan || (!hasInstallContext && isFreePlan)) {
-      label =
-        currentPlanLicensesCount > 1
-          ? 'Downgrade'
-          : 1 == currentPlanLicensesCount
-          ? 'Your Plan'
-          : 'Upgrade';
-    } else if (isFreePlan) {
-      label = 'Downgrade';
-    } else if (this.context.isTrial && plan.hasTrial()) {
-      label = (
+    if (this.context.isTrial && plan.hasTrial()) {
+      return (
         <Fragment>
           Start my free <nobr>{plan.trial_period} days</nobr>
         </Fragment>
       );
-    } else if (isPayingUser && !Package.contextInstallPlanFound) {
-      label = 'Downgrade';
-    } else {
-      label = 'Upgrade Now';
     }
 
-    return label;
+    const contextPlan = this.getContextPlan();
+
+    const isPayingUser =
+      !this.context.isTrial &&
+      contextPlan &&
+      !this.isInstallInTrial(this.context.install) &&
+      PlanManager.getInstance().isPaidPlan(contextPlan.pricing);
+
+    switch (planChangeType) {
+      case 'downgrade':
+        return 'Downgrade';
+      case 'none':
+        return 'Your Plan';
+
+      default:
+      case 'upgrade':
+        return `Upgrade${isPayingUser ? ' Now' : ''}`;
+    }
   }
 
   getUndiscountedPrice(planPackage, selectedPricing) {
@@ -200,7 +249,6 @@ class Package extends Component {
   render() {
     let isSinglePlan = this.props.isSinglePlan,
       planPackage = this.props.planPackage,
-      installPlanLicensesCount = this.props.installPlanLicensesCount,
       currentLicenseQuantities = this.props.currentLicenseQuantities,
       pricingLicenses = null,
       selectedLicenseQuantity = this.context.selectedLicenseQuantity,
@@ -314,6 +362,8 @@ class Package extends Component {
       selectedAmountInteger = Helper.formatNumber(parseInt(amountParts[0], 10));
       selectedAmountFraction = Helper.formatFraction(amountParts[1]);
     }
+
+    const planChangeType = this.getPlanChangeType();
 
     return (
       <li key={planPackage.id} className={packageClassName}>
@@ -477,14 +527,19 @@ class Package extends Component {
           )}
           <div className="fs-upgrade-button-container">
             <button
+              disabled={planChangeType === 'none'}
               className={`fs-button fs-button--size-large fs-upgrade-button ${
-                isFeatured ? 'fs-button--type-primary' : ''
+                planChangeType === 'upgrade'
+                  ? `fs-button--type-primary ${
+                      isFeatured ? '' : 'fs-button--outline'
+                    }`
+                  : 'fs-button--outline'
               }`}
               onClick={() => {
                 this.props.upgradeHandler(planPackage, selectedPricing);
               }}
             >
-              {this.getCtaButtonLabel(planPackage, installPlanLicensesCount)}
+              {this.getCtaButtonLabel(planChangeType)}
             </button>
           </div>
           <ul className="fs-plan-features">

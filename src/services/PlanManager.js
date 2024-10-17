@@ -59,7 +59,11 @@ function getInstance(plans) {
   allPlansPricingCollection = getPricingSortedByLicensesAsc(plans);
 
   _instance = {
-    calculateMultiSiteDiscount: function (pricing, billingCycle, discountsModel) {
+    calculateMultiSiteDiscount: function (
+      pricing,
+      billingCycle,
+      discountsModel
+    ) {
       if (pricing.isUnlimited() || 1 == pricing.licenses) {
         return 0.0;
       }
@@ -85,17 +89,15 @@ function getInstance(plans) {
         pricingBillingFrequency = BillingCycle.MONTHLY;
       }
 
-      const undiscountedPrice = (singleSitePrice * pricing.licenses);
+      const undiscountedPrice = singleSitePrice * pricing.licenses;
 
       return Math.floor(
         100 *
-				  (
-            (undiscountedPrice - price) /
-            (DiscountsModel.RELATIVE === discountsModel ?
-              undiscountedPrice :
-              (this.tryCalcSingleSitePrice(pricing, pricingBillingFrequency) * pricing.licenses)
-            )
-          )
+          ((undiscountedPrice - price) /
+            (DiscountsModel.RELATIVE === discountsModel
+              ? undiscountedPrice
+              : this.tryCalcSingleSitePrice(pricing, pricingBillingFrequency) *
+                pricing.licenses))
       );
     },
     getPlanByID: function (planID) {
@@ -106,6 +108,16 @@ function getInstance(plans) {
       }
 
       return null;
+    },
+    comparePlanByIDs: function (planID1, planID2) {
+      const planIndex1 = _plans.findIndex(plan => plan.id == planID1);
+      const planIndex2 = _plans.findIndex(plan => plan.id == planID2);
+
+      if (planIndex1 < 0 || planIndex2 < 0) {
+        return 0;
+      }
+
+      return planIndex1 - planIndex2;
     },
     tryCalcSingleSitePrice: function (pricing, billingCycle, format, locale) {
       return this.tryCalcSingleSitePrices(
