@@ -46,6 +46,10 @@ class Testimonials extends Component {
     return stars;
   }
 
+  stripHtml(html) {
+    return new DOMParser().parseFromString(html, 'text/html').body.textContent;
+  }
+
   render() {
     let pricingData = this.context;
 
@@ -337,10 +341,9 @@ class Testimonials extends Component {
           </header>
           <section>
             <Icon icon={['fas', 'quote-left']} className="fs-icon-quote" />
-            <blockquote
-              className="fs-testimonial-message"
-              dangerouslySetInnerHTML={{ __html: review.text }}
-            ></blockquote>
+            <blockquote className="fs-testimonial-message">
+              {this.stripHtml(review.text)}
+            </blockquote>
             <section className="fs-testimonial-author">
               <div className="fs-testimonial-author-name">{review.name}</div>
               <div>
@@ -382,7 +385,7 @@ class Testimonials extends Component {
             </h2>
           </header>
         )}
-        {pricingData.active_installs <= 1000 && pricingData.downloads > 1000 && (
+        {pricingData.active_installs <= 1000 && pricingData.downloads > 1000 ? (
           <header className="fs-section-header">
             <h2>
               Downloaded More than{' '}
@@ -392,7 +395,7 @@ class Testimonials extends Component {
               Times!
             </h2>
           </header>
-        )}
+        ) : null}
         <section className="fs-testimonials-nav">
           <nav className="fs-nav fs-nav-prev">
             <Icon icon={['fas', 'arrow-left']} />

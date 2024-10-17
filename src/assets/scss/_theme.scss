@@ -40,7 +40,7 @@ $fsds-theme-colors: (
   'button-text-color': fs-ds-theme-color('heading-text-color'),
   'button-border-color': palettes.fs-ds-color-var('neutral', 300),
   'button-border-hover-color': palettes.fs-ds-color-var('neutral', 600),
-  'button-border-focus-color': fs-ds-theme-color('primary-accent-color'),
+  'button-border-focus-color': palettes.fs-ds-color-var('blue', 400),
   'button-primary-background-color': fs-ds-theme-color('primary-accent-color'),
   'button-primary-background-hover-color':
     fs-ds-theme-color('primary-accent-color-hover'),
@@ -48,7 +48,7 @@ $fsds-theme-colors: (
   'button-primary-border-color': palettes.fs-ds-color-var('blue', 800),
   'button-primary-border-hover-color': palettes.fs-ds-color-var('blue', 900),
   'button-primary-border-focus-color': palettes.fs-ds-color-var('blue', 100),
-  'button-disabled-border-color': palettes.fs-ds-color-var('neutral', 300),
+  'button-disabled-border-color': palettes.fs-ds-color-var('neutral', 100),
   'button-disabled-background-color': palettes.fs-ds-color-var('neutral', 50),
   'button-disabled-text-color': palettes.fs-ds-color-var('neutral', 300),
   // Notice
@@ -59,7 +59,9 @@ $fsds-theme-colors: (
   'notice-info-color': fs-ds-theme-color('primary-accent-color-hover'),
   'notice-info-border': fs-ds-theme-color('primary-accent-color'),
   // Package
-  'package-popular-background': palettes.fs-ds-color-var('blue', 200)
+  'package-popular-background': palettes.fs-ds-color-var('blue', 200),
+  // Testimonials
+  'testimonial-star-color': palettes.fs-ds-color-var('yellow', 300)
 );
 
 // CSS Color variables
@@ -147,3 +149,6 @@ $fsds-notice-info-border: fs-ds-theme-color('notice-info-border');
 $fsds-package-popular-background: fs-ds-theme-color(
   'package-popular-background'
 );
+
+// Testimonials
+$fsds-testimonial-star-color: fs-ds-theme-color('testimonial-star-color');
