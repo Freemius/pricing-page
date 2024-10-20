@@ -1,6 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import FSPricingContext from '../../FSPricingContext';
-import { BillingCycle, BillingCycleString } from '../../entities/Pricing';
+import {
+  BillingCycle,
+  BillingCycleString,
+  UnlimitedLicenses,
+} from '../../entities/Pricing';
 import { PlanManager } from '../../services/PlanManager';
 import Tooltip from '../Tooltip';
 import Icon from '../Icon';
@@ -108,8 +112,13 @@ class Package extends Component {
     }
 
     // We are on the same plan. Now we need to compare the license count.
-    const activeLicenseQuantity = this.props.installPlanLicensesCount;
-    const selectedLicenseQuantity = this.context.selectedLicenseQuantity;
+    const activeLicenseQuantity =
+      this.props.installPlanLicensesCount ?? UnlimitedLicenses;
+
+    const selectedLicenseQuantity =
+      (this.props.isSinglePlan
+        ? plan.selectedPricing?.licenses
+        : this.context.selectedLicenseQuantity) ?? UnlimitedLicenses;
 
     if (activeLicenseQuantity < selectedLicenseQuantity) {
       return 'upgrade';
