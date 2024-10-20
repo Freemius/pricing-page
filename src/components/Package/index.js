@@ -161,7 +161,7 @@ class Package extends Component {
 
       default:
       case 'upgrade':
-        return `Upgrade${isPayingUser ? ' Now' : ''}`;
+        return `Upgrade${!isPayingUser ? ' Now' : ''}`;
     }
   }
 
