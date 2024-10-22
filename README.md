@@ -2,9 +2,9 @@
 
 A modern, API-driven, ReactJS-based pricing app for Freemius sellers.
 
-**Note:** This pricing app is currently in _Beta_. Once out of _Beta_, its
-compiled version will be shipped as part of the Freemius'
-[WordPress SDK](https://github.com/Freemius/wordpress-sdk).
+**Note:** This pricing app is shipped as part of the Freemius'
+[WordPress SDK](https://github.com/Freemius/wordpress-sdk) starting version
+[2.9.0](https://github.com/Freemius/wordpress-sdk/releases/tag/2.9.0).
 
 ![Pricing app screenshot](screenshot-1.png?raw=true)
 
@@ -66,10 +66,9 @@ impossible since it's running remotely from our end.
 
 ## How to create my own pricing app version?
 
-Once the pricing app is out from _Beta_ mode, its compiled version will be
-shipped by default as part of the
-[WordPress SDK](https://github.com/Freemius/wordpress-sdk), and that would be
-the version that is loaded by default. If you want to load a custom pricing app
+The compiled version is shipped by default as part of the
+[WordPress SDK](https://github.com/Freemius/wordpress-sdk), and that is the
+version that is loaded by default. If you want to load a custom pricing app
 version for your product, make sure to follow these steps.
 
 A more detailed and developer oriented guide with watch tasks can be found in
