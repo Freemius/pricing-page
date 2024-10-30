@@ -1,0 +1,118 @@
+@import '../../assets/scss/vars';
+
+// The complex selectors are intentional because how Loader component is
+// sometimes rendered.
+// 1. It could be rendered directly inside `#fs_pricing_wrapper` which comes from the server.
+// 2. It could be rendered inside #fs_pricing_app which comes from our React App.
+#fs_pricing_app,
+#fs_pricing_wrapper,
+#fs_pricing_wrapper #fs_pricing_app {
+  .fs-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    zoom: 1;
+    text-align: left;
+    display: block !important;
+
+    .fs-modal-content-container {
+      display: block;
+      position: absolute;
+      left: 50%;
+      background: $fsds-background-color;
+      box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3);
+
+      .fs-modal-header {
+        background: $fsds-primary-accent-color;
+        padding: 15px;
+
+        h3,
+        .fs-modal-close {
+          color: $fsds-background-color;
+        }
+      }
+
+      .fs-modal-content {
+        font-size: 1.2em;
+      }
+    }
+  }
+
+  .fs-modal--loading {
+    background-color: rgba(0, 0, 0, 0.3);
+
+    .fs-modal-content-container {
+      width: 220px;
+      margin-left: -126px;
+      padding: 15px;
+      border: 1px solid $fsds-divider-color;
+      text-align: center;
+      top: 50%;
+
+      span {
+        display: block;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: center;
+        color: $fsds-primary-accent-color;
+        margin-bottom: 10px;
+      }
+
+      .fs-ajax-loader {
+        width: 160px;
+      }
+
+      i {
+        display: block;
+        width: 128px;
+        margin: 0 auto;
+        height: 15px;
+        background: url(//img.freemius.com/blue-loader.gif);
+      }
+    }
+  }
+
+  .fs-modal--refund-policy,
+  .fs-modal--trial-confirmation {
+    background: rgba(0, 0, 0, 0.7);
+
+    .fs-modal-content-container {
+      width: 510px;
+      margin-left: -255px;
+      top: 20%;
+
+      .fs-modal-header .fs-modal-close {
+        line-height: 24px;
+        font-size: 24px;
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        cursor: pointer;
+      }
+
+      .fs-modal-content {
+        height: 100%;
+        padding: 1px 15px;
+      }
+
+      .fs-modal-footer {
+        padding: 10px;
+        text-align: right;
+        border-top: 1px solid $fsds-border-color;
+        background: $fsds-background-shade;
+
+        .fs-button--approve-trial {
+          margin: 0 7px;
+        }
+      }
+    }
+  }
+
+  .fs-modal--trial-confirmation .fs-button {
+    width: auto;
+    font-size: 13px;
+  }
+}

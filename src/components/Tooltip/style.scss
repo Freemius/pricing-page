@@ -1,0 +1,81 @@
+@import '../../assets/scss/vars';
+
+#root,
+#fs_pricing_app {
+  .fs-tooltip {
+    cursor: help;
+    position: relative;
+    color: inherit;
+
+    .fs-tooltip-message {
+      position: absolute;
+      width: 200px;
+      background: $fsds-background-darkest;
+      z-index: 1;
+      display: none;
+      border-radius: 4px;
+      color: $fsds-dark-background-text-color;
+      padding: 8px;
+      text-align: left;
+      line-height: 18px;
+
+      &:before {
+        content: '';
+        position: absolute;
+        z-index: 1;
+      }
+
+      &:not(.fs-tooltip-message--position-none) {
+        display: block;
+      }
+
+      // Positioning on the right
+      &.fs-tooltip-message--position-right {
+        transform: translate(0, -50%);
+        left: 30px;
+        top: 8px;
+
+        &::before {
+          left: -8px;
+          top: 50%;
+          margin-top: -6px;
+          border-top: 6px solid transparent;
+          border-bottom: 6px solid transparent;
+          border-right: 8px solid $fsds-background-darkest;
+        }
+      }
+
+      // Positioning on the top
+      &.fs-tooltip-message--position-top {
+        left: 50%;
+        bottom: 30px;
+        transform: translate(-50%, 0);
+
+        &::before {
+          left: 50%;
+          bottom: -8px;
+          margin-left: -6px;
+          border-right: 6px solid transparent;
+          border-left: 6px solid transparent;
+          border-top: 8px solid $fsds-background-darkest;
+        }
+      }
+
+      // Positioning on the top
+      &.fs-tooltip-message--position-top-right {
+        right: -10px;
+        bottom: 30px;
+        // transform: translate(-50%, 0);
+
+        &::before {
+          right: 10px;
+          bottom: -8px;
+          margin-left: -6px;
+          border-right: 6px solid transparent;
+          border-left: 6px solid transparent;
+          border-top: 8px solid $fsds-background-darkest;
+        }
+      }
+    }
+  }
+}

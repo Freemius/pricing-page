@@ -1,0 +1,359 @@
+@import '../../assets/scss/vars';
+
+#root,
+#fs_pricing_app {
+  .fs-package {
+    display: inline-block;
+    vertical-align: top;
+    background: $fsds-dark-background-text-color;
+    border-bottom: 3px solid $fsds-border-color;
+    width: 315px;
+    box-sizing: border-box;
+
+    &:first-child,
+    & + .fs-package {
+      border-left: 1px solid $fsds-divider-color;
+    }
+
+    &:last-child {
+      border-right: 1px solid $fsds-divider-color;
+    }
+
+    &:not(.fs-featured-plan) {
+      &:first-child {
+        border-top-left-radius: 10px;
+
+        .fs-plan-title {
+          border-top-left-radius: 9px;
+        }
+      }
+
+      &:last-child {
+        border-top-right-radius: 10px;
+
+        .fs-plan-title {
+          border-top-right-radius: 9px;
+        }
+      }
+    }
+
+    .fs-package-content {
+      vertical-align: middle;
+      padding-bottom: 30px;
+    }
+
+    .fs-plan-title {
+      padding: 10px 0;
+      background: $fsds-background-shade;
+      text-transform: uppercase;
+      border-bottom: 1px solid $fsds-divider-color;
+      border-top: 1px solid $fsds-divider-color;
+      width: 100%;
+      text-align: center;
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+    .fs-plan-description,
+    .fs-undiscounted-price,
+    .fs-licenses,
+    .fs-upgrade-button,
+    .fs-plan-features {
+      margin-top: 10px;
+    }
+
+    .fs-plan-description {
+      text-transform: uppercase;
+    }
+
+    .fs-undiscounted-price {
+      margin: auto;
+      position: relative;
+      display: inline-block;
+      color: $fsds-muted-text-color;
+      top: 6px;
+
+      &::after {
+        display: block;
+        content: '';
+        position: absolute;
+        height: 1px;
+        background-color: $fsds-error-color;
+        left: -4px;
+        right: -4px;
+        top: 50%;
+        transform: translateY(-50%) skewY(1deg);
+      }
+    }
+
+    .fs-selected-pricing-amount {
+      margin: 5px 0;
+
+      .fs-currency-symbol {
+        font-size: 39px;
+      }
+
+      .fs-selected-pricing-amount-integer {
+        font-size: 58px;
+        margin: 0 5px;
+      }
+
+      .fs-currency-symbol,
+      .fs-selected-pricing-amount-integer,
+      .fs-selected-pricing-amount-fraction-container {
+        display: inline-block;
+        vertical-align: middle;
+
+        &:not(.fs-selected-pricing-amount-integer) {
+          line-height: 18px;
+        }
+
+        .fs-selected-pricing-amount-fraction,
+        .fs-selected-pricing-amount-cycle {
+          display: block;
+          font-size: 12px;
+        }
+
+        .fs-selected-pricing-amount-fraction {
+          vertical-align: top;
+        }
+
+        .fs-selected-pricing-amount-cycle {
+          vertical-align: bottom;
+        }
+      }
+
+      .fs-selected-pricing-amount-fraction-container {
+        color: $fsds-muted-text-color;
+      }
+    }
+
+    .fs-selected-pricing-amount-free {
+      font-size: 48px;
+    }
+
+    .fs-selected-pricing-cycle {
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      color: $fsds-muted-text-color;
+    }
+
+    .fs-selected-pricing-license-quantity {
+      color: $fsds-muted-text-color;
+
+      .fs-tooltip {
+        margin-left: 5px;
+      }
+    }
+
+    .fs-upgrade-button-container {
+      padding: 0 13px;
+      display: block;
+
+      .fs-upgrade-button {
+        margin-top: 20px;
+        margin-bottom: 5px;
+      }
+    }
+
+    .fs-plan-features {
+      text-align: left;
+      margin-left: 13px;
+
+      li {
+        font-size: 16px;
+        display: flex;
+        margin-bottom: 8px;
+
+        &:not(:first-child) {
+          margin-top: 8px;
+        }
+
+        > span,
+        .fs-tooltip {
+          font-size: small;
+          vertical-align: middle;
+          display: inline-block;
+        }
+
+        .fs-feature-title {
+          margin: 0 5px;
+          color: $fsds-muted-text-color;
+          max-width: 260px;
+          overflow-wrap: break-word;
+        }
+      }
+    }
+
+    .fs-support-and-main-features {
+      margin-top: 12px;
+      padding-top: 18px;
+      padding-bottom: 18px;
+      color: $fsds-muted-text-color;
+
+      .fs-plan-support {
+        margin-bottom: 15px;
+      }
+
+      .fs-plan-features-with-value {
+        li {
+          font-size: small;
+
+          .fs-feature-title {
+            margin: 0 2px;
+          }
+
+          &:not(:first-child) {
+            margin-top: 5px;
+          }
+        }
+      }
+    }
+
+    .fs-plan-features-with-value {
+      color: $fsds-muted-text-color;
+    }
+
+    .fs-license-quantities {
+      border-collapse: collapse;
+      position: relative;
+      width: 100%;
+
+      &,
+      input {
+        cursor: pointer;
+      }
+
+      .fs-license-quantity-discount span {
+        background-color: $fsds-background-color;
+        border: 1px solid $fsds-primary-accent-color;
+        color: $fsds-primary-accent-color;
+        display: inline;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        margin: 0 5px;
+        white-space: nowrap;
+
+        &.fs-license-quantity-no-discount {
+          visibility: hidden;
+        }
+      }
+
+      .fs-license-quantity-container {
+        line-height: 30px;
+        border-top: 1px solid $fsds-background-shade;
+        font-size: small;
+        color: $fsds-muted-text-color;
+
+        &:last-child {
+          border-bottom: 1px solid $fsds-background-shade;
+          &.fs-license-quantity-selected {
+            border-bottom-color: $fsds-divider-color;
+          }
+        }
+
+        &.fs-license-quantity-selected {
+          background: $fsds-background-shade;
+          border-color: $fsds-divider-color;
+          color: $fsds-text-color;
+
+          + .fs-license-quantity-container {
+            border-top-color: $fsds-divider-color;
+          }
+        }
+
+        > td:not(.fs-license-quantity-discount):not(.fs-license-quantity-price) {
+          text-align: left;
+        }
+      }
+
+      .fs-license-quantity,
+      .fs-license-quantity-discount,
+      .fs-license-quantity-price {
+        vertical-align: middle;
+      }
+
+      .fs-license-quantity {
+        position: relative;
+        white-space: nowrap;
+
+        input {
+          position: relative;
+          margin-top: -1px;
+          margin-left: 7px;
+          margin-right: 7px;
+        }
+      }
+
+      .fs-license-quantity-price {
+        position: relative;
+        margin-right: auto;
+        padding-right: 7px;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+      }
+    }
+
+    &.fs-free-plan {
+      .fs-license-quantity-container:not(:last-child) {
+        border-color: transparent;
+      }
+    }
+
+    .fs-most-popular {
+      display: none;
+    }
+
+    &.fs-featured-plan {
+      .fs-most-popular {
+        display: block;
+        line-height: 2.8em;
+        margin-top: -2.8em;
+        border-radius: 10px 10px 0 0;
+        color: $fsds-text-color;
+        background: $fsds-package-popular-background;
+        text-transform: uppercase;
+        font-size: 14px;
+      }
+
+      .fs-plan-title {
+        color: $fsds-dark-background-text-color;
+        background: $fsds-primary-accent-color;
+        border-top-color: $fsds-primary-accent-color;
+        border-bottom-color: $fsds-primary-accent-color;
+      }
+
+      .fs-selected-pricing-license-quantity {
+        color: $fsds-primary-accent-color;
+      }
+
+      .fs-license-quantity-discount span {
+        background: $fsds-primary-accent-color;
+        color: $fsds-dark-background-text-color;
+      }
+
+      .fs-license-quantities .fs-license-quantity-selected {
+        background: $fsds-primary-accent-color;
+        border-color: $fsds-primary-accent-color;
+        color: $fsds-dark-background-text-color;
+
+        + .fs-license-quantity-container {
+          border-top-color: $fsds-primary-accent-color;
+        }
+
+        &:last-child {
+          border-bottom-color: $fsds-primary-accent-color;
+        }
+
+        .fs-license-quantity-discount span {
+          background: $fsds-background-color;
+          color: $fsds-primary-accent-color-hover;
+        }
+      }
+    }
+  }
+}
