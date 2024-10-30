@@ -1,0 +1,154 @@
+@use 'palettes';
+
+/**
+ * Access a theme color by name.
+ */
+@function fs-ds-theme-color($name) {
+  @return var(--fs-ds-theme-#{$name});
+}
+
+$fsds-theme-colors: (
+  // Major Color Shades
+  'primary-accent-color': palettes.fs-ds-color-var('blue', 500),
+  'primary-accent-color-hover': palettes.fs-ds-color-var('blue', 600),
+  'primary-green-color': palettes.fs-ds-color-var('green', 500),
+  'primary-red-color': palettes.fs-ds-color-var('red', 500),
+  'primary-yellow-color': palettes.fs-ds-color-var('yellow', 500),
+  'error-color': fs-ds-theme-color('primary-red-color'),
+  'success-color': fs-ds-theme-color('primary-green-color'),
+  'warn-color': fs-ds-theme-color('primary-yellow-color'),
+  // Background color
+  'background-color': palettes.fs-ds-color-var('white', 10),
+  'background-shade': palettes.fs-ds-color-var('neutral', 10),
+  'background-accented': palettes.fs-ds-color-var('neutral', 50),
+  'background-hover': palettes.fs-ds-color-var('neutral', 200),
+  'background-overlay': palettes.fs-ds-color-var('neutral', '900-fade-60'),
+  'background-dark': palettes.fs-ds-color-var('neutral', 800),
+  'background-darkest': palettes.fs-ds-color-var('neutral', 900),
+  // Typography
+  'text-color': palettes.fs-ds-color-var('neutral', 900),
+  'heading-text-color': palettes.fs-ds-color-var('neutral', 800),
+  'muted-text-color': palettes.fs-ds-color-var('neutral', 600),
+  'dark-background-text-color': palettes.fs-ds-color-var('white', 10),
+  'dark-background-muted-text-color': palettes.fs-ds-color-var('neutral', 300),
+  // Form Controls
+  'divider-color': fs-ds-theme-color('background-accented'),
+  'border-color': palettes.fs-ds-color-var('neutral', 100),
+  // Buttons
+  'button-background-color': palettes.fs-ds-color-var('neutral', 50),
+  'button-background-hover-color': palettes.fs-ds-color-var('neutral', 200),
+  'button-text-color': fs-ds-theme-color('heading-text-color'),
+  'button-border-color': palettes.fs-ds-color-var('neutral', 300),
+  'button-border-hover-color': palettes.fs-ds-color-var('neutral', 600),
+  'button-border-focus-color': palettes.fs-ds-color-var('blue', 400),
+  'button-primary-background-color': fs-ds-theme-color('primary-accent-color'),
+  'button-primary-background-hover-color':
+    fs-ds-theme-color('primary-accent-color-hover'),
+  'button-primary-text-color': palettes.fs-ds-color-var('white', 10),
+  'button-primary-border-color': palettes.fs-ds-color-var('blue', 800),
+  'button-primary-border-hover-color': palettes.fs-ds-color-var('blue', 900),
+  'button-primary-border-focus-color': palettes.fs-ds-color-var('blue', 100),
+  'button-disabled-border-color': palettes.fs-ds-color-var('neutral', 100),
+  'button-disabled-background-color': palettes.fs-ds-color-var('neutral', 50),
+  'button-disabled-text-color': palettes.fs-ds-color-var('neutral', 300),
+  // Notice
+  'notice-warn-background': palettes.fs-ds-color-var('yellow', 10),
+  'notice-warn-color': palettes.fs-ds-color-var('yellow', 900),
+  'notice-warn-border': fs-ds-theme-color('warn-color'),
+  'notice-info-background': fs-ds-theme-color('background-shade'),
+  'notice-info-color': fs-ds-theme-color('primary-accent-color-hover'),
+  'notice-info-border': fs-ds-theme-color('primary-accent-color'),
+  // Package
+  'package-popular-background': palettes.fs-ds-color-var('blue', 200),
+  // Testimonials
+  'testimonial-star-color': palettes.fs-ds-color-var('yellow', 300)
+);
+
+// CSS Color variables
+
+// Major Color Shades
+$fsds-primary-accent-color: fs-ds-theme-color('primary-accent-color');
+$fsds-primary-accent-color-hover: fs-ds-theme-color(
+  'primary-accent-color-hover'
+);
+$fsds-primary-green-color: fs-ds-theme-color('primary-green-color');
+$fsds-primary-red-color: fs-ds-theme-color('primary-red-color');
+$fsds-primary-yellow-color: fs-ds-theme-color('primary-yellow-color');
+$fsds-error-color: fs-ds-theme-color('error-color');
+$fsds-success-color: fs-ds-theme-color('success-color');
+$fsds-warn-color: fs-ds-theme-color('warn-color');
+
+// Background color
+$fsds-background-color: fs-ds-theme-color('background-color');
+$fsds-background-shade: fs-ds-theme-color('background-shade');
+$fsds-background-accented: fs-ds-theme-color('background-accented');
+$fsds-background-hover: fs-ds-theme-color('background-hover');
+$fsds-background-overlay: fs-ds-theme-color('background-overlay');
+$fsds-background-dark: fs-ds-theme-color('background-dark');
+$fsds-background-darkest: fs-ds-theme-color('background-darkest');
+
+// Typography
+$fsds-text-color: fs-ds-theme-color('text-color');
+$fsds-heading-text-color: fs-ds-theme-color('heading-text-color');
+$fsds-muted-text-color: fs-ds-theme-color('muted-text-color');
+$fsds-dark-background-text-color: fs-ds-theme-color(
+  'dark-background-text-color'
+);
+$fsds-dark-background-muted-text-color: fs-ds-theme-color(
+  'dark-background-muted-text-color'
+);
+
+// Form Controls
+$fsds-divider-color: fs-ds-theme-color('divider-color');
+$fsds-border-color: fs-ds-theme-color('border-color');
+
+// Buttons
+$fsds-button-background-color: fs-ds-theme-color('button-background-color');
+$fsds-button-background-hover-color: fs-ds-theme-color(
+  'button-background-hover-color'
+);
+$fsds-button-text-color: fs-ds-theme-color('button-text-color');
+$fsds-button-border-color: fs-ds-theme-color('button-border-color');
+$fsds-button-border-hover-color: fs-ds-theme-color('button-border-hover-color');
+$fsds-button-border-focus-color: fs-ds-theme-color('button-border-focus-color');
+$fsds-button-primary-background-color: fs-ds-theme-color(
+  'button-primary-background-color'
+);
+$fsds-button-primary-background-hover-color: fs-ds-theme-color(
+  'button-primary-background-hover-color'
+);
+$fsds-button-primary-text-color: fs-ds-theme-color('button-primary-text-color');
+$fsds-button-primary-border-color: fs-ds-theme-color(
+  'button-primary-border-color'
+);
+$fsds-button-primary-border-hover-color: fs-ds-theme-color(
+  'button-primary-border-hover-color'
+);
+$fsds-button-primary-border-focus-color: fs-ds-theme-color(
+  'button-primary-border-focus-color'
+);
+$fsds-button-disabled-border-color: fs-ds-theme-color(
+  'button-disabled-border-color'
+);
+$fsds-button-disabled-background-color: fs-ds-theme-color(
+  'button-disabled-background-color'
+);
+$fsds-button-disabled-text-color: fs-ds-theme-color(
+  'button-disabled-text-color'
+);
+
+// Notice
+$fsds-notice-warn-background: fs-ds-theme-color('notice-warn-background');
+$fsds-notice-warn-color: fs-ds-theme-color('notice-warn-color');
+$fsds-notice-warn-border: fs-ds-theme-color('notice-warn-border');
+$fsds-notice-info-background: fs-ds-theme-color('notice-info-background');
+$fsds-notice-info-color: fs-ds-theme-color('notice-info-color');
+$fsds-notice-info-border: fs-ds-theme-color('notice-info-border');
+
+// Package
+$fsds-package-popular-background: fs-ds-theme-color(
+  'package-popular-background'
+);
+
+// Testimonials
+$fsds-testimonial-star-color: fs-ds-theme-color('testimonial-star-color');

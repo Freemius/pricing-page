@@ -1,0 +1,24 @@
+@use 'palettes';
+@use 'sass:map';
+@use 'theme';
+
+///
+// Main CSS variables output
+// Include it only once
+///
+
+// Lowest level of CSS variables. These can be cascaded to get custom styles.
+:root {
+  // Colors
+  @each $accessor, $color in palettes.$fsds-color-palette {
+    --fs-ds-#{$accessor}: #{$color};
+  }
+}
+
+// Theme colors
+#fs_pricing_app,
+#fs_pricing_wrapper {
+  @each $accessor, $value in theme.$fsds-theme-colors {
+    --fs-ds-theme-#{$accessor}: #{$value};
+  }
+}

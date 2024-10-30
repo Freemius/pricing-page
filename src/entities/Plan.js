@@ -1,121 +1,120 @@
-import {Helper} from "../Helper";
+import { Helper } from '../Helper';
 
 /**
  * @author Leo Fajardo
  */
 export class Plan {
+  //region Properties
 
-    //region Properties
+  /**
+   * @type boolean
+   */
+  is_block_features = true;
 
-    /**
-     * @type boolean
-     */
-    is_block_features = true;
+  /**
+   * @type boolean
+   */
+  is_block_features_monthly = true;
 
-    /**
-     * @type boolean
-     */
-    is_block_features_monthly = true;
+  /**
+   * @type boolean
+   */
+  is_require_subscription = true;
 
-    /**
-     * @type boolean
-     */
-    is_require_subscription = true;
+  /**
+   * @type boolean If true, the plan supports personal success manager.
+   */
+  is_success_manager = false;
 
-    /**
-     * @type boolean If true, the plan supports personal success manager.
-     */
-    is_success_manager = false;
+  /**
+   * @type string Support email address.
+   */
+  support_email = '';
 
-    /**
-     * @type string Support email address.
-     */
-    support_email = '';
+  /**
+   * @type string Support forum URL.
+   */
+  support_forum = '';
 
-    /**
-     * @type string Support forum URL.
-     */
-    support_forum = '';
+  /**
+   * @type string Support phone number.
+   */
+  support_phone = '';
 
-    /**
-     * @type string Support phone number.
-     */
-    support_phone = '';
+  /**
+   * @type string Skype support username.
+   */
+  support_skype = '';
 
-    /**
-     * @type string Skype support username.
-     */
-    support_skype = '';
+  /**
+   * @type int Trial days.
+   */
+  trial_period = 0;
 
-    /**
-     * @type int Trial days.
-     */
-    trial_period = 0;
+  //endregion Properties
 
-    //endregion Properties
-
-    constructor(object = null) {
-        if (null == object) {
-            return;
-        }
-
-        for (const p in object) {
-            if (object.hasOwnProperty(p)) {
-                this[p] = object[p];
-            }
-        }
+  constructor(object = null) {
+    if (null == object) {
+      return;
     }
 
-    /**
-     * @returns {boolean} True if the plan has any kind of support.
-     */
-    hasAnySupport() {
-        return (
-            this.hasEmailSupport() ||
-            this.hasForumSupport() ||
-            this.hasPhoneSupport() ||
-            this.hasSkypeSupport() ||
-            this.hasSuccessManagerSupport()
-        );
+    for (const p in object) {
+      if (object.hasOwnProperty(p)) {
+        this[p] = object[p];
+      }
     }
+  }
 
-    hasEmailSupport() {
-        return (Helper.isNonEmptyString(this.support_email));
-    }
+  /**
+   * @returns {boolean} True if the plan has any kind of support.
+   */
+  hasAnySupport() {
+    return (
+      this.hasEmailSupport() ||
+      this.hasForumSupport() ||
+      this.hasPhoneSupport() ||
+      this.hasSkypeSupport() ||
+      this.hasSuccessManagerSupport()
+    );
+  }
 
-    hasForumSupport() {
-        return (Helper.isNonEmptyString(this.support_forum));
-    }
+  hasEmailSupport() {
+    return Helper.isNonEmptyString(this.support_email);
+  }
 
-    hasKnowledgeBaseSupport() {
-        return (Helper.isNonEmptyString(this.support_kb));
-    }
+  hasForumSupport() {
+    return Helper.isNonEmptyString(this.support_forum);
+  }
 
-    hasPhoneSupport() {
-        return (Helper.isNonEmptyString(this.support_phone));
-    }
+  hasKnowledgeBaseSupport() {
+    return Helper.isNonEmptyString(this.support_kb);
+  }
 
-    hasSkypeSupport() {
-        return (Helper.isNonEmptyString(this.support_skype));
-    }
+  hasPhoneSupport() {
+    return Helper.isNonEmptyString(this.support_phone);
+  }
 
-    hasSuccessManagerSupport() {
-        return (true == this.is_success_manager);
-    }
+  hasSkypeSupport() {
+    return Helper.isNonEmptyString(this.support_skype);
+  }
 
-    hasTrial() {
-        return (Helper.isNumeric(this.trial_period) && this.trial_period > 0);
-    }
+  hasSuccessManagerSupport() {
+    return true == this.is_success_manager;
+  }
 
-    isBlockingMonthly() {
-        return (true == this.is_block_features_monthly);
-    }
+  hasTrial() {
+    return Helper.isNumeric(this.trial_period) && this.trial_period > 0;
+  }
 
-    isBlockingAnnually() {
-        return (true == this.is_block_features);
-    }
+  isBlockingMonthly() {
+    return true == this.is_block_features_monthly;
+  }
 
-    requiresSubscription() {
-        return this.is_require_subscription;
-    }
+  isBlockingAnnually() {
+    return true == this.is_block_features;
+  }
+
+  requiresSubscription() {
+    return this.is_require_subscription;
+  }
 }

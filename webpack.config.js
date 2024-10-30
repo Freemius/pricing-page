@@ -1,52 +1,78 @@
 const path = require('path');
 
-module.exports = (env, options) =>  {
-    return {
-        mode: 'production',
-        entry: './src/index.js',
-        devtool: 'source-map',
-        module: {
-            rules: [
-                {
-                    test: /\.(js|jsx)$/,
-                    exclude: /node_modules/,
-                    loader: "babel-loader",
-                    options: {
-                        presets: [
-                            '@babel/preset-react',
-                            {
-                                "plugins": [
-                                    '@babel/plugin-proposal-class-properties',
-                                    '@babel/plugin-syntax-dynamic-import',
-                                    '@babel/plugin-syntax-export-namespace-from'
-                                ]
-                            }
-                        ]
-                    }
-                },
-                {
-                    test: /\.scss$/,
-                    loaders: [
-                        "style-loader", "css-loader", "sass-loader"
-                    ]
-                },
-                {
-                    test: /\.(svg|png)/,
-                    loaders: [
-                        "file-loader"
-                    ]
-                }
-            ]
+const buildMode = process.env.NODE_ENV;
+const isProductionMode = buildMode === 'production';
+
+/**
+ * Targeting `>0.1%, not dead`.
+ *
+ * {@link https://browserslist.dev/?q=PjAuMSUsIG5vdCBkZWFk}
+ */
+const targetBrowsers = isProductionMode
+  ? ['chrome79', 'firefox95', 'safari13.1', 'edge96']
+  : ['es2020'];
+
+module.exports = () => {
+  return {
+    mode: buildMode,
+    entry: './src/index.js',
+    devtool: isProductionMode ? false : 'eval-source-map',
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'esbuild-loader',
+              options: {
+                loader: 'jsx',
+                target: targetBrowsers,
+              },
+            },
+          ],
         },
-        output: {
-            path: path.join(__dirname, './dist'),
-            filename: 'freemius-pricing.js',
-            library: ["Freemius"],
-            libraryTarget: 'umd',
+        {
+          test: /\.scss$/,
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'esbuild-loader',
+              options: {
+                loader: 'css',
+                minify: isProductionMode,
+              },
+            },
+            'sass-loader',
+          ],
         },
-        optimization: {
-            nodeEnv: 'production',
-            minimize: true,
-        }
-    };
+        {
+          test: /\.(svg|png)/,
+          use: ['file-loader'],
+        },
+      ],
+    },
+    output: {
+      path: path.join(__dirname, './dist'),
+      filename: 'freemius-pricing.js',
+      library: ['Freemius'],
+      libraryTarget: 'umd',
+    },
+    // We cannot use ESBuild mimizer because our code-base isn't strictly ES Module.
+    // We still have some side-effecty imports.
+    // optimization: isProductionMode ?
+    // {
+    //     minimize: isProductionMode,
+    //     nodeEnv: buildMode,
+    //     minimizer: [new ESBuildMinifyPlugin({
+    //         target: targetBrowsers
+    //     })]
+    // } :
+    // undefined,
+    optimization: {
+      nodeEnv: buildMode,
+      minimize: buildMode === 'production',
+    },
+  };
 };

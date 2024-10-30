@@ -174,7 +174,11 @@ class Package extends Component {
     }
   }
 
-  getUndiscountedPrice(planPackage, selectedPricing, selectedPricingCycleLabel) {
+  getUndiscountedPrice(
+    planPackage,
+    selectedPricing,
+    selectedPricingCycleLabel
+  ) {
     if (
       BillingCycleString.ANNUAL !== this.context.selectedBillingCycle ||
       !(this.context.annualDiscount > 0)
@@ -189,16 +193,23 @@ class Package extends Component {
     let amount;
 
     if ('mo' === selectedPricingCycleLabel) {
-      amount = selectedPricing.getMonthlyAmount(BillingCycle.MONTHLY, true, Package.locale);
+      amount = selectedPricing.getMonthlyAmount(
+        BillingCycle.MONTHLY,
+        true,
+        Package.locale
+      );
     } else {
-      amount = selectedPricing.getYearlyAmount(BillingCycle.MONTHLY, true, Package.locale);
+      amount = selectedPricing.getYearlyAmount(
+        BillingCycle.MONTHLY,
+        true,
+        Package.locale
+      );
     }
 
     return (
       <div className="fs-undiscounted-price">
         Normally {this.context.currencySymbols[this.context.selectedCurrency]}
-        {amount}{' '}
-        / selectedPricingCycleLabel
+        {amount} / selectedPricingCycleLabel
       </div>
     );
   }
@@ -304,18 +315,36 @@ class Package extends Component {
 
       this.previouslySelectedPricingByPlan[planPackage.id] = selectedPricing;
 
-      if (BillingCycleString.ANNUAL === this.context.selectedBillingCycle)
-      {
-        if (true === showAnnualInMonthly || (Helper.isUndefinedOrNull(showAnnualInMonthly) && selectedPricing.hasMonthlyPrice())) {
-          selectedPricingAmount = Helper.formatNumber(selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL), Package.locale);
+      if (BillingCycleString.ANNUAL === this.context.selectedBillingCycle) {
+        if (
+          true === showAnnualInMonthly ||
+          (Helper.isUndefinedOrNull(showAnnualInMonthly) &&
+            selectedPricing.hasMonthlyPrice())
+        ) {
+          // The 'en-US' is intentionally hard-coded here because we are spliting the decimal by '.'.
+          selectedPricingAmount = Helper.formatNumber(
+            selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL),
+            'en-US'
+          );
         }
 
-        if (false === showAnnualInMonthly || (Helper.isUndefinedOrNull(showAnnualInMonthly) && ! selectedPricing.hasMonthlyPrice())) {
-          selectedPricingAmount     = Helper.formatNumber(selectedPricing.getYearlyAmount(BillingCycle.ANNUAL), Package.locale);
+        if (
+          false === showAnnualInMonthly ||
+          (Helper.isUndefinedOrNull(showAnnualInMonthly) &&
+            !selectedPricing.hasMonthlyPrice())
+        ) {
+          // The 'en-US' is intentionally hard-coded here because we are spliting the decimal by '.'.
+          selectedPricingAmount = Helper.formatNumber(
+            selectedPricing.getYearlyAmount(BillingCycle.ANNUAL),
+            'en-US'
+          );
           selectedPricingCycleLabel = 'yr';
         }
       } else {
-        selectedPricingAmount = selectedPricing[`${this.context.selectedBillingCycle}_price`].toString();
+        selectedPricingAmount =
+          selectedPricing[
+            `${this.context.selectedBillingCycle}_price`
+          ].toString();
       }
     }
 
@@ -400,7 +429,11 @@ class Package extends Component {
           <h3 className="fs-plan-description">
             <strong>{planPackage.description_lines}</strong>
           </h3>
-          {this.getUndiscountedPrice(planPackage, selectedPricing, selectedPricingCycleLabel)}
+          {this.getUndiscountedPrice(
+            planPackage,
+            selectedPricing,
+            selectedPricingCycleLabel
+          )}
           <div className="fs-selected-pricing-amount">
             <strong className="fs-currency-symbol">
               {!planPackage.is_free_plan
@@ -421,7 +454,9 @@ class Package extends Component {
               {!planPackage.is_free_plan &&
                 BillingCycleString.LIFETIME !==
                   this.context.selectedBillingCycle && (
-                  <sub className="fs-selected-pricing-amount-cycle">/ {selectedPricingCycleLabel}</sub>
+                  <sub className="fs-selected-pricing-amount-cycle">
+                    / {selectedPricingCycleLabel}
+                  </sub>
                 )}
             </span>
           </div>
