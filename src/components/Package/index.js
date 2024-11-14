@@ -209,7 +209,7 @@ class Package extends Component {
     return (
       <div className="fs-undiscounted-price">
         Normally {this.context.currencySymbols[this.context.selectedCurrency]}
-        {amount} / selectedPricingCycleLabel
+        {amount} / {selectedPricingCycleLabel}
       </div>
     );
   }

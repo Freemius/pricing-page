@@ -587,15 +587,15 @@ class FreemiusPricingMain extends Component {
 
             let pricing = pricingCollection[pricingIndex];
 
-            if (null != pricing.monthly_price) {
+            if (null != pricing.monthly_price && !pricing.is_hidden) {
               billingCycles[BillingCycleString.MONTHLY] = true;
             }
 
-            if (null != pricing.annual_price) {
+            if (null != pricing.annual_price && !pricing.is_hidden) {
               billingCycles[BillingCycleString.ANNUAL] = true;
             }
 
-            if (null != pricing.lifetime_price) {
+            if (null != pricing.lifetime_price && !pricing.is_hidden) {
               billingCycles[BillingCycleString.LIFETIME] = true;
             }
 
