@@ -149,3 +149,11 @@ an unexpected way, you can use this:
 ## How to setup the development environment for contributions
 
 Please our [Contributors Guide](CONTRIBUTING.md).
+
+## Filters
+
+- `pricing/show_annual_in_monthly` - Set the value to `false` to make the annual
+  pricing display number in annual cycle (instead of monthly cycle).
+- `plugin_icon` - See
+  [documentation](https://freemius.com/help/documentation/wordpress-sdk/opt-in-message/#opt_in_icon_customization),
+  the same filter is used for the pricing page.

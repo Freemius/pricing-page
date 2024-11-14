@@ -187,7 +187,7 @@ class FreemiusPricingMain extends Component {
 
     return (
       <object
-        data={this.state.plugin.icon}
+        data={FSConfig.plugin_icon ?? this.state.plugin.icon}
         className="fs-plugin-logo"
         type="image/png"
       >
