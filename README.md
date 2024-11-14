@@ -157,3 +157,6 @@ Please our [Contributors Guide](CONTRIBUTING.md).
 - `plugin_icon` - See
   [documentation](https://freemius.com/help/documentation/wordpress-sdk/opt-in-message/#opt_in_icon_customization),
   the same filter is used for the pricing page.
+- `pricing/disable_single_package` - Set the value to `true` to disable the
+  enhanced appearance of the single package plan, where every pricing takes a
+  new column.

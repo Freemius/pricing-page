@@ -10,6 +10,7 @@ import Placeholder from '../Placeholder';
 import { debounce } from '../../utils/debounce';
 
 import './style.scss';
+import { FSConfig } from '../../index';
 
 class PackagesContainer extends Component {
   static contextType = FSPricingContext;
@@ -323,7 +324,11 @@ class PackagesContainer extends Component {
       currentLicenseQuantities = {},
       isSinglePlan = false;
 
-    if (this.context.paidPlansCount > 1 || 1 === licenseQuantitiesCount) {
+    if (
+      this.context.paidPlansCount > 1 ||
+      1 === licenseQuantitiesCount ||
+      true === FSConfig.disable_single_package
+    ) {
       // If there are more than one paid plans, create a package component for each plan.
       packages = this.context.plans;
     } else {
