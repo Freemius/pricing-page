@@ -86,14 +86,27 @@ class Package extends Component {
       return 'upgrade';
     }
 
-    if (PlanManager.getInstance().isFreePlan(contextPlan.pricing)) {
+    const isContextPricingFree = PlanManager.getInstance().isFreePlan(
+      contextPlan.pricing
+    );
+    const isPlanPricingFree = PlanManager.getInstance().isFreePlan(
+      plan.pricing
+    );
+
+    // There are some cases where we will show the Free plan, especially if we are on free plan.
+    // For example, there's only one plan of the product and the plan doesn't have multiple pricings.
+    if (isContextPricingFree && isPlanPricingFree) {
+      return 'none';
+    }
+
+    if (isContextPricingFree) {
       return 'upgrade';
     }
 
     // At this point, the install has a plan. Now we need to compare the given plan with the context plan.
 
     // If the given plan is free, then it is always a downgrade.
-    if (PlanManager.getInstance().isFreePlan(plan.pricing)) {
+    if (isPlanPricingFree) {
       return 'downgrade';
     }
 
