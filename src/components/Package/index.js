@@ -86,14 +86,27 @@ class Package extends Component {
       return 'upgrade';
     }
 
-    if (PlanManager.getInstance().isFreePlan(contextPlan.pricing)) {
+    const isContextPricingFree = PlanManager.getInstance().isFreePlan(
+      contextPlan.pricing
+    );
+    const isPlanPricingFree = PlanManager.getInstance().isFreePlan(
+      plan.pricing
+    );
+
+    // There are some cases where we will show the Free plan, especially if we are on free plan.
+    // For example, there's only one plan of the product and the plan doesn't have multiple pricings.
+    if (isContextPricingFree && isPlanPricingFree) {
+      return 'none';
+    }
+
+    if (isContextPricingFree) {
       return 'upgrade';
     }
 
     // At this point, the install has a plan. Now we need to compare the given plan with the context plan.
 
     // If the given plan is free, then it is always a downgrade.
-    if (PlanManager.getInstance().isFreePlan(plan.pricing)) {
+    if (isPlanPricingFree) {
       return 'downgrade';
     }
 
@@ -174,7 +187,11 @@ class Package extends Component {
     }
   }
 
-  getUndiscountedPrice(planPackage, selectedPricing) {
+  getUndiscountedPrice(
+    planPackage,
+    selectedPricing,
+    selectedPricingCycleLabel
+  ) {
     if (
       BillingCycleString.ANNUAL !== this.context.selectedBillingCycle ||
       !(this.context.annualDiscount > 0)
@@ -186,15 +203,26 @@ class Package extends Component {
       return <Placeholder className={'fs-undiscounted-price'} />;
     }
 
+    let amount;
+
+    if ('mo' === selectedPricingCycleLabel) {
+      amount = selectedPricing.getMonthlyAmount(
+        BillingCycle.MONTHLY,
+        true,
+        Package.locale
+      );
+    } else {
+      amount = selectedPricing.getYearlyAmount(
+        BillingCycle.MONTHLY,
+        true,
+        Package.locale
+      );
+    }
+
     return (
       <div className="fs-undiscounted-price">
         Normally {this.context.currencySymbols[this.context.selectedCurrency]}
-        {selectedPricing.getMonthlyAmount(
-          BillingCycle.MONTHLY,
-          true,
-          Package.locale
-        )}{' '}
-        / mo
+        {amount} / {selectedPricingCycleLabel}
       </div>
     );
   }
@@ -264,7 +292,9 @@ class Package extends Component {
       pricingCollection = {},
       selectedPricing = null,
       selectedPricingAmount = null,
-      supportLabel = null;
+      supportLabel = null,
+      showAnnualInMonthly = this.context.showAnnualInMonthly,
+      selectedPricingCycleLabel = 'mo';
 
     if (this.props.isFirstPlanPackage) {
       Package.contextInstallPlanFound = false;
@@ -298,15 +328,37 @@ class Package extends Component {
 
       this.previouslySelectedPricingByPlan[planPackage.id] = selectedPricing;
 
-      selectedPricingAmount = (
-        BillingCycleString.ANNUAL === this.context.selectedBillingCycle
-          ? // The 'en-US' is intentionally hard-coded here because we are spliting the decimal by '.'.
-            Helper.formatNumber(
-              selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL),
-              'en-US'
-            )
-          : selectedPricing[`${this.context.selectedBillingCycle}_price`]
-      ).toString();
+      if (BillingCycleString.ANNUAL === this.context.selectedBillingCycle) {
+        if (
+          true === showAnnualInMonthly ||
+          (Helper.isUndefinedOrNull(showAnnualInMonthly) &&
+            selectedPricing.hasMonthlyPrice())
+        ) {
+          // The 'en-US' is intentionally hard-coded here because we are spliting the decimal by '.'.
+          selectedPricingAmount = Helper.formatNumber(
+            selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL),
+            'en-US'
+          );
+        }
+
+        if (
+          false === showAnnualInMonthly ||
+          (Helper.isUndefinedOrNull(showAnnualInMonthly) &&
+            !selectedPricing.hasMonthlyPrice())
+        ) {
+          // The 'en-US' is intentionally hard-coded here because we are spliting the decimal by '.'.
+          selectedPricingAmount = Helper.formatNumber(
+            selectedPricing.getYearlyAmount(BillingCycle.ANNUAL),
+            'en-US'
+          );
+          selectedPricingCycleLabel = 'yr';
+        }
+      } else {
+        selectedPricingAmount =
+          selectedPricing[
+            `${this.context.selectedBillingCycle}_price`
+          ].toString();
+      }
     }
 
     if (!planPackage.hasAnySupport()) {
@@ -390,7 +442,11 @@ class Package extends Component {
           <h3 className="fs-plan-description">
             <strong>{planPackage.description_lines}</strong>
           </h3>
-          {this.getUndiscountedPrice(planPackage, selectedPricing)}
+          {this.getUndiscountedPrice(
+            planPackage,
+            selectedPricing,
+            selectedPricingCycleLabel
+          )}
           <div className="fs-selected-pricing-amount">
             <strong className="fs-currency-symbol">
               {!planPackage.is_free_plan
@@ -411,7 +467,9 @@ class Package extends Component {
               {!planPackage.is_free_plan &&
                 BillingCycleString.LIFETIME !==
                   this.context.selectedBillingCycle && (
-                  <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>
+                  <sub className="fs-selected-pricing-amount-cycle">
+                    / {selectedPricingCycleLabel}
+                  </sub>
                 )}
             </span>
           </div>

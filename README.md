@@ -149,3 +149,31 @@ an unexpected way, you can use this:
 ## How to setup the development environment for contributions
 
 Please our [Contributors Guide](CONTRIBUTING.md).
+
+## Filters
+
+- `pricing/show_annual_in_monthly` - Set the value to `false` to make the annual
+  pricing display number in annual cycle (instead of monthly cycle).
+- `plugin_icon` - See
+  [documentation](https://freemius.com/help/documentation/wordpress-sdk/opt-in-message/#opt_in_icon_customization),
+  the same filter is used for the pricing page.
+- `pricing/disable_single_package` - Set the value to `true` to disable the
+  enhanced appearance of the single package plan, where every pricing takes a
+  new column.
+- `pricing/css_path` - Set the value to the path of your custom CSS file to
+  override the default CSS. The path should be absolute (just like the
+  `plugin_icon` or the `freemius_pricing_js_path` filters).
+
+### Adding custom CSS in your Plugin
+
+Set the custom CSS path using the `pricing/css_path` filter:
+
+```php
+<?php
+    function my_custom_pricing_css_path( $default_pricing_css_path ) {
+        return plugin_dir_path( __FILE__ ) .
+            '/path/to/your/freemius-pricing.css';
+    }
+
+    my_fs()->add_filter( 'pricing/css_path', 'my_custom_pricing_css_path' );
+```

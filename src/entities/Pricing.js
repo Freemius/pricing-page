@@ -212,6 +212,38 @@ export class Pricing {
     return amount;
   }
 
+  /**
+   * @param {int}              billingCycle One of the following: 1, 12, 0 (for lifetime).
+   * @param {boolean} [format] If true, the number 1299 for example will become 1,299.
+   * @param {string}  [locale]     The country code and language code combination (e.g. 'fr-FR').
+   *
+   * @return {string|number}
+   */
+  getYearlyAmount(billingCycle, format, locale) {
+    let amount = 0.0;
+
+    switch (billingCycle) {
+      case BillingCycle.MONTHLY:
+        amount = this.hasMonthlyPrice()
+          ? this.monthly_price * 12
+          : this.annual_price;
+        break;
+      case BillingCycle.ANNUAL:
+        amount = this.hasAnnualPrice()
+          ? this.annual_price
+          : this.monthly_price * 12;
+        break;
+    }
+
+    amount = parseFloat(amount);
+
+    if (format) {
+      amount = Helper.formatNumber(amount, locale);
+    }
+
+    return amount;
+  }
+
   getLicenses() {
     return this.isUnlimited() ? UnlimitedLicenses : this.licenses;
   }

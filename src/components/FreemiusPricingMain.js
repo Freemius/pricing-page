@@ -70,6 +70,7 @@ class FreemiusPricingMain extends Component {
       selectedLicenseQuantity: this.getDefaultLicenseQuantity(),
       upgradingToPlanID: null,
       license: FSConfig.license,
+      showAnnualInMonthly: FSConfig.show_annual_in_monthly,
     };
 
     this.changeBillingCycle = this.changeBillingCycle.bind(this);
@@ -186,7 +187,7 @@ class FreemiusPricingMain extends Component {
 
     return (
       <object
-        data={this.state.plugin.icon}
+        data={FSConfig.plugin_icon ?? this.state.plugin.icon}
         className="fs-plugin-logo"
         type="image/png"
       >
@@ -586,15 +587,15 @@ class FreemiusPricingMain extends Component {
 
             let pricing = pricingCollection[pricingIndex];
 
-            if (null != pricing.monthly_price) {
+            if (null != pricing.monthly_price && !pricing.is_hidden) {
               billingCycles[BillingCycleString.MONTHLY] = true;
             }
 
-            if (null != pricing.annual_price) {
+            if (null != pricing.annual_price && !pricing.is_hidden) {
               billingCycles[BillingCycleString.ANNUAL] = true;
             }
 
-            if (null != pricing.lifetime_price) {
+            if (null != pricing.lifetime_price && !pricing.is_hidden) {
               billingCycles[BillingCycleString.LIFETIME] = true;
             }
 
