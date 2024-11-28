@@ -190,7 +190,8 @@ class Package extends Component {
   getUndiscountedPrice(
     planPackage,
     selectedPricing,
-    selectedPricingCycleLabel
+    selectedPricingCycleLabel,
+    selectedPricingAmount
   ) {
     if (
       BillingCycleString.ANNUAL !== this.context.selectedBillingCycle ||
@@ -217,6 +218,10 @@ class Package extends Component {
         true,
         Package.locale
       );
+    }
+
+    if (selectedPricingAmount === amount) {
+      return <Placeholder className={'fs-undiscounted-price'} />;
     }
 
     return (
@@ -445,7 +450,8 @@ class Package extends Component {
           {this.getUndiscountedPrice(
             planPackage,
             selectedPricing,
-            selectedPricingCycleLabel
+            selectedPricingCycleLabel,
+            selectedPricingAmount
           )}
           <div className="fs-selected-pricing-amount">
             <strong className="fs-currency-symbol">
