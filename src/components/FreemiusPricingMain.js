@@ -35,7 +35,6 @@ import { RequestManager } from '../services/RequestManager';
 import { PageManager } from '../services/PageManager';
 import { Helper } from '../Helper';
 import { TrackingManager } from '../services/TrackingManager';
-import { FS } from '../postmessage';
 import Loader from './Loader';
 import TrialConfirmationModal from './TrialConfirmationModal';
 
@@ -269,13 +268,10 @@ class FreemiusPricingMain extends Component {
 
   /**
    * @return {boolean}
+   * @deprecated - This always returns what's in `isDashboardMode`, we don't support being loaded through an iFrame, so it is always embedded.
    */
   isEmbeddedDashboardMode() {
-    if (!this.isDashboardMode()) {
-      return false;
-    }
-
-    return Helper.isUndefinedOrNull(FS.PostMessage.parent_url());
+    return this.isDashboardMode();
   }
 
   /**
@@ -320,32 +316,32 @@ class FreemiusPricingMain extends Component {
           // Track trial start.
           this.trackingManager.track('started');
 
-          const parentUrl = FS.PostMessage.parent_url();
-
           const page =
             this.state.plugin.menu_slug +
             (this.hasInstallContext() ? '-account' : '');
 
-          if (!Helper.isNonEmptyString(parentUrl)) {
-            if (Helper.isNonEmptyString(FSConfig.next)) {
-              // Fix the `page` query string parameter, if no install context is available.
-              let nextPage = FSConfig.next;
+          let nextPage;
 
-              if (!this.hasInstallContext()) {
-                nextPage = nextPage.replace(/page=[^&]+/, `page=${page}`);
-              }
+          if (Helper.isNonEmptyString(FSConfig.next)) {
+            // Fix the `page` query string parameter, if no install context is available.
+            nextPage = FSConfig.next;
 
-              PageManager.getInstance().redirect(nextPage);
+            if (!this.hasInstallContext()) {
+              nextPage = nextPage.replace(/page=[^&]+/, `page=${page}`);
             }
           } else {
-            FS.PostMessage.post('forward', {
-              url: PageManager.getInstance().addQueryArgs(parentUrl, {
+            // Just a safe fallback in case the FSConfig.next is not set.
+            nextPage = PageManager.getInstance().addQueryArgs(
+              window.location.href,
+              {
                 page,
                 fs_action: this.state.plugin.unique_affix + '_sync_license',
                 plugin_id: this.state.plugin.id,
-              }),
-            });
+              }
+            );
           }
+
+          PageManager.getInstance().redirect(nextPage);
         }
 
         this.setState({
@@ -367,64 +363,18 @@ class FreemiusPricingMain extends Component {
       return;
     }
 
-    if (!this.isEmbeddedDashboardMode()) {
-      let handler = window.FS.Checkout.configure({
-        plugin_id: this.state.plugin.id,
-        public_key: this.state.plugin.public_key,
-        sandbox_token: Helper.isNonEmptyString(FSConfig.sandbox_token)
-          ? FSConfig.sandbox_token
-          : null,
-        timestamp: Helper.isNonEmptyString(FSConfig.sandbox_token)
-          ? FSConfig.timestamp
-          : null,
-      });
-
-      let params = {
-        name: this.state.plugin.title,
-        plan_id: plan.id,
-        success: function (response) {
-          console.log(response);
-        },
-      };
-
-      if (null !== pricing) {
-        params.pricing_id = pricing.id;
-      } else {
-        params.licenses =
-          UnlimitedLicenses == this.state.selectedLicenseQuantity
-            ? null
-            : this.state.selectedLicenseQuantity;
-      }
-
-      handler.open(params);
-
-      return;
-    }
-
     if (this.state.isTrial && !plan.requiresSubscription()) {
       if (this.hasInstallContext()) {
         this.startTrial(plan.id);
       } else {
-        if (Helper.isUndefinedOrNull(FS.PostMessage.parent_url())) {
-          this.setState({ pendingConfirmationTrialPlan: plan });
-        } else {
-          FS.PostMessage.post('start_trial', {
-            plugin_id: this.state.plugin.id,
-            plan_id: plan.id,
-            plan_name: plan.name,
-            plan_title: plan.title,
-            trial_period: plan.trial_period,
-          });
-        }
+        this.setState({ pendingConfirmationTrialPlan: plan });
       }
     } else {
       if (null === pricing) {
         pricing = this.getSelectedPlanPricing(plan.id);
       }
 
-      let parentUrl = FS.PostMessage.parent_url(),
-        hasParentUrl = Helper.isNonEmptyString(parentUrl),
-        billingCycle = this.state.selectedBillingCycle;
+      const billingCycle = this.state.selectedBillingCycle;
 
       if (this.state.skipDirectlyToPayPal) {
         let data = {},
@@ -444,23 +394,13 @@ class FreemiusPricingMain extends Component {
           billing_cycle: billingCycle,
         };
 
-        if (hasParentUrl) {
-          FS.PostMessage.post('forward', {
-            url: PageManager.getInstance().addQueryArgs(
-              FSConfig.fs_wp_endpoint_url +
-                '/action/service/paypal/express-checkout/',
-              params
-            ),
-          });
-        } else {
-          params.prev_url = window.location.href;
+        params.prev_url = window.location.href;
 
-          PageManager.getInstance().redirect(
-            FSConfig.fs_wp_endpoint_url +
-              '/action/service/paypal/express-checkout/',
-            params
-          );
-        }
+        PageManager.getInstance().redirect(
+          FSConfig.fs_wp_endpoint_url +
+            '/action/service/paypal/express-checkout/',
+          params
+        );
       } else {
         let urlParams = {
           checkout: 'true',
@@ -476,16 +416,7 @@ class FreemiusPricingMain extends Component {
           urlParams.trial = 'true';
         }
 
-        if (!hasParentUrl) {
-          PageManager.getInstance().redirect(window.location.href, urlParams);
-        } else {
-          FS.PostMessage.post('forward', {
-            url: PageManager.getInstance().addQueryArgs(parentUrl, {
-              ...urlParams,
-              ...{ page: this.state.plugin.menu_slug + '-pricing' },
-            }),
-          });
-        }
+        PageManager.getInstance().redirect(window.location.href, urlParams);
       }
     }
   }
@@ -703,17 +634,8 @@ class FreemiusPricingMain extends Component {
 
         let plugin = new Plugin(pricingData.plugin);
 
-        let parentUrl = FS.PostMessage.parent_url();
-
         if (Helper.isNonEmptyString(FSConfig.menu_slug)) {
           plugin.menu_slug = FSConfig.menu_slug;
-        } else if (Helper.isNonEmptyString(parentUrl)) {
-          let page = PageManager.getInstance().getQuerystringParam(
-            parentUrl,
-            'page'
-          );
-
-          plugin.menu_slug = page.substring(0, page.length - '-pricing'.length);
         }
 
         plugin.unique_affix = !Helper.isUndefinedOrNull(FSConfig.unique_affix)
@@ -782,9 +704,6 @@ class FreemiusPricingMain extends Component {
           uid: this.hasInstallContext() ? this.state.install.id : null,
           userID: this.hasInstallContext() ? this.state.install.user_id : null,
         });
-
-        FS.PostMessage.init_child();
-        FS.PostMessage.postHeight();
       });
   }
 

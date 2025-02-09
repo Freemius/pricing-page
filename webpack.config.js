@@ -16,7 +16,7 @@ module.exports = () => {
   return {
     mode: buildMode,
     entry: './src/index.js',
-    devtool: isProductionMode ? false : 'eval-source-map',
+    devtool: isProductionMode ? false : 'eval',
     module: {
       rules: [
         {

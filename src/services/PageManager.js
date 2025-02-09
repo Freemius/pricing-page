@@ -1,7 +1,6 @@
 import { RequestManager } from './RequestManager';
 import { Helper } from '../Helper';
 import { FSConfig } from '../index';
-import { FS } from '../postmessage';
 
 /**
  * @author Leo Fajardo
@@ -34,7 +33,7 @@ function getInstance() {
     getContactUrl(plugin, topic) {
       let contactUrl = Helper.isNonEmptyString(FSConfig.contact_url)
         ? FSConfig.contact_url
-        : FS.PostMessage.parent_url();
+        : '';
 
       if (!Helper.isNonEmptyString(contactUrl)) {
         let isProduction =
