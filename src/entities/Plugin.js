@@ -102,7 +102,7 @@ export class Plugin {
   }
 
   hasWordPressOrgVersion() {
-    return null !== this.is_wp_org_compliant;
+    return true == this.is_wp_org_compliant;
   }
 
   isAddOn() {
