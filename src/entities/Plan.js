@@ -42,11 +42,6 @@ export class Plan {
   support_phone = '';
 
   /**
-   * @type string Skype support username.
-   */
-  support_skype = '';
-
-  /**
    * @type int Trial days.
    */
   trial_period = 0;
@@ -73,7 +68,6 @@ export class Plan {
       this.hasEmailSupport() ||
       this.hasForumSupport() ||
       this.hasPhoneSupport() ||
-      this.hasSkypeSupport() ||
       this.hasSuccessManagerSupport()
     );
   }
@@ -92,10 +86,6 @@ export class Plan {
 
   hasPhoneSupport() {
     return Helper.isNonEmptyString(this.support_phone);
-  }
-
-  hasSkypeSupport() {
-    return Helper.isNonEmptyString(this.support_skype);
   }
 
   hasSuccessManagerSupport() {
