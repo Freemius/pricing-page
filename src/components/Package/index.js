@@ -377,10 +377,6 @@ class Package extends Component {
         supportedChannels.push('Phone');
       }
 
-      if (planPackage.hasSkypeSupport()) {
-        supportedChannels.push('Skype');
-      }
-
       if (planPackage.hasEmailSupport()) {
         supportedChannels.push(
           (this.context.priorityEmailSupportPlanID == planPackage.id
