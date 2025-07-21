@@ -207,49 +207,23 @@ function getInstance(plans) {
     annualDiscountPercentage(pricing) {
       return Math.round(
         (this.annualSavings(pricing) /
-          (pricing.getMonthlyAmount(BillingCycle.MONTHLY) *
-            12 *
-            (pricing.isUnlimited() ? 1 : pricing.licenses))) *
+          (pricing.getMonthlyAmount(BillingCycle.MONTHLY) * 12)) *
           100
       );
     },
     annualSavings(pricing) {
       let annualDiscount = 0;
 
-      if (pricing.isUnlimited()) {
-        annualDiscount =
-          pricing.getMonthlyAmount(BillingCycle.MONTHLY) * 12 -
-          this.annual_price;
-      } else {
-        let singleSiteMonthlyPrice = this.tryCalcSingleSitePrice(
-          pricing,
-          BillingCycle.MONTHLY,
-          false
-        );
-
-        if (singleSiteMonthlyPrice > 0) {
-          let singleSiteAnnualPrice = this.tryCalcSingleSitePrice(
-            pricing,
-            BillingCycle.ANNUAL,
-            false
-          );
-
-          annualDiscount =
-            (singleSiteMonthlyPrice * 12 - singleSiteAnnualPrice) *
-            pricing.licenses;
-        }
-      }
+      annualDiscount =
+        pricing.getMonthlyAmount(BillingCycle.MONTHLY) * 12 -
+        pricing.annual_price;
 
       return Math.max(annualDiscount, 0);
     },
-    largestAnnualDiscount(planSingleSitePricingCollection) {
+    largestAnnualDiscount(planPricingWithLowestLicensesCollection) {
       let bestDiscount = 0;
 
-      for (let pricing of planSingleSitePricingCollection) {
-        if (!pricing.isSingleSite()) {
-          continue;
-        }
-
+      for (let pricing of planPricingWithLowestLicensesCollection) {
         bestDiscount = Math.max(
           bestDiscount,
           this.annualDiscountPercentage(pricing)
@@ -258,12 +232,14 @@ function getInstance(plans) {
 
       return Math.round(bestDiscount);
     },
-    getSingleSitePricing(pricingCollection, currency) {
+    getPricingWithLowestLicenses(pricingCollection, currency) {
       let total = pricingCollection.length;
 
       if (!pricingCollection || 0 === total) {
         return false;
       }
+
+      let candidatePricing = null;
 
       for (let i = 0; i < total; i++) {
         let pricing = pricingCollection[i];
@@ -272,12 +248,22 @@ function getInstance(plans) {
           continue;
         }
 
-        if (pricing.isSingleSite()) {
-          return pricing;
+        if (!pricing.hasMonthlyPrice() && !pricing.hasAnnualPrice()) {
+          continue;
+        }
+
+        if (
+          null === candidatePricing ||
+          (!pricing.isUnlimited() && candidatePricing.isUnlimited()) ||
+          (!pricing.isUnlimited() &&
+            !candidatePricing.isUnlimited() &&
+            pricing.licenses < candidatePricing.licenses)
+        ) {
+          candidatePricing = pricing;
         }
       }
 
-      return null;
+      return candidatePricing;
     },
     isFreePlan(pricingCollection) {
       if (Helper.isUndefinedOrNull(pricingCollection)) {

@@ -453,7 +453,7 @@ class FreemiusPricingMain extends Component {
           paidPlansCount = 0,
           planManager = PlanManager.getInstance(pricingData.plans),
           plansCount = 0,
-          planSingleSitePricingCollection = [],
+          planPricingWithLowestLicensesCollection = [],
           priorityEmailSupportPlanID = null,
           selectedBillingCycle = this.state.selectedBillingCycle,
           paidPlanWithTrial = null,
@@ -566,12 +566,15 @@ class FreemiusPricingMain extends Component {
           if (isPaidPlan) {
             paidPlansCount++;
 
-            let singleSitePricing = planManager.getSingleSitePricing(
-              pricingCollection,
-              this.state.selectedCurrency
-            );
-            if (null !== singleSitePricing) {
-              planSingleSitePricingCollection.push(singleSitePricing);
+            let pricingWithLowestLicenses =
+              planManager.getPricingWithLowestLicenses(
+                pricingCollection,
+                this.state.selectedCurrency
+              );
+            if (null !== pricingWithLowestLicenses) {
+              planPricingWithLowestLicensesCollection.push(
+                pricingWithLowestLicenses
+              );
             }
           }
         }
@@ -648,7 +651,7 @@ class FreemiusPricingMain extends Component {
           annualDiscount:
             hasAnnualCycle && hasMonthlyCycle
               ? planManager.largestAnnualDiscount(
-                  planSingleSitePricingCollection
+                  planPricingWithLowestLicensesCollection
                 )
               : 0,
           billingCycles: Object.keys(billingCycles),
