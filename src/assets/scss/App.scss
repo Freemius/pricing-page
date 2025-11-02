@@ -292,6 +292,11 @@
           box-shadow: none;
           background: transparent;
 
+          img {
+            max-height: 115px;
+            width: auto;
+          }
+
           & + .fs-badge {
             margin-left: 20px;
             margin-top: 13px;
