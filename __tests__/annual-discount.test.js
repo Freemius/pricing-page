@@ -78,7 +78,7 @@ describe('Annual discount logic (PlanManager instance methods)', () => {
 
   test('Prefer non-unlimited when possible', () => {
     const tiers = [
-      makePricing({ monthly: 100, annual: 900, unlimited: true }),
+      makePricing({ monthly: 100, annual: 900, licenses: null }),
       makePricing({ monthly: 25, annual: 240, licenses: 3 }), // preferred
     ];
     const picked = getPricingWithLowestLicenses(tiers, 'USD');
