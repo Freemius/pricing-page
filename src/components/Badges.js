@@ -11,20 +11,27 @@ class Badges extends Component {
 
   render() {
     return (
-      <ul>
+      <ul className="fs-badges">
         {this.props.badges.map(badge => {
-          let img = <img src={badge.src} alt={badge.alt} />;
+          let img = (
+            <img
+              src={badge.src}
+              alt={badge.alt}
+              width={badge.width}
+              height={badge.height}
+            />
+          );
 
           if (Helper.isNonEmptyString(badge.link)) {
             img = (
-              <a href={badge.link} target="_blank">
+              <a href={badge.link} target="_blank" rel="noopener noreferrer">
                 {img}
               </a>
             );
           }
 
           return (
-            <li key={badge.key} className="fs-badge">
+            <li key={badge.key} className="fs-badges__item">
               {img}
             </li>
           );

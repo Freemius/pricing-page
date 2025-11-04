@@ -243,7 +243,7 @@
         border: 1px solid $fsds-divider-color;
         border-radius: 4px;
         box-sizing: border-box;
-        max-width: 945px;
+        max-width: $fsds-max-width-container;
         margin: 0 auto;
 
         h2 {
@@ -285,21 +285,25 @@
       }
 
       .fs-section--badges {
-        .fs-badge {
-          display: inline-block;
-          vertical-align: middle;
-          position: relative;
-          box-shadow: none;
-          background: transparent;
+        max-width: $fsds-max-width-container;
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 10px;
 
-          img {
-            max-height: 115px;
-            width: auto;
-          }
+        .fs-badges {
+          list-style: none;
+          display: flex;
+          flex-flow: row wrap;
+          gap: 15px;
+          align-items: center;
+          justify-content: center;
 
-          & + .fs-badge {
-            margin-left: 20px;
-            margin-top: 13px;
+          &__item {
+            img {
+              max-width: 100%;
+              height: auto;
+              display: block;
+            }
           }
         }
       }

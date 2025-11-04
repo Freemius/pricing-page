@@ -2,12 +2,12 @@ import React, { Component, Fragment } from 'react';
 
 import '.././assets/scss/App.scss';
 
-import badgeFreemius from '.././assets/img/secure-payments-by-freemius.svg';
-import badgeMcAfee from '.././assets/img/mcafee.png';
-import badgePayPal from '.././assets/img/paypal.png';
-import badgeComodo from '.././assets/img/comodo-short-green.png';
-import defaultPluginIcon from '.././assets/img/plugin-icon.png';
-import defaultThemeIcon from '.././assets/img/theme-icon.png';
+import badgeFreemius from '../assets/img/secure-payments-by-freemius.svg';
+import badgeMcAfee from '../assets/img/mcafee.png';
+import badgePayPal from '../assets/img/paypal.svg';
+import badgeCloudFlare from '.././assets/img/cloudflare.png';
+import defaultPluginIcon from '../assets/img/plugin-icon.png';
+import defaultThemeIcon from '../assets/img/theme-icon.png';
 
 import { Plan } from '../entities/Plan';
 import { Plugin } from '../entities/Plugin';
@@ -879,22 +879,30 @@ class FreemiusPricingMain extends Component {
                       src: badgeFreemius,
                       alt: 'Secure payments by Freemius - Sell and market freemium and premium WordPress plugins & themes',
                       link: 'https://freemius.com/?badge=secure_payments&version=light#utm_source=wpadmin&utm_medium=payments_badge&utm_campaign=pricing_page',
+                      width: 300,
+                      height: 113,
                     },
                     {
                       key: 'mcafee',
                       src: badgeMcAfee,
                       alt: 'McAfee Badge',
                       link: 'https://www.mcafeesecure.com/verify?host=freemius.com',
+                      width: 150,
+                      height: 54,
                     },
                     {
                       key: 'paypal',
                       src: badgePayPal,
                       alt: 'PayPal Verified Badge',
+                      width: 80,
+                      height: 80,
                     },
                     {
-                      key: 'comodo',
-                      src: badgeComodo,
-                      alt: 'Comodo Secure SSL Badge',
+                      key: 'cloudflare',
+                      src: badgeCloudFlare,
+                      alt: 'CloudFlare Secure Badge',
+                      width: 150,
+                      height: 51,
                     },
                   ]}
                 />
