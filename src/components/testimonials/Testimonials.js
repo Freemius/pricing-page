@@ -46,6 +46,26 @@ class Testimonials extends Component {
     return stars;
   }
 
+  getTestimonialPictureUrl(review, defaultPicUrl) {
+    // Use review's own picture if available.
+    if (review.picture) {
+      return review.picture;
+    }
+
+    // Use Gravatar if email address exists.
+    if (!review.email) {
+      // Fall back to the default profile picture if there's no email address associated with the review.
+      return defaultPicUrl;
+    }
+
+    return (
+      '//gravatar.com/avatar/' +
+      md5(review.email) +
+      '?s=80&d=' +
+      encodeURIComponent(defaultPicUrl)
+    );
+  }
+
   stripHtml(html) {
     return new DOMParser().parseFromString(html, 'text/html').body.textContent;
   }
@@ -321,14 +341,7 @@ class Testimonials extends Component {
           <header className="fs-testimonial-header">
             <div className="fs-testimonial-logo">
               <object
-                data={
-                  review.email
-                    ? '//gravatar.com/avatar/' +
-                      md5(review.email) +
-                      '?s=80&d=' +
-                      encodeURIComponent(defaultPicUrl)
-                    : defaultPicUrl
-                }
+                data={this.getTestimonialPictureUrl(review, defaultPicUrl)}
                 type="image/png"
               >
                 <img src={defaultPicUrl} />
