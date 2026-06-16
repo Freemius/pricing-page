@@ -7,7 +7,7 @@
     vertical-align: top;
     background: $fsds-dark-background-text-color;
     border-bottom: 3px solid $fsds-border-color;
-    width: 315px;
+    width: 330px;
     box-sizing: border-box;
 
     &:first-child,
@@ -265,7 +265,9 @@
           }
         }
 
-        > td:not(.fs-license-quantity-discount):not(.fs-license-quantity-price) {
+        > td:not(.fs-license-quantity-discount):not(
+            .fs-license-quantity-price
+          ) {
           text-align: left;
         }
       }
