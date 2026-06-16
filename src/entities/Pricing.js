@@ -7,6 +7,10 @@ export const CurrencySymbol = Object.freeze({
   USD: '$',
   GBP: '£',
   EUR: '€',
+  ILS: '₪',
+  CAD: '$',
+  AUD: '$',
+  PLN: 'zł',
 });
 
 export const BillingCycle = {
