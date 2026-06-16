@@ -7,6 +7,10 @@ export const CurrencySymbol = Object.freeze({
   USD: '$',
   GBP: '£',
   EUR: '€',
+  ILS: '₪',
+  CAD: '$',
+  AUD: '$',
+  PLN: 'zł',
 });
 
 export const BillingCycle = {
@@ -58,7 +62,7 @@ export class Pricing {
   lifetime_price = null;
 
   /**
-   * @type string One of the following: `usd`, `gbp`, `eur`.
+   * @type string One of the following: `usd`, `gbp`, `eur`, `ils`, `cad`, `aud`, `pln`.
    */
   currency = DefaultCurrency;
 
