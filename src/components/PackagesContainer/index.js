@@ -94,7 +94,7 @@ class PackagesContainer extends Component {
         $packagesTab =
           $plansAndPricingSection.querySelector('.fs-packages-tab');
         defaultNextPrevPreviewWidth = 60;
-        cardMinWidth = 315;
+        cardMinWidth = 330;
         maxMobileScreenWidth = 768;
         mobileSectionOffset = 20;
       };
