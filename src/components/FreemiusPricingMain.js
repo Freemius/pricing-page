@@ -35,6 +35,7 @@ import { RequestManager } from '../services/RequestManager';
 import { PageManager } from '../services/PageManager';
 import { Helper } from '../Helper';
 import { TrackingManager } from '../services/TrackingManager';
+import { getFirstAvailableCurrency } from '../utils/currency';
 import Loader from './Loader';
 import TrialConfirmationModal from './TrialConfirmationModal';
 
@@ -208,7 +209,7 @@ class FreemiusPricingMain extends Component {
    */
   getDefaultCurrency() {
     if (
-      !Helper.isNonEmptyString(FSConfig.currency) &&
+      !Helper.isNonEmptyString(FSConfig.currency) ||
       !CurrencySymbol[FSConfig.currency]
     ) {
       return DefaultCurrency;
@@ -635,6 +636,12 @@ class FreemiusPricingMain extends Component {
           }
         }
 
+        const selectedCurrency = getFirstAvailableCurrency(
+          pricingData.plans,
+          this.state.selectedCurrency,
+          selectedBillingCycle
+        );
+
         let plugin = new Plugin(pricingData.plugin);
 
         if (Helper.isNonEmptyString(FSConfig.menu_slug)) {
@@ -690,6 +697,7 @@ class FreemiusPricingMain extends Component {
           priorityEmailSupportPlanID: priorityEmailSupportPlanID,
           reviews: pricingData.reviews,
           selectedBillingCycle: selectedBillingCycle,
+          selectedCurrency: selectedCurrency,
           skipDirectlyToPayPal:
             'true' === pricingData.skip_directly_to_paypal ||
             true === pricingData.skip_directly_to_paypal,
