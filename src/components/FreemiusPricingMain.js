@@ -640,11 +640,17 @@ class FreemiusPricingMain extends Component {
           }
         }
 
-        const selectedCurrency = getFirstAvailableCurrency(
-          pricingData.plans,
-          this.state.selectedCurrency,
-          selectedBillingCycle
-        );
+        const hasContextLicense =
+          !Helper.isUndefinedOrNull(this.state.license) &&
+          !Helper.isUndefinedOrNull(this.state.license.pricing_id);
+
+        const selectedCurrency = hasContextLicense
+          ? this.state.selectedCurrency
+          : getFirstAvailableCurrency(
+              pricingData.plans,
+              this.state.selectedCurrency,
+              selectedBillingCycle
+            );
 
         let plugin = new Plugin(pricingData.plugin);
 
