@@ -208,14 +208,18 @@ class FreemiusPricingMain extends Component {
    * @return {string} Defaults to `usd` if the currency that was passed in the config is not valid.
    */
   getDefaultCurrency() {
+    const configuredCurrency = Helper.isNonEmptyString(FSConfig.currency)
+      ? FSConfig.currency.toLowerCase()
+      : FSConfig.currency;
+
     if (
-      !Helper.isNonEmptyString(FSConfig.currency) ||
-      !CurrencySymbol[FSConfig.currency]
+      !Helper.isNonEmptyString(configuredCurrency) ||
+      !CurrencySymbol[configuredCurrency.toUpperCase()]
     ) {
       return DefaultCurrency;
     }
 
-    return FSConfig.currency;
+    return configuredCurrency;
   }
 
   /**
