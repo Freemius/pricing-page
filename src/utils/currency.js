@@ -23,7 +23,7 @@ export function getFirstAvailableCurrency(
     }
 
     for (let pricing of plan.pricing) {
-      if (pricing.is_hidden) {
+      if (pricing.is_hidden || pricing.isFree()) {
         continue;
       }
 
