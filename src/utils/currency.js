@@ -27,15 +27,18 @@ export function getFirstAvailableCurrency(
         continue;
       }
 
-      if (null === firstVisibleCurrency) {
-        firstVisibleCurrency = pricing.currency;
-      }
-
       if (
         pricing.currency === preferredCurrency &&
         pricing.supportsBillingCycle(billingCycle)
       ) {
         return preferredCurrency;
+      }
+
+      if (
+        null === firstVisibleCurrency &&
+        pricing.supportsBillingCycle(billingCycle)
+      ) {
+        firstVisibleCurrency = pricing.currency;
       }
     }
   }
