@@ -319,7 +319,7 @@ class PackagesContainer extends Component {
   render() {
     let packages = null,
       licenseQuantities =
-        this.context.licenseQuantities[this.context.selectedCurrency],
+        this.context.licenseQuantities[this.context.selectedCurrency] || {},
       licenseQuantitiesCount = Object.keys(licenseQuantities).length,
       currentLicenseQuantities = {},
       isSinglePlan = false;

@@ -419,10 +419,10 @@ class Package extends Component {
     let selectedAmountInteger, selectedAmountFraction;
 
     if (selectedPricingAmount) {
-      const amountParts = selectedPricingAmount.split('.');
+      const [amountInteger, amountFraction] = selectedPricingAmount.split('.');
 
-      selectedAmountInteger = Helper.formatNumber(parseInt(amountParts[0], 10));
-      selectedAmountFraction = Helper.formatFraction(amountParts[1]);
+      selectedAmountInteger = amountInteger;
+      selectedAmountFraction = Helper.formatFraction(amountFraction);
     }
 
     const planChangeType = this.getPlanChangeType();
