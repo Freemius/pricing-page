@@ -21,13 +21,22 @@ class CurrencySelector extends Component {
         {this.context.currencies.map(currency => {
           return (
             <option key={currency} value={currency}>
-              {this.context.currencySymbols[currency]} -{' '}
-              {currency.toUpperCase()}
+              {this.getCurrencyLabel(currency)}
             </option>
           );
         })}
       </select>
     );
+  }
+
+  getCurrencyLabel(currency) {
+    if (this.context.currencySymbols[currency]) {
+      return `${
+        this.context.currencySymbols[currency]
+      } - ${currency.toUpperCase()}`;
+    }
+
+    return currency.toUpperCase();
   }
 }
 
