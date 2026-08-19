@@ -226,7 +226,7 @@ class Package extends Component {
 
     return (
       <div className="fs-undiscounted-price">
-        Normally {this.context.currencySymbols[this.context.selectedCurrency]}
+        Normally {this.getCurrencySymbol()}
         {amount} / {selectedPricingCycleLabel}
       </div>
     );
@@ -255,6 +255,29 @@ class Package extends Component {
     );
   }
 
+  getCurrencySymbol() {
+    const currencyCode = this.context.selectedCurrency;
+
+    if (this.context.currencySymbols[currencyCode]) {
+      return this.context.currencySymbols[currencyCode];
+    }
+
+    try {
+      return (
+        new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: currencyCode.toUpperCase(),
+        })
+          .formatToParts(0)
+          .find(part => part.type === 'currency')?.value ??
+        currencyCode.toLowerCase()
+      );
+    } catch {
+      // In case Intl is not available or the currency code is invalid, just have a safe fallback.
+      return currencyCode.toLowerCase();
+    }
+  }
+
   /**
    * @param {Object} pricing   Pricing entity.
    * @param {string} [locale]  The country code and language code combination (e.g. 'fr-FR').
@@ -266,7 +289,7 @@ class Package extends Component {
       label = '',
       price = pricing[pricingData.selectedBillingCycle + '_price'];
 
-    label += pricingData.currencySymbols[pricingData.selectedCurrency];
+    label += this.getCurrencySymbol();
     label += Helper.formatNumber(price, locale);
 
     if (BillingCycleString.MONTHLY === pricingData.selectedBillingCycle)
@@ -451,9 +474,7 @@ class Package extends Component {
           )}
           <div className="fs-selected-pricing-amount">
             <strong className="fs-currency-symbol">
-              {!planPackage.is_free_plan
-                ? this.context.currencySymbols[this.context.selectedCurrency]
-                : ''}
+              {!planPackage.is_free_plan ? this.getCurrencySymbol() : ''}
             </strong>
             <span className="fs-selected-pricing-amount-integer">
               <strong>

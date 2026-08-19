@@ -11,6 +11,8 @@ export const CurrencySymbol = Object.freeze({
   CAD: '$',
   AUD: '$',
   PLN: 'zł',
+  CHF: 'Fr',
+  RSD: 'din',
 });
 
 export const BillingCycle = {

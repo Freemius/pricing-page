@@ -681,6 +681,8 @@ class FreemiusPricingMain extends Component {
             cad: CurrencySymbol.CAD,
             aud: CurrencySymbol.AUD,
             pln: CurrencySymbol.PLN,
+            chf: CurrencySymbol.CHF,
+            rsd: CurrencySymbol.RSD,
           },
           discountsModel: FSConfig?.discounts_model ?? DiscountsModel.ABSOLUTE,
           downloads: pricingData.downloads,
