@@ -226,7 +226,7 @@ class Package extends Component {
 
     return (
       <div className="fs-undiscounted-price">
-        Normally {this.context.currencySymbols[this.context.selectedCurrency]}
+        Normally {this.getCurrencySymbol()}
         {amount} / {selectedPricingCycleLabel}
       </div>
     );
@@ -262,15 +262,20 @@ class Package extends Component {
       return this.context.currencySymbols[currencyCode];
     }
 
-    return (
-      new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: currencyCode.toUpperCase(),
-      })
-        .formatToParts(0)
-        .find(part => part.type === 'currency').value ??
-      currencyCode.toLowerCase()
-    );
+    try {
+      return (
+        new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: currencyCode.toUpperCase(),
+        })
+          .formatToParts(0)
+          .find(part => part.type === 'currency')?.value ??
+        currencyCode.toLowerCase()
+      );
+    } catch {
+      // In case Intl is not available or the currency code is invalid, just have a safe fallback.
+      return currencyCode.toLowerCase();
+    }
   }
 
   /**
@@ -469,9 +474,7 @@ class Package extends Component {
           )}
           <div className="fs-selected-pricing-amount">
             <strong className="fs-currency-symbol">
-              {!planPackage.is_free_plan
-                ? this.context.currencySymbols[this.context.selectedCurrency]
-                : ''}
+              {!planPackage.is_free_plan ? this.getCurrencySymbol() : ''}
             </strong>
             <span className="fs-selected-pricing-amount-integer">
               <strong>
